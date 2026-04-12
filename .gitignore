@@ -1,0 +1,8 @@
+# Secrets Docker
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
