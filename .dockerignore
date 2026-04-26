@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Docker (on ne veut pas le Dockerfile dans l'image)
+Dockerfile
+docker-compose*
+.dockerignore
+
+# Frontend (Nuxt)
+app_frontend/node_modules
+app_frontend/.nuxt
+app_frontend/.output
+app_frontend/dist
+
+# Backend (Symfony)
+app_backend/vendor
+app_backend/var
+app_backend/.env.local
+app_backend/.env.test
+app_backend/.env.*
+
+# Divers
+.DS_Store
+npm-debug.log
+
+# fichiers env
+.env
+.env.local
+.env.*
