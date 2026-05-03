@@ -20,5 +20,5 @@ services:
       - web-gateway
 
 networks:
-  web-gateway:
+  web:
     external: true
