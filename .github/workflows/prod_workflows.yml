@@ -25,7 +25,7 @@ jobs:
             git clean -fd
             
             # 3. Re-construire l'image localement et relancer le conteneur
-            docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
+            docker compose -p trouptrip-prod -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
             
             # 4. Nettoyage des images inutilisées
             docker image prune -f
