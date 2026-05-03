@@ -16,7 +16,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 1. Aller dans le dossier du projet
-            cd /apps/trouptrip/preprod
+            cd /opt/apps/trouptrip/preprod
             
             # 2. Récupérer les derniers changements
             git pull origin staging
