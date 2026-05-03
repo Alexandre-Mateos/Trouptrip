@@ -25,5 +25,5 @@ jobs:
             # 3. Re-construire l'image localement et relancer le conteneur
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
             
-            # 4. Nettoyage (optionnel mais recommandé pour garder le VPS propre)
+            # 4. Nettoyage des images inutilisées
             docker image prune -f
