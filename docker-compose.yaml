@@ -1,27 +1,14 @@
 services:
   php:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: php
-    working_dir: /var/www/html
-    volumes:
-      - ./app_backend/:/var/www/html
+    image: ${DOCKER_REGISTRY:-trouptrip}/backend:latest
 
-  caddy:
-    image: caddy:2.11-alpine
-    volumes:
-      - ./app_backend/:/var/www/html
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - php
 
   db:
-    image: postgres:18
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -29,27 +16,8 @@ services:
     volumes:
       - db_data:/var/lib/postgresql
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      SCRIPT_NAME: /pgadmin
-    depends_on:
-      - db
-
   node-front:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: node-front
-    tty: true
-    working_dir: /var/www/front
-    volumes:
-      - ./app_frontend/:/var/www/front
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    image: ${DOCKER_REGISTRY:-trouptrip}/frontend:latest
 
 volumes:
   db_data:
-  caddy_data:
-  caddy_config:

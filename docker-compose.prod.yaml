@@ -1,0 +1,24 @@
+services:
+  php:
+    restart: always
+    environment:
+      APP_ENV: prod
+
+  nginx:
+    restart: always
+    networks:
+      - default
+      - web-gateway
+
+  db:
+    restart: always
+
+  node-front:
+    restart: always
+    networks:
+      - default
+      - web-gateway
+
+networks:
+  web-gateway:
+    external: true

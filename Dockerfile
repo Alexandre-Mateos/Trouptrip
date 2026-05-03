@@ -34,6 +34,13 @@ COPY user_entry_point.sh /user_entry_point.sh
 RUN chmod +x /user_entry_point.sh
 RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
+## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
+WORKDIR /var/www/html
+COPY ./app_backend /var/www/html
+
+# installer les dépendances pour la PROD
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
 
@@ -48,5 +55,15 @@ COPY user_entry_point.sh /user_entry_point.sh
 RUN chmod +x /user_entry_point.sh
 RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
+## défninir le dossier de destination puis copier le code app_frontend dans le dossier du container
+WORKDIR /var/www/front
+COPY ./app_frontend /var/www/front
+
+# installe ET build (indispensable pour générer le output)
+RUN npm install && npm run build
+
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
+
+# Commande de prod par défaut (est écrasé par la commande du docker-compose en dev)
+CMD ["node", ".output/server/index.mjs"]
