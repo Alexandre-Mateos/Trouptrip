@@ -20,7 +20,9 @@ jobs:
             cd /opt/apps/trouptrip/prod
             
             # 2. Récupérer les derniers changements
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
             
             # 3. Re-construire l'image localement et relancer le conteneur
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
