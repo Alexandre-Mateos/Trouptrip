@@ -36,10 +36,14 @@ RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
 ## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
 WORKDIR /var/www/html
+
+COPY ./app_backend/composer.json ./app_backend/composer.lock ./
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
 COPY ./app_backend /var/www/html
 
-# installer les dépendances pour la PROD
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}

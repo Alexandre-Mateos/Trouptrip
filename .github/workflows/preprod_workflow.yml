@@ -16,13 +16,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 1. Aller dans le dossier du projet
-            cd /apps/trouptrip/preprod
+            cd /opt/apps/trouptrip/preprod
             
             # 2. Récupérer les derniers changements
-            git pull origin staging
+            git fetch origin staging
+            git reset --hard origin/staging
+            git clean -fd
             
             # 3. Re-construire l'image localement et relancer le conteneur
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
             
-            # 4. Nettoyage (optionnel mais recommandé pour garder le VPS propre)
+            # 4. Nettoyage des images inutilisées
             docker image prune -f

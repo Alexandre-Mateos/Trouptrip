@@ -1,6 +1,9 @@
 services:
   php:
-    image: ${DOCKER_REGISTRY:-trouptrip}/backend:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: php
 
   nginx:
     image: nginx:alpine
@@ -17,7 +20,10 @@ services:
       - db_data:/var/lib/postgresql
 
   node-front:
-    image: ${DOCKER_REGISTRY:-trouptrip}/frontend:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: node-front
 
 volumes:
   db_data:
