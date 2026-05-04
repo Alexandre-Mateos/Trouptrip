@@ -4,7 +4,7 @@ services:
     volumes:
       - ./app_backend/:/var/www/html
 
-  nginx:
+  nginx-service:
     ports:
       - "8000:80"
     volumes:

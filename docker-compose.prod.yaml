@@ -4,7 +4,7 @@ services:
     environment:
       APP_ENV: prod
 
-  nginx:
+  nginx-service:
     restart: always
     networks:
       - default

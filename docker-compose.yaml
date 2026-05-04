@@ -5,8 +5,11 @@ services:
       dockerfile: ./Dockerfile
       target: php
 
-  nginx:
-    image: nginx:alpine
+  nginx-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: nginx-service
     depends_on:
       - php
 

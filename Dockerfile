@@ -71,3 +71,7 @@ USER ${USER_ID}:${GROUP_ID}
 
 # Commande de prod par défaut (est écrasé par la commande du docker-compose en dev)
 CMD ["node", ".output/server/index.mjs"]
+
+FROM nginx:alpine as nginx-service
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
