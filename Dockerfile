@@ -45,8 +45,6 @@ COPY ./app_backend /var/www/html
 
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
 
