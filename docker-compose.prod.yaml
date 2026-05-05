@@ -3,6 +3,9 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
 
   nginx-service:
     restart: always
