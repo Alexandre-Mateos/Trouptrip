@@ -45,12 +45,13 @@ COPY ./app_backend /var/www/html
 
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-#switch to the good user
-USER ${USER_ID}:${GROUP_ID}
-
 ## assure que php-fpm écoute bien en fast-cgi sur le port 9000
 RUN sed -i 's|127.0.0.1:9000|0.0.0.0:9000|' \
     /usr/local/etc/php-fpm.d/www.conf
+
+#switch to the good user
+USER ${USER_ID}:${GROUP_ID}
+
 
 CMD ["php-fpm", "-F"]
 
