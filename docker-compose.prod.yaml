@@ -1,8 +1,8 @@
 services:
   php:
     restart: always
-    environment:
-      APP_ENV: prod
+    env_file:
+      - .env
 
   nginx-service:
     restart: always
