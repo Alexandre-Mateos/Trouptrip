@@ -48,6 +48,8 @@ RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
 
+CMD ["php-fpm", "-F"]
+
 FROM node:22 as node-front
 
 #user and group that will be used
