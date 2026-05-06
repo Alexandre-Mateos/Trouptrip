@@ -43,11 +43,15 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY ./app_backend /var/www/html
 
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+RUN touch .env
 
-#switch to the good user
+
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
+
 USER ${USER_ID}:${GROUP_ID}
+
 ENV APP_ENV=prod
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 RUN php bin/console cache:clear --env=prod
 
 CMD ["php-fpm", "-F"]
