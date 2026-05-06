@@ -36,25 +36,19 @@ RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
 ## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
 WORKDIR /var/www/html
-
-COPY ./app_backend/composer.json ./app_backend/composer.lock ./
-
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-
 COPY ./app_backend /var/www/html
 
-RUN touch .env
+ENV APP_ENV=prod
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+RUN composer dump-env prod --empty
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-
+# On règle les droits avant de passer à l'utilisateur non-root
 RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
-
 USER ${USER_ID}:${GROUP_ID}
 
-ENV APP_ENV=prod
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
-RUN php bin/console cache:clear --env=prod
-
-CMD ["php-fpm", "-F"]
+# Le cache clear passera car dump-env a créé le fichier nécessaire
+RUN php bin/console cache:clear --env=prod --no-warmup
 
 FROM node:22 as node-front
 
@@ -84,8 +78,7 @@ FROM nginx:alpine as nginx-service
 
 WORKDIR /var/www/html
 
-# On ne copie QUE le dossier public depuis l'étape de build PHP
-# Nginx n'a besoin de rien d'autre pour router vers PHP-FPM
-COPY --from=php /var/www/html/public ./public
+# On copie. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plsu tard)
+COPY --from=php /var/www/html /var/www/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
