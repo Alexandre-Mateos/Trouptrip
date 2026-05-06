@@ -47,7 +47,7 @@ RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
-
+ENV APP_ENV=prod
 RUN php bin/console cache:clear --env=prod
 
 CMD ["php-fpm", "-F"]
