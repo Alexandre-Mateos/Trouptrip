@@ -82,5 +82,6 @@ WORKDIR /var/www/html
 
 # On copie. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plsu tard)
 COPY --from=php /var/www/html /var/www/html
+COPY --from=php /var/www/html/public /var/www/html/public
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
