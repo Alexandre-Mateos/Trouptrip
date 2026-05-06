@@ -72,6 +72,8 @@ RUN npm install && npm run build
 #switch to the good user
 USER ${USER_ID}:${GROUP_ID}
 
+RUN php bin/console cache:clear --env=prod
+
 # Commande de prod par défaut (est écrasé par la commande du docker-compose en dev)
 CMD ["node", ".output/server/index.mjs"]
 
