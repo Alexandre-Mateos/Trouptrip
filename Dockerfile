@@ -77,4 +77,10 @@ CMD ["node", ".output/server/index.mjs"]
 
 FROM nginx:alpine as nginx-service
 
+WORKDIR /var/www/html
+
+# On ne copie QUE le dossier public depuis l'étape de build PHP
+# Nginx n'a besoin de rien d'autre pour router vers PHP-FPM
+COPY --from=php /var/www/html/public ./public
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
