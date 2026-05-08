@@ -28,7 +28,6 @@ WORKDIR /var/www/html
 COPY ./app_backend /var/www/html
 ENV APP_ENV=prod
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-RUN composer dump-env prod
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 FROM php-base as php-dev
