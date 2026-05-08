@@ -1,4 +1,4 @@
-FROM php:8.4-fpm as php
+FROM php:8.4-fpm as php-base
 
 # Install git
 RUN apt-get update && \
@@ -21,6 +21,19 @@ RUN echo "upload_max_filesize=64M" > /usr/local/etc/php/conf.d/upload_max_filesi
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+FROM php-base as php-prod
+
+## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
+WORKDIR /var/www/html
+COPY ./app_backend /var/www/html
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+
+RUN php bin/console assets:install public
+
+FROM php-base as php-dev
+
 # Install Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
     mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
@@ -34,23 +47,7 @@ COPY user_entry_point.sh /user_entry_point.sh
 RUN chmod +x /user_entry_point.sh
 RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
-## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
-WORKDIR /var/www/html
-COPY ./app_backend /var/www/html
-
-ENV APP_ENV=prod
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-RUN composer dump-env prod --empty
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
-
-RUN php bin/console assets:install public
-
-# On règle les droits avant de passer à l'utilisateur non-root
-RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
 USER ${USER_ID}:${GROUP_ID}
-
-# Le cache clear passera car dump-env a créé le fichier nécessaire
-RUN php bin/console cache:clear --env=prod --no-warmup
 
 FROM node:22 as node-front
 
@@ -81,6 +78,6 @@ FROM nginx:alpine as nginx-service
 WORKDIR /var/www/html
 
 # On copie. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plsu tard)
-COPY --from=php /var/www/html /var/www/html
+COPY --from=php-prod /var/www/html /var/www/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf

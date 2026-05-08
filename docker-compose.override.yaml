@@ -1,5 +1,7 @@
 services:
   php:
+    build:
+      target: php-dev
     working_dir: /var/www/html
     volumes:
       - ./app_backend/:/var/www/html
