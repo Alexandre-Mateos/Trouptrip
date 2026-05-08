@@ -1,24 +1,19 @@
 FROM php:8.4-fpm as php-base
 
-# Dépendances système
+# Installation des dépendances et extensions
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git unzip && \
-    rm -rf /var/lib/apt/lists/* && \
-    git config --system user.name "user" && \
-    git config --system user.email "user@dev.com"
+    rm -rf /var/lib/apt/lists/*
 
-# Extensions PHP
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions zip sockets pdo_pgsql intl gd opcache && \
-    rm -f /usr/local/bin/install-php-extensions
+    install-php-extensions zip sockets pdo_pgsql intl gd opcache
 
 # Config PHP
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory_limit.ini && \
     echo "post_max_size=64M" > /usr/local/etc/php/conf.d/post_max_size.ini && \
     echo "upload_max_filesize=64M" > /usr/local/etc/php/conf.d/upload_max_filesize.ini
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -27,22 +22,29 @@ FROM php-base as php-prod
 
 ENV APP_ENV=prod
 
-COPY --chown=www-data:www-data ./app_backend /var/www/html
+ARG USER_ID=1001
+ARG GROUP_ID=1001
 
-RUN mkdir -p var/cache var/log && chown -R www-data:www-data var/
+COPY user_entry_point.sh /user_entry_point.sh
+RUN chmod +x /user_entry_point.sh && /user_entry_point.sh ${USER_ID} ${GROUP_ID}
+
+COPY ./app_backend /var/www/html
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 RUN composer dump-env prod --empty
-
-RUN php bin/console assets:install public
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-USER www-data
+RUN php bin/console assets:install --copy public
+
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
+USER ${USER_ID}:${GROUP_ID}
+
+RUN php bin/console cache:clear --env=prod --no-warmup
+
 CMD ["php-fpm", "-F"]
 
 FROM php-base as php-dev
 
-# Outils spécifiques au dev
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
     mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
@@ -50,8 +52,7 @@ ARG USER_ID=1001
 ARG GROUP_ID=1001
 
 COPY user_entry_point.sh /user_entry_point.sh
-RUN chmod +x /user_entry_point.sh && \
-    /user_entry_point.sh ${USER_ID} ${GROUP_ID}
+RUN chmod +x /user_entry_point.sh && /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
 USER ${USER_ID}:${GROUP_ID}
 CMD ["php-fpm", "-F"]
