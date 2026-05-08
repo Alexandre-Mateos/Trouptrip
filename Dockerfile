@@ -82,8 +82,6 @@ FROM nginx:alpine as nginx-service
 
 WORKDIR /var/www/html
 
-# On copie tout. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plus tard)
-COPY --from=php-prod /var/www/html /var/www/html
 COPY --from=php-prod /var/www/html/public /var/www/html/public
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
