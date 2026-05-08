@@ -43,7 +43,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 RUN composer dump-env prod --empty
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-RUN php bin/console assets:install --copy public
+RUN php bin/console assets:install
 
 # On règle les droits avant de passer à l'utilisateur non-root
 RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
