@@ -25,14 +25,17 @@ WORKDIR /var/www/html
 
 FROM php-base as php-prod
 
-# Définit l'environnement pour Symfony
 ENV APP_ENV=prod
 
-# Donne la propriété à www-data
 COPY --chown=www-data:www-data ./app_backend /var/www/html
+
+RUN mkdir -p var/cache var/log && chown -R www-data:www-data var/
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 RUN composer dump-env prod --empty
+
+RUN php bin/console cache:warmup
+
 RUN php bin/console assets:install public
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
