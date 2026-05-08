@@ -31,8 +31,9 @@ ENV APP_ENV=prod
 # Donne la propriété à www-data
 COPY --chown=www-data:www-data ./app_backend /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts && \
-    composer dump-autoload --optimize --no-dev --classmap-authoritative
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+RUN composer dump-env prod
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 USER www-data
 CMD ["php-fpm", "-F"]
