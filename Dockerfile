@@ -1,55 +1,57 @@
 FROM php:8.4-fpm as php-base
 
-# Install git
+# Dépendances système
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git && \
+    apt-get install -y --no-install-recommends git unzip && \
     rm -rf /var/lib/apt/lists/* && \
     git config --system user.name "user" && \
     git config --system user.email "user@dev.com"
 
-# Install needed packages
+# Extensions PHP
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions zip sockets pdo_pgsql intl gd opcache && \
     rm -f /usr/local/bin/install-php-extensions
 
-# Set PHP limits
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory_limit.ini
-RUN echo "post_max_size=64M" > /usr/local/etc/php/conf.d/post_max_size.ini
-RUN echo "upload_max_filesize=64M" > /usr/local/etc/php/conf.d/upload_max_filesize.ini
+# Config PHP
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory_limit.ini && \
+    echo "post_max_size=64M" > /usr/local/etc/php/conf.d/post_max_size.ini && \
+    echo "upload_max_filesize=64M" > /usr/local/etc/php/conf.d/upload_max_filesize.ini
 
-# Install Composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
 
 FROM php-base as php-prod
 
-WORKDIR /var/www/html
-COPY ./app_backend /var/www/html
+# Définit l'environnement pour Symfony
 ENV APP_ENV=prod
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Génère le fichier .env.local.php qui contient APP_ENV=prod
-# évite à Symfony de chercher le fichier .env
-RUN composer dump-env prod
+# Donne la propriété à www-data
+COPY --chown=www-data:www-data ./app_backend /var/www/html
 
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts && \
+    composer dump-autoload --optimize --no-dev --classmap-authoritative
+
+USER www-data
+CMD ["php-fpm", "-F"]
 
 FROM php-base as php-dev
 
-# Install Symfony CLI
+# Outils spécifiques au dev
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
     mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
-#user and group that will be used
 ARG USER_ID=1001
 ARG GROUP_ID=1001
 
-## --- set the right user and group inside the container ---
 COPY user_entry_point.sh /user_entry_point.sh
-RUN chmod +x /user_entry_point.sh
-RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
+RUN chmod +x /user_entry_point.sh && \
+    /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
 USER ${USER_ID}:${GROUP_ID}
+CMD ["php-fpm", "-F"]
 
 FROM node:22 as node-front
 
