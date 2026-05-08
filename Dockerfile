@@ -23,11 +23,15 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 FROM php-base as php-prod
 
-## défninir le dossier de destination puis copier le code app_backend dans le dossier du container
 WORKDIR /var/www/html
 COPY ./app_backend /var/www/html
 ENV APP_ENV=prod
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# Génère le fichier .env.local.php qui contient APP_ENV=prod
+# évite à Symfony de chercher le fichier .env
+RUN composer dump-env prod
+
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 FROM php-base as php-dev
