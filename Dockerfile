@@ -43,7 +43,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 RUN composer dump-env prod --empty
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-RUN php bin/console assets:install
+RUN php bin/console assets:install public
 
 # On règle les droits avant de passer à l'utilisateur non-root
 RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
@@ -82,6 +82,5 @@ WORKDIR /var/www/html
 
 # On copie. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plsu tard)
 COPY --from=php /var/www/html /var/www/html
-COPY --from=php /var/www/html/public /var/www/html/public
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
