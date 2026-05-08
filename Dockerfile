@@ -33,6 +33,7 @@ COPY --chown=www-data:www-data ./app_backend /var/www/html
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 RUN composer dump-env prod --empty
+RUN php bin/console assets:install public
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 USER www-data
