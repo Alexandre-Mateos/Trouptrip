@@ -30,8 +30,6 @@ COPY ./app_backend /var/www/html
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-RUN php bin/console assets:install public
-
 FROM php-base as php-dev
 
 # Install Symfony CLI
@@ -77,7 +75,7 @@ FROM nginx:alpine as nginx-service
 
 WORKDIR /var/www/html
 
-# On copie. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plsu tard)
+# On copie tout. C'est bourrin et ça augmente la surface d'attaque mais ça fonctionne (à optimiser plus tard)
 COPY --from=php-prod /var/www/html /var/www/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
