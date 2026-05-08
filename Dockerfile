@@ -58,7 +58,7 @@ FROM node:22 as node-front
 ARG USER_ID=1001
 ARG GROUP_ID=1001
 
-## --- set the right user and group inside the container ---
+## --- synchriniser l'utilistateur ---
 COPY user_entry_point.sh /user_entry_point.sh
 RUN chmod +x /user_entry_point.sh
 RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
