@@ -34,8 +34,6 @@ RUN mkdir -p var/cache var/log && chown -R www-data:www-data var/
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 RUN composer dump-env prod --empty
 
-RUN php bin/console cache:warmup
-
 RUN php bin/console assets:install public
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
