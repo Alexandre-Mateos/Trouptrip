@@ -6,3 +6,5 @@
 # IDE
 .idea/
 .vscode/
+
+.identifier
