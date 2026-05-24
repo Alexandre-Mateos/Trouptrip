@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserToken;
+use App\Enum\UserTokenTypeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,18 @@ class UserTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, UserToken::class);
     }
 
-    //    /**
-    //     * @return UserToken[] Returns an array of UserToken objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?UserToken
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findValidToken(string $token): ?UserToken
+    {
+        return $this->createQueryBuilder('ut')
+            ->addSelect('u')
+            ->innerJoin('ut.requester', 'u')
+            ->where('ut.token = :token')
+            ->andWhere('ut.type = :type')
+            ->andWhere('ut.expiresAt > :now')
+            ->setParameter(':token', $token)
+            ->setParameter(':type', UserTokenTypeEnum::CHECK_EMAIL)
+            ->setParameter(':now', new \DateTimeImmutable())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
