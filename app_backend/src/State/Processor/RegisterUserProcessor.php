@@ -43,6 +43,7 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
             );
         }
 
+        $this->em->beginTransaction();
 
         try {
             $user = new User();
@@ -50,8 +51,6 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
                 ->setLastname($data->lastname)
                 ->setEmail($data->email)
                 ->setPassword($this->passwordHasher->hashPassword($user, $data->plainPassword));
-
-            $this->em->beginTransaction();
 
             $this->em->persist($user);
 

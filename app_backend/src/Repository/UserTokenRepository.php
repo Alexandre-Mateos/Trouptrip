@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\UserToken;
 use App\Enum\UserTokenTypeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,7 +18,7 @@ class UserTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, UserToken::class);
     }
 
-    public function findValidToken(string $token): ?UserToken
+    public function findValidTokenByType(string $token, string $type): ?UserToken
     {
         return $this->createQueryBuilder('ut')
             ->addSelect('u')
@@ -25,9 +26,22 @@ class UserTokenRepository extends ServiceEntityRepository
             ->where('ut.token = :token')
             ->andWhere('ut.type = :type')
             ->andWhere('ut.expiresAt > :now')
-            ->setParameter(':token', $token)
-            ->setParameter(':type', UserTokenTypeEnum::CHECK_EMAIL)
-            ->setParameter(':now', new \DateTimeImmutable())
+            ->setParameter('token', $token)
+            ->setParameter('type', $type)
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findValidTokenByUserAndType(User $user, string $type): ?UserToken
+    {
+        return $this->createQueryBuilder('ut')
+            ->where('ut.requester = :requester')
+            ->andWhere('ut.type = :type')
+            ->andWhere('ut.expiresAt > :now')
+            ->setParameter('requester', $user)
+            ->setParameter('type', $type)
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getOneOrNullResult();
     }

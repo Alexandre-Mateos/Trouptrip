@@ -4,6 +4,7 @@ namespace App\State\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Enum\UserTokenTypeEnum;
 use App\Exception\TokenExpiredException;
 use App\Exception\VerifiedUserException;
 use App\Repository\UserTokenRepository;
@@ -24,7 +25,7 @@ readonly class CheckEmailProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $userToken = $this->userTokenRepository->findValidToken(hash('sha256', $data->token));
+        $userToken = $this->userTokenRepository->findValidTokenByType(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL);
         if(!$userToken){
             throw new TokenExpiredException();
         }

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\ApiResource;
+namespace App\ApiResource\SecurityResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\State\Processor\CheckEmailProcessor;
-use Symfony\Flex\Unpack\Operation;
 
 #[ApiResource(
     shortName: 'Check Email',
