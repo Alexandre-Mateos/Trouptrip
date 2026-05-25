@@ -6,9 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Enum\UserTokenTypeEnum;
 use App\Exception\TokenExpiredException;
-use App\Exception\VerifiedUserException;
 use App\Repository\UserTokenRepository;
-use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -31,10 +29,6 @@ readonly class CheckEmailProcessor implements ProcessorInterface
         }
 
         $user = $userToken->getRequester();
-        if($user->isVerified()) {
-            throw new VerifiedUserException();
-        }
-
         $this->em->beginTransaction();
 
         try{

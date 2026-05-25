@@ -18,7 +18,7 @@ class UserTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, UserToken::class);
     }
 
-    public function findValidTokenByType(string $token, string $type): ?UserToken
+    public function findValidTokenByType(string $token, UserTokenTypeEnum $type): ?UserToken
     {
         return $this->createQueryBuilder('ut')
             ->addSelect('u')
@@ -27,20 +27,20 @@ class UserTokenRepository extends ServiceEntityRepository
             ->andWhere('ut.type = :type')
             ->andWhere('ut.expiresAt > :now')
             ->setParameter('token', $token)
-            ->setParameter('type', $type)
+            ->setParameter('type', $type->value)
             ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    public function findValidTokenByUserAndType(User $user, string $type): ?UserToken
+    public function findValidTokenByUserAndType(User $user, UserTokenTypeEnum $type): ?UserToken
     {
         return $this->createQueryBuilder('ut')
             ->where('ut.requester = :requester')
             ->andWhere('ut.type = :type')
             ->andWhere('ut.expiresAt > :now')
             ->setParameter('requester', $user)
-            ->setParameter('type', $type)
+            ->setParameter('type', $type->value)
             ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getOneOrNullResult();

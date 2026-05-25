@@ -6,7 +6,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Enum\UserTokenTypeEnum;
 use App\Exception\TokenExpiredException;
-use App\Exception\VerifiedUserException;
 use App\Repository\UserTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -38,7 +37,7 @@ readonly class ResetPasswordProcessor implements ProcessorInterface
             $hashedPassword = $this->passwordHasher->hashPassword($user, $data->plainPassword);
             $user->setPassword($hashedPassword);
 
-            $this->em->remove($userToken);
+            $userToken->setExpiresAt(new \DateTimeImmutable());
 
             $this->em->flush();
             $this->em->commit();
