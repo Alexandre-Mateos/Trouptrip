@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\State\Processor\Security\ForgotPasswordProcessor;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ApiResource(
     shortName: 'Forgot Password',
     operations: [
@@ -19,6 +21,9 @@ use App\State\Processor\Security\ForgotPasswordProcessor;
 class ForgotPasswordInputDTO
 {
     public function __construct(
+
+        #[Assert\NotBlank]
+        #[Assert\Email(message: 'L\'adresse email n\'est pas valide')]
         public string $email,
     )
     {
