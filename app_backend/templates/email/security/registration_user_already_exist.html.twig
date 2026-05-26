@@ -1,0 +1,35 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block header_title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <p>
+            Bonjour {{ firstname }},
+        </p>
+        <p>
+            Quelqu'un à essayé de créer un compte avec cette adresse email. Malheureusement cette adresse est déjà
+            associée à un compte actif et ne peux pas servir à la création d'un second compte.
+        </p>
+        <p>
+            Si c'est toi mais que tu as simplement oublié tes accès, nous t'invitons à réinitialiser ton mot de passe
+            en cliquant sur le bouton suivant :
+        </p>
+        <div>
+            <a href="{{url }}">
+                Vérifier mon adresse email
+            </a>
+        </div>
+        <p>
+            Dans le cas contraire, reste vigilant, et ne divulgue pas tes identifiants !
+        </p>
+    </div>
+
+{% endblock %}

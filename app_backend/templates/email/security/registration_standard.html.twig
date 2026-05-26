@@ -1,0 +1,35 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block header_title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <p>
+            Bonjour {{ firstname }},
+        </p>
+        <p>
+            Nous sommes ravi de te compter parmi nos troupeur !
+        </p>
+        <p>
+            Avant de te laisser planifier tes futurs voyages entre amis, nous avons juste besoin
+            de vérifier qu'il s'agit bien de ton adresse email.
+        </p>
+        <p>
+            Juste un 'click' pour activer ton compte et profiter pleinement de trouptrip !
+        </p>
+        <div>
+            <a href="{{url }}">
+                Vérifier mon adresse email
+            </a>
+        </div>
+
+    </div>
+
+{% endblock %}
