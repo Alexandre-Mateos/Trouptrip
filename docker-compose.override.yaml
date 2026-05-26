@@ -17,7 +17,7 @@ services:
 
   db:
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4

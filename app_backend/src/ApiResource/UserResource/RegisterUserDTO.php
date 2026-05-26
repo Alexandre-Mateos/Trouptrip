@@ -12,10 +12,10 @@ readonly class RegisterUserDTO
         public ?string $email,
 
         #[Assert\NotBlank]
-        #[Assert\NotCompromisedPassword]
-        #[Assert\PasswordStrength(
-            message: 'Le mot de passe n\'est pas assez fort'
-        )]
+//        #[Assert\NotCompromisedPassword]
+//        #[Assert\PasswordStrength(
+//            message: 'Le mot de passe n\'est pas assez fort'
+//        )]
         public ?string $plainPassword,
 
         #[Assert\NotBlank]
