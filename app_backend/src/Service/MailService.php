@@ -60,7 +60,7 @@ readonly class MailService
     private function getAssociatedFrontendBaseUrl(SecurityEmailTypeEnum $type): string
     {
         return match($type){
-            SecurityEmailTypeEnum::REGISTRATION_STANDARD, SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER  => '/verify-mail?token=',
+            SecurityEmailTypeEnum::REGISTRATION_STANDARD, SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER  => '/verify-email?token=',
             SecurityEmailTypeEnum::RESET_PASSWORD_STANDARD, SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST => '/reset-password?token='
         };
     }

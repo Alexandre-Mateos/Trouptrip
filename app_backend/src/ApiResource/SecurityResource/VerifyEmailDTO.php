@@ -4,19 +4,19 @@ namespace App\ApiResource\SecurityResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\State\Processor\CheckEmailProcessor;
+use App\State\Processor\VerifyEmailProcessor;
 
 #[ApiResource(
     shortName: 'Check Email',
     operations: [
         new Post(
-            uriTemplate: '/check_email',
+            uriTemplate: '/verify_email',
             output: false,
-            processor: CheckEmailProcessor::class
+            processor: VerifyEmailProcessor::class
         )
     ]
 )]
-readonly class CheckEmailDTO
+readonly class VerifyEmailDTO
 {
     public function __construct(
         public string $token
