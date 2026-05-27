@@ -5,8 +5,8 @@ import {apiEndpoints} from "~/utils/apiEndpoints";
 
 export default defineComponent({
   name: "register",
-  data(){
-    return{
+  data() {
+    return {
       email: "",
       firstname: "",
       lastname: "",
@@ -17,30 +17,34 @@ export default defineComponent({
     }
   },
   methods: {
-    handleErrors(error: any){
-      for (const violation of error.data.violations) {
-        const key = violation.propertyPath;
-        const message = violation.message;
+    handleErrors(error: any) {
+      if (error?.data?.violations && Array.isArray(error.data.violations)) {
+        for (const violation of error.data.violations) {
+          const key = violation.propertyPath;
+          const message = violation.message;
 
-        if (!this.errors[key]) {
-          this.errors[key] = [];
+          if (!this.errors[key]) {
+            this.errors[key] = [];
+          }
+          this.errors[key].push(message);
         }
-
-        this.errors[key].push(message);
+      } else {
+        this.errors['unexpected'] = ["Une erreure inattendue est survenue. Veuillez rééssayer"];
       }
     },
     async submit() {
       this.errors = {};
+      this.success = false;
       try {
         const response = await this.$api<IRegisterUser>(
             apiEndpoints.users,
             {
               method: 'POST',
               body: {
-              email: this.email,
-              plainPassword: this.password,
-              firstname: this.firstname,
-              lastname: this.lastname,
+                email: this.email,
+                plainPassword: this.password,
+                firstname: this.firstname,
+                lastname: this.lastname,
               }
             }
         )
@@ -52,11 +56,7 @@ export default defineComponent({
 
 
       } catch (error: any) {
-        if(error){
-          this.handleErrors(error);
-        }else{
-          this.errors['unexpected'] = ["Une erreure inattendue est survenue. Veuillez rééssayer"];
-        }
+        this.handleErrors(error);
       }
     }
   }
@@ -67,11 +67,13 @@ export default defineComponent({
   <Header></Header>
   <h1>Créer un compte</h1>
 
-  <ul>
-    <li v-for="(message, index) in errors?.unexpected" :key="index">
-      {{ message }}
-    </li>
-  </ul>
+  <div v-if="errors?.unexpected">
+    <ul>
+      <li v-for="(message, index) in errors.unexpected" :key="index" >
+        {{ message }}
+      </li>
+    </ul>
+  </div>
 
   <form @submit.prevent="submit">
 
@@ -112,12 +114,12 @@ export default defineComponent({
         </li>
       </ul>
       <label for="password">Mot de passe :</label>
-      <input id="password" name="password" v-model="password">
+      <input type="password" id="password" name="password" v-model="password">
     </div>
 
     <div>
       <label for="password_confirmation">Confirmer le mot de passe :</label>
-      <input id="password_confirmation" name="password_confirmation" v-model="passwordConfirmation">
+      <input type="password" id="password_confirmation" name="password_confirmation" v-model="passwordConfirmation">
     </div>
 
     <div>
@@ -127,8 +129,8 @@ export default defineComponent({
   </form>
 
   <div v-if="success">
-    <p>L'équipe Trouptrip te remercie pour ton inscription</p>
-    <p>Un email vient d'être envoyé à l'adresse renseignée pour finaliser ton inscription</p>
+    <p>L'équipe Trouptrip te remercie pour ton inscription !</p>
+    <p>Un email vient d'être envoyé à l'adresse renseignée pour finaliser ton inscription.</p>
   </div>
 </template>
 
