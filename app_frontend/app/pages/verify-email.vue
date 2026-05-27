@@ -5,23 +5,24 @@ export default defineComponent({
   name: "verify-email",
   data(){
     return{
-      success: false
+      success: false,
+      errorMessage: ''
     }
   },
   methods: {
     async verifyEmail(token: string) {
-      try {
         await useFetch(apiEndpoints.verifyEmail, {
           method: 'POST',
           body: { token }
         });
 
-        this.success = true;
-
-        this.redirectToLogin();
-      } catch (e) {
-        console.log('erreur');
+      if (error.value) {
+        this.errorMessage = "Une erreur est survenue lors de la vérification du lien.";
+        return;
       }
+
+        this.success = true;
+        this.redirectToLogin();
     },
     redirectToLogin(): void
     {
@@ -50,6 +51,9 @@ export default defineComponent({
   <div v-else>
     <p>Nous vérifions votre adresse email</p>
   </div>
+  <p v-if="errorMessage" >
+    {{ errorMessage }}
+  </p>
 </template>
 
 <style scoped>
