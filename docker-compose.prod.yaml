@@ -24,6 +24,8 @@ services:
     networks:
       - default
       - web
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=https://mon-vrai-domaine.com/api
 
 networks:
   web:

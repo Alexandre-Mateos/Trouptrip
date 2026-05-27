@@ -1,5 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
+import type {IRegisterUser} from "~/interfaces/i-registerUser";
+import {apiEndpoints} from "~/utils/apiEndpoints";
 
 export default defineComponent({
   name: "register",
@@ -15,23 +17,21 @@ export default defineComponent({
   methods: {
     async submit() {
       try {
-        const response = await $fetch('http://localhost:8000/api/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/ld+json',
-            'Accept': 'application/ld+json'
-          },
-          body: {
-            email: this.email,
-            plainPassword: this.password,
-            firstname: this.firstname,
-            lastname: this.lastname,
-          }
-        })
-        console.log('Utilisateur créé avec succès !', response)
+        const response = await this.$api<IRegisterUser>(
+            apiEndpoints.users,
+            {
+              method: 'POST',
+              body: {
+              email: this.email,
+              plainPassword: this.password,
+              firstname: this.firstname,
+              lastname: this.lastname,
+        }})
 
-      } catch (error) {
-        console.error('Erreur renvoyée par le serveur :', error.data)
+        console.log(response.firstname)
+
+      } catch (error: any) {
+        console.error(error)
       }
     }
   }
