@@ -58,12 +58,14 @@ export default defineComponent({
     <div>
       <button type="submit">Se connecter</button>
     </div>
-
-    <div v-if="errorMessage">
-      {{ errorMessage }}
-    </div>
-
   </form>
+  <nav>
+    <NuxtLink to="/forgot-password">Mot de passe oublié</NuxtLink>
+  </nav>
+
+  <div v-if="errorMessage">
+    {{ errorMessage }}
+  </div>
 </template>
 
 <style scoped>

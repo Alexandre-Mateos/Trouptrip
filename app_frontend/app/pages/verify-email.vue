@@ -11,7 +11,8 @@ export default defineComponent({
   },
   methods: {
     async verifyEmail(token: string) {
-        await useFetch(apiEndpoints.verifyEmail, {
+      // On récupère "error" renvoyé par useFetch
+      const { error } = await useFetch(apiEndpoints.verifyEmail, {
           method: 'POST',
           body: { token }
         });
@@ -28,8 +29,7 @@ export default defineComponent({
     {
       setTimeout(()=>{
         navigateTo('/login');
-        console.log('redirect');
-      }, 7000);
+      }, 4000);
     }
   },
   mounted() {

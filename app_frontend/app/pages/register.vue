@@ -127,6 +127,9 @@ export default defineComponent({
     </div>
 
   </form>
+  <nav>
+    <NuxtLink to="/forgot-password">Mot de passe oublié</NuxtLink>
+  </nav>
 
   <div v-if="success">
     <p>L'équipe Trouptrip te remercie pour ton inscription !</p>
