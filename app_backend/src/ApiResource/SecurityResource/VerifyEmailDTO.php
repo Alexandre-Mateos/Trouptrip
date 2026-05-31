@@ -19,6 +19,7 @@ use App\State\Processor\VerifyEmailProcessor;
 readonly class VerifyEmailDTO
 {
     public function __construct(
+        public string $email,
         public string $token
     )
     {

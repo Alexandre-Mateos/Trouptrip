@@ -20,14 +20,11 @@
         <p>
             Avant de te laisser continuer, nous devons nous assurer qu'il s'agit bien de ton adresse email !
         </p>
-        <p>
-            Tout ce que tu as à faire c'est de cliquer sur le bouton ci dessous :
-        </p>
-        <div>
-            <a href="{{url }}">
-                Vérifier mon adresse email
-            </a>
-        </div>
+        {% include 'email/component/email_security_cta.html.twig' with {
+            'url': url,
+            'rawToken': rawToken,
+            'buttonLabel': buttonLabel
+        } %}
 
     </div>
 

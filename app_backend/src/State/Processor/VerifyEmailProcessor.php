@@ -23,7 +23,7 @@ readonly class VerifyEmailProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $userToken = $this->userTokenRepository->findValidTokenByType(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL);
+        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL, $data->email);
         if(!$userToken){
             throw new TokenExpiredException();
         }
