@@ -7,6 +7,8 @@ export default defineComponent({
     return{
       password: "",
       passwordConfirmation: "",
+      email: "",
+      token: "",
       errorMessage: "",
       success: false
     }
@@ -44,17 +46,14 @@ export default defineComponent({
 <template>
   <Header></Header>
   <h1>Réinitialisation de votre mot de passe</h1>
-    <form @submit.prevent="submit">
-      <div>
-        <label for="password">Nouveau mot de passe :</label>
-        <input type="password" id="password" name="password" v-model="password">
-      </div>
+    <BaseForm @submit="submit">
 
-      <div>
-        <label for="password_confirmation">Confirmer le nouveau mot de passe :</label>
-        <input type="password" id="password_confirmation" name="password_confirmation" v-model="passwordConfirmation">
-      </div>
-    </form>
+      <FormInput id="email" type="email" name="email" v-model="email" label="Email :"></FormInput>
+      <OtpInputFields v-model="token" :length="6"></OtpInputFields>
+      <FormInput id="password" type="password" name="password" v-model="password" label="Nouveau mot de passe :"></FormInput>
+      <FormInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation" label="Confirmer le nouveau mot de passe :"></FormInput>
+
+    </BaseForm>
 
   <div>
     <p>Votre modification de mot de passe a bien été prise en compte</p>

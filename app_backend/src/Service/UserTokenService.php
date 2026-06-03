@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 readonly class UserTokenService
 {
-    private const TOKEN_LENGTH = 8;
+    private const TOKEN_LENGTH = 6;
     private const TOKEN_MIN_LIMIT = 0;
     private const TOKEN_NUMERIC_BASE = 10;
 

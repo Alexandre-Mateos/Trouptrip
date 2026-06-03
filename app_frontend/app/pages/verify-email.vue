@@ -2,58 +2,64 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: "verify-email",
-  data(){
-    return{
+  name: "VerifyEmail",
+  data() {
+    return {
       success: false,
-      errorMessage: ''
+      errorMessage: '',
+      email: '',
+      token: '',
     }
   },
   methods: {
-    async verifyEmail(token: string) {
-      // On récupère "error" renvoyé par useFetch
-      const { error } = await useFetch(apiEndpoints.verifyEmail, {
+    async verifyEmail() {
+      // On réinitialise l'erreur à chaque tentative
+      this.errorMessage = '';
+
+      try {
+        await this.$api(apiEndpoints.verifyEmail, {
           method: 'POST',
-          body: { token }
+          body: {
+            email: this.email,
+            token: this.token // Contient les 6 chiffres synchronisés
+          }
         });
 
-      if (error.value) {
-        this.errorMessage = "Une erreur est survenue lors de la vérification du lien.";
-        return;
-      }
-
         this.success = true;
+        // On lance la redirection automatique maintenant que c'est un succès
         this.redirectToLogin();
+
+      } catch (err: any) {
+        // Correction ici : on assigne à la variable de data 'this.errorMessage'
+        // pour que le template HTML puisse l'afficher
+        this.errorMessage = 'Une erreur inattendue est survenue, veuillez réessayer';
+      }
     },
-    redirectToLogin(): void
-    {
-      setTimeout(()=>{
+    redirectToLogin(): void {
+      setTimeout(() => {
         navigateTo('/login');
       }, 4000);
     }
   },
-  mounted() {
-    const tokenFromUrl = this.$route.query.token;
-
-    if (typeof tokenFromUrl === 'string') {
-      this.verifyEmail(tokenFromUrl);
-    }
-  }
 })
 </script>
 
 <template>
-  <div v-if="success">
-    <p>Votre adresse à pû être vérifié avec succès !</p>
-    <p>Merci pour votre inscription</p>
-    <p>Vous allez être redirigé vars la page de connection</p>
-  </div>
-  <div v-else>
-    <p>Nous vérifions votre adresse email</p>
-  </div>
-  <p v-if="errorMessage" >
+  <div v-if="errorMessage">
     {{ errorMessage }}
-  </p>
+  </div>
+
+  <div v-if="success">
+    <p>Votre email a pu être vérifié avec succès, vous allez être redirigé vers la page de connexion...</p>
+  </div>
+
+  <div v-else>
+    <form @submit.prevent="verifyEmail">
+      <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></FormInput>
+      <OtpInputFields v-model="token" :length="6"/>
+      <FormButton type="submit">Vérifier mon email</FormButton>
+    </form>
+  </div>
 </template>
 
 <style scoped>

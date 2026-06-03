@@ -35,12 +35,11 @@ export default defineComponent({
 <template>
   <Header></Header>
   <h1>Mot de passe oublié ?</h1>
-  <form @submit.prevent="submit">
-    <div>
-      <label for="email">Adresse email :</label>
-      <input type="email" id="email" name="email" v-model="email">
-    </div>
-  </form>
+
+  <BaseForm @submit="submit">
+    <FormInput id="email" type="email" name="email" v-model="email" label="Email :"></FormInput>
+  </BaseForm>
+
   <div v-if="errorMessage">
     <p>{{errorMessage}}</p>
   </div>

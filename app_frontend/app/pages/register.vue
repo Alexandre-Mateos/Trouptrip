@@ -69,72 +69,31 @@ export default defineComponent({
 
   <div v-if="errors?.unexpected">
     <ul>
-      <li v-for="(message, index) in errors.unexpected" :key="index" >
+      <li v-for="(message, index) in errors.unexpected" :key="index">
         {{ message }}
       </li>
     </ul>
   </div>
 
-  <form @submit.prevent="submit">
-
-    <div>
-      <ul>
-        <li v-for="(message, index) in errors?.firstname" :key="index">
-          {{ message }}
-        </li>
-      </ul>
-      <label for="firstname">Prénom :</label>
-      <input type="text" id="firstname" name="firstname" v-model="firstname">
-    </div>
-
-    <div>
-      <ul>
-        <li v-for="(message, index) in errors?.lastname" :key="index">
-          {{ message }}
-        </li>
-      </ul>
-      <label for="lastname">Nom :</label>
-      <input type="text" id="lastname" name="lastname" v-model="lastname">
-    </div>
-
-    <div>
-      <ul>
-        <li v-for="(message, index) in errors?.email" :key="index">
-          {{ message }}
-        </li>
-      </ul>
-      <label for="email">Adresse email :</label>
-      <input id="email" name="email" v-model="email">
-    </div>
-
-    <div>
-      <ul>
-        <li v-for="(message, index) in errors?.plainPassword" :key="index">
-          {{ message }}
-        </li>
-      </ul>
-      <label for="password">Mot de passe :</label>
-      <input type="password" id="password" name="password" v-model="password">
-    </div>
-
-    <div>
-      <label for="password_confirmation">Confirmer le mot de passe :</label>
-      <input type="password" id="password_confirmation" name="password_confirmation" v-model="passwordConfirmation">
-    </div>
-
-    <div>
-      <button type="submit">Valider</button>
-    </div>
-
-  </form>
-  <nav>
-    <NuxtLink to="/forgot-password">Mot de passe oublié</NuxtLink>
-  </nav>
+  <BaseForm @submit="submit">
+    <FormInput id="firstname" type="text" name="firstname" v-model="firstname" label="Prénom :"
+               :errors="errors?.firstname"></FormInput>
+    <FormInput id="lastname" type="text" name="lastname" v-model="lastname" label="Nom :"
+               :errors="errors?.lastname"></FormInput>
+    <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email :"
+               :errors="errors?.email"></FormInput>
+    <FormInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"
+               :errors="errors?.plainPassword"></FormInput>
+    <FormInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation"
+               label="Confirmer le mot de passe :"></FormInput>
+    <FormButton>Valider</FormButton>
+  </BaseForm>
 
   <div v-if="success">
     <p>L'équipe Trouptrip te remercie pour ton inscription !</p>
     <p>Un email vient d'être envoyé à l'adresse renseignée pour finaliser ton inscription.</p>
   </div>
+
 </template>
 
 <style scoped>

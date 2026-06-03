@@ -43,22 +43,13 @@ export default defineComponent({
   <Header></Header>
   <h1>Se connecter</h1>
 
-  <form @submit.prevent="submit">
+  <BaseForm @submit="submit">
 
-    <div>
-      <label for="email">Adresse email :</label>
-      <input type="email" id="email" name="email" v-model="email">
-    </div>
+    <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email :"></FormInput>
+    <FormInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"></FormInput>
+    <FormButton>Se connecter</FormButton>
 
-    <div>
-      <label for="password">Mot de passe :</label>
-      <input type="password" id="password" name="password" v-model="password">
-    </div>
-
-    <div>
-      <button type="submit">Se connecter</button>
-    </div>
-  </form>
+  </BaseForm>
   <nav>
     <NuxtLink to="/forgot-password">Mot de passe oublié</NuxtLink>
   </nav>
