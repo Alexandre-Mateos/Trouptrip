@@ -44,14 +44,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <Header></Header>
   <h1>Réinitialisation de votre mot de passe</h1>
     <BaseForm @submit="submit">
 
-      <FormInput id="email" type="email" name="email" v-model="email" label="Email :"></FormInput>
+      <BaseInput id="email" type="email" name="email" v-model="email" label="Email :"></BaseInput>
       <OtpInputFields v-model="token" :length="6"></OtpInputFields>
-      <FormInput id="password" type="password" name="password" v-model="password" label="Nouveau mot de passe :"></FormInput>
-      <FormInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation" label="Confirmer le nouveau mot de passe :"></FormInput>
+      <BaseInput id="password" type="password" name="password" v-model="password" label="Nouveau mot de passe :"></BaseInput>
+      <BaseInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation" label="Confirmer le nouveau mot de passe :"></BaseInput>
+      <BaseButton>Valider</BaseButton>
 
     </BaseForm>
 

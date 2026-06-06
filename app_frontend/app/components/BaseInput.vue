@@ -30,7 +30,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col gap-1">
     <label :for="$attrs.id as string">{{ label }}</label>
 
     <ul v-if="errors && errors.length > 0" >
@@ -43,6 +43,7 @@ export default defineComponent({
         v-bind="$attrs"
         :value="modelValue"
         @input="emitValue($event)"
+        class="rounded-md"
     >
   </div>
 </template>

@@ -33,11 +33,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <Header></Header>
   <h1>Mot de passe oublié ?</h1>
 
   <BaseForm @submit="submit">
-    <FormInput id="email" type="email" name="email" v-model="email" label="Email :"></FormInput>
+    <BaseInput id="email" type="email" name="email" v-model="email" label="Email :"></BaseInput>
+    <BaseButton>Envoyer</BaseButton>
   </BaseForm>
 
   <div v-if="errorMessage">

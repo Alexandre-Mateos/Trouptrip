@@ -40,14 +40,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <Header></Header>
   <h1>Se connecter</h1>
 
   <BaseForm @submit="submit">
 
-    <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email :"></FormInput>
-    <FormInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"></FormInput>
-    <FormButton>Se connecter</FormButton>
+    <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email :"></BaseInput>
+    <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"></BaseInput>
+    <BaseButton>Valider</BaseButton>
 
   </BaseForm>
   <nav>

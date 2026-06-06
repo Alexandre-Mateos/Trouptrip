@@ -64,7 +64,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <Header></Header>
   <h1>Créer un compte</h1>
 
   <div v-if="errors?.unexpected">
@@ -76,17 +75,17 @@ export default defineComponent({
   </div>
 
   <BaseForm @submit="submit">
-    <FormInput id="firstname" type="text" name="firstname" v-model="firstname" label="Prénom :"
-               :errors="errors?.firstname"></FormInput>
-    <FormInput id="lastname" type="text" name="lastname" v-model="lastname" label="Nom :"
-               :errors="errors?.lastname"></FormInput>
-    <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email :"
-               :errors="errors?.email"></FormInput>
-    <FormInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"
-               :errors="errors?.plainPassword"></FormInput>
-    <FormInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation"
-               label="Confirmer le mot de passe :"></FormInput>
-    <FormButton>Valider</FormButton>
+    <BaseInput id="firstname" type="text" name="firstname" v-model="firstname" label="Prénom"
+               :errors="errors?.firstname"></BaseInput>
+    <BaseInput id="lastname" type="text" name="lastname" v-model="lastname" label="Nom"
+               :errors="errors?.lastname"></BaseInput>
+    <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"
+               :errors="errors?.email"></BaseInput>
+    <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"
+               :errors="errors?.plainPassword"></BaseInput>
+    <BaseInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation"
+               label="Confirmer le mot de passe"></BaseInput>
+    <BaseButton>Valider</BaseButton>
   </BaseForm>
 
   <div v-if="success">

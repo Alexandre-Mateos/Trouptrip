@@ -1,0 +1,12 @@
+@import url('fonts.css');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+:root {
+    --color-bg: #ECF4E8;
+    --color-surface: #CBF3BB;
+    --color-accent: #0E9AA7;
+    --color-text: #0F3A3A;
+}

@@ -55,9 +55,9 @@ export default defineComponent({
 
   <div v-else>
     <form @submit.prevent="verifyEmail">
-      <FormInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></FormInput>
+      <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></BaseInput>
       <OtpInputFields v-model="token" :length="6"/>
-      <FormButton type="submit">Vérifier mon email</FormButton>
+      <BaseButton type="submit">Vérifier mon email</BaseButton>
     </form>
   </div>
 </template>
