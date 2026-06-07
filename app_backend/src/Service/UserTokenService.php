@@ -10,6 +10,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 readonly class UserTokenService
 {
+    private const TOKEN_LENGTH = 6;
+    private const TOKEN_MIN_LIMIT = 0;
+    private const TOKEN_NUMERIC_BASE = 10;
+
     public function __construct(
         private UserTokenRepository $userTokenRepository,
         private EntityManagerInterface $em
@@ -21,7 +25,7 @@ readonly class UserTokenService
     {
         $this->revokeExistingValidToken($type, $user);
 
-        $rawToken = bin2hex(random_bytes(32));
+        $rawToken = $this->generateRawToken();
 
         $userToken = new UserToken()
             ->setRequester($user)
@@ -30,10 +34,18 @@ readonly class UserTokenService
             ->setType($type->value)
             ->setExpiresAt(new \DateTimeImmutable()->modify($type->getExpirationTime()));
 
+
         $this->em->persist($userToken);
         $this->em->flush();
 
         return $rawToken;
+    }
+
+    private function generateRawToken(): string
+    {
+        $max = (pow(self::TOKEN_NUMERIC_BASE, self::TOKEN_LENGTH)-1);
+        $randomNumber = random_int(self::TOKEN_MIN_LIMIT, $max);
+        return str_pad($randomNumber, self::TOKEN_LENGTH, '0', STR_PAD_LEFT);
     }
 
     private function revokeExistingValidToken(UserTokenTypeEnum $type, User $user): void

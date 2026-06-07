@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ResetPasswordInputDTO
 {
     public function __construct(
+        public string $email,
         public string $token,
 
         #[Assert\NotBlank]

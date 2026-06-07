@@ -23,10 +23,10 @@ readonly class ResetPasswordProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         $hashedToken = hash('sha256', $data->token);
-        $userToken = $this->userTokenRepository->findValidTokenByType($hashedToken, UserTokenTypeEnum::RESET_PASSWORD);
+        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail($hashedToken, UserTokenTypeEnum::RESET_PASSWORD, $data->email);
 
         if (!$userToken) {
-            throw new TokenExpiredException("Le jeton de récupération est invalide ou a expiré.");
+            throw new TokenExpiredException();
         }
 
         $user = $userToken->getRequester();

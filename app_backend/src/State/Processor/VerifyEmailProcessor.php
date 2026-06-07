@@ -11,7 +11,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
-readonly class CheckEmailProcessor implements ProcessorInterface
+readonly class VerifyEmailProcessor implements ProcessorInterface
 {
     public function __construct(
         private UserTokenRepository $userTokenRepository,
@@ -23,7 +23,7 @@ readonly class CheckEmailProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $userToken = $this->userTokenRepository->findValidTokenByType(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL);
+        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL, $data->email);
         if(!$userToken){
             throw new TokenExpiredException();
         }
@@ -43,8 +43,10 @@ readonly class CheckEmailProcessor implements ProcessorInterface
             $this->em->commit();
 
         } catch (UniqueConstraintViolationException $e) {
+            $this->em->rollback();
             throw new ConflictHttpException("Cette ressource existe déjà.");
         } catch (\Exception $e) {
+            $this->em->rollback();
             throw new \RuntimeException("Erreur technique imprévue.");
         }
     }

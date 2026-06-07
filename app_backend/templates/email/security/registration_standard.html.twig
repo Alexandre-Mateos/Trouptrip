@@ -21,14 +21,12 @@
             Avant de te laisser planifier tes futurs voyages entre amis, nous avons juste besoin
             de vérifier qu'il s'agit bien de ton adresse email.
         </p>
-        <p>
-            Juste un 'click' pour activer ton compte et profiter pleinement de trouptrip !
-        </p>
-        <div>
-            <a href="{{url }}">
-                Vérifier mon adresse email
-            </a>
-        </div>
+
+        {% include 'email/component/email_security_cta.html.twig' with {
+            'url': url,
+            'rawToken': rawToken,
+            'buttonLabel': buttonLabel
+        } %}
 
     </div>
 

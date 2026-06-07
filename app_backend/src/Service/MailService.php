@@ -21,7 +21,7 @@ readonly class MailService
     public function sendEmail(SecurityEmailTypeEnum $type, User $user, string $rawToken): void
     {
         $baseUrl = $this->parameterBag->get('frontend_url');
-        $url = $baseUrl . $this->getAssociatedFrontendBaseUrl($type) . $rawToken;
+        $url = $baseUrl . $this->getAssociatedFrontendBaseUrl($type);
 
         $email = new TemplatedEmail()
             ->from(self::EMAIL_FROM)
@@ -30,7 +30,9 @@ readonly class MailService
             ->htmlTemplate($this->getAssociatedMailTemplate($type))
             ->context([
                 'firstname' => $user->getFirstname(),
-                'url' => $url
+                'url' => $url,
+                'rawToken' => $rawToken,
+                'buttonLabel' => $this->getActionButtonLabel($type)
             ]);
 
         $this->mailer->send($email);
@@ -60,8 +62,16 @@ readonly class MailService
     private function getAssociatedFrontendBaseUrl(SecurityEmailTypeEnum $type): string
     {
         return match($type){
-            SecurityEmailTypeEnum::REGISTRATION_STANDARD, SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER  => '/verify-mail?token=',
-            SecurityEmailTypeEnum::RESET_PASSWORD_STANDARD, SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST => '/reset-password?token='
+            SecurityEmailTypeEnum::REGISTRATION_STANDARD, SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER  => '/verify-email',
+            SecurityEmailTypeEnum::RESET_PASSWORD_STANDARD, SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST => '/reset-password'
+        };
+    }
+
+    private function getActionButtonLabel(SecurityEmailTypeEnum $type): string
+    {
+        return match($type){
+            SecurityEmailTypeEnum::REGISTRATION_STANDARD, SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER  => 'Vérifier mon email',
+            SecurityEmailTypeEnum::RESET_PASSWORD_STANDARD, SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST => 'Réinitialiser mon mot de passe'
         };
     }
 }
