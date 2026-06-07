@@ -34,7 +34,9 @@ export default defineComponent({
     <label :for="$attrs.id as string">{{ label }}</label>
 
     <ul v-if="errors && errors.length > 0" >
-      <li v-for="(error, index) in errors" :key="index" >
+      <li v-for="(error, index) in errors" :key="index"
+      class="text-xs text-red-800"
+      >
         {{ error }}
       </li>
     </ul>
@@ -44,9 +46,13 @@ export default defineComponent({
         :value="modelValue"
         @input="emitValue($event)"
         class="rounded-md"
+        :class="{'border-2 border-red-800': errors && errors.length > 0}"
     >
   </div>
 </template>
 
 <style scoped>
+input{
+  background-color: var(--color-bg);
+}
 </style>

@@ -81,24 +81,29 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <label>Code :</label>
-    <input
-        v-for="(digit, index) in length"
-        :key="index"
-        type="text"
-        inputmode="numeric"
-        pattern="[0-9]*"
-        maxlength="1"
-        ref="inputs"
-        v-model="fieldValues[index]"
-        @input="handleInput(index)"
-        @keyup.delete="handleDelete(index)"
-        @paste="handlePaste($event)"
-    />
+  <div class="flex flex-col gap-1">
+    <label>Code</label>
+    <div class="flex flex-row justify-between">
+      <input
+          v-for="(digit, index) in length"
+          :key="index"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="1"
+          ref="inputs"
+          v-model="fieldValues[index]"
+          @input="handleInput(index)"
+          @keyup.delete="handleDelete(index)"
+          @paste="handlePaste($event)"
+          class="rounded-md w-12 text-center"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-
+input {
+  background-color: var(--color-bg);
+}
 </style>

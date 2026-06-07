@@ -48,49 +48,64 @@ export default defineComponent({
               }
             }
         )
-        this.email = "";
-        this.firstname = "";
-        this.lastname = "";
-        this.password = "";
-        this.success = true;
 
+        this.success = true;
+        this.redirectToVerifyEmail();
 
       } catch (error: any) {
         this.handleErrors(error);
       }
+    },
+    redirectToVerifyEmail(): void{
+      setTimeout(() => {
+        navigateTo(
+            {path: '/verify-email',
+            query : {
+              email: this.email
+            }}
+        );
+      }, 6000);
     }
   }
 })
 </script>
 
 <template>
-  <h1>Créer un compte</h1>
-
-  <div v-if="errors?.unexpected">
-    <ul>
-      <li v-for="(message, index) in errors.unexpected" :key="index">
-        {{ message }}
-      </li>
-    </ul>
-  </div>
-
-  <BaseForm @submit="submit">
-    <BaseInput id="firstname" type="text" name="firstname" v-model="firstname" label="Prénom"
-               :errors="errors?.firstname"></BaseInput>
-    <BaseInput id="lastname" type="text" name="lastname" v-model="lastname" label="Nom"
-               :errors="errors?.lastname"></BaseInput>
-    <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"
-               :errors="errors?.email"></BaseInput>
-    <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"
-               :errors="errors?.plainPassword"></BaseInput>
-    <BaseInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation"
-               label="Confirmer le mot de passe"></BaseInput>
-    <BaseButton>Valider</BaseButton>
-  </BaseForm>
 
   <div v-if="success">
-    <p>L'équipe Trouptrip te remercie pour ton inscription !</p>
-    <p>Un email vient d'être envoyé à l'adresse renseignée pour finaliser ton inscription.</p>
+    <p>Inscription réussie !</p>
+    <p>Un email de confirmation vous a été envoyé pour finaliser votre inscription.</p>
+    <p>Vous allez être redirigé vers la page de vérification...</p>
+  </div>
+
+  <div v-else>
+
+    <BaseForm @submit="submit">
+
+      <h1 class="text-2xl text-center">Créer un compte</h1>
+
+      <BaseInput id="firstname" type="text" name="firstname" v-model="firstname" label="Prénom"
+                 :errors="errors?.firstname"></BaseInput>
+      <BaseInput id="lastname" type="text" name="lastname" v-model="lastname" label="Nom"
+                 :errors="errors?.lastname"></BaseInput>
+      <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"
+                 :errors="errors?.email"></BaseInput>
+      <BaseInput id="password" type="password" name="password" autocomplete="new-password" v-model="password"
+                 label="Mot de passe"
+                 :errors="errors?.plainPassword"></BaseInput>
+      <BaseInput id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password"
+                 v-model="passwordConfirmation"
+                 label="Confirmer le mot de passe"></BaseInput>
+      <BaseButton>Valider</BaseButton>
+
+      <div v-if="errors?.unexpected">
+        <ul>
+          <li v-for="(message, index) in errors.unexpected" :key="index">
+            {{ message }}
+          </li>
+        </ul>
+      </div>
+    </BaseForm>
   </div>
 
 </template>

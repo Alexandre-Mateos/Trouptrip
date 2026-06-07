@@ -39,8 +39,17 @@ export default defineComponent({
       setTimeout(() => {
         navigateTo('/login');
       }, 4000);
+    },
+    handleEmailFromUrl(): void{
+      const email = this.$route.query.email as string;
+      if(email){
+        this.email = email;
+      }
     }
   },
+  mounted(): any {
+    this.handleEmailFromUrl();
+  }
 })
 </script>
 
@@ -52,13 +61,12 @@ export default defineComponent({
   <div v-if="success">
     <p>Votre email a pu être vérifié avec succès, vous allez être redirigé vers la page de connexion...</p>
   </div>
-
   <div v-else>
-    <form @submit.prevent="verifyEmail">
+    <BaseForm @submit.prevent="verifyEmail">
       <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></BaseInput>
       <OtpInputFields v-model="token" :length="6"/>
       <BaseButton type="submit">Vérifier mon email</BaseButton>
-    </form>
+    </BaseForm>
   </div>
 </template>
 

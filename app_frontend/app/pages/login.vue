@@ -27,11 +27,14 @@ export default defineComponent({
               }
             }
         )
+
+        //handle redirection to user personnal dashboard
+
       } catch (error: any) {
         if (error.status === 401) {
           this.errorMessage = "Votre compte n'est pas vérifié ou vos identifiants sont incorrects.";
         } else {
-          this.errorMessage = "Une erreur est survenue.";
+          this.errorMessage = "Une erreur est inattendue survenue. Veuillez réessayer";
         }
       }
     }
@@ -40,24 +43,23 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1>Se connecter</h1>
-
   <BaseForm @submit="submit">
-
-    <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email :"></BaseInput>
-    <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe :"></BaseInput>
+    <h1 class="text-2xl text-center">Se connecter</h1>
+    <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"></BaseInput>
+    <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"></BaseInput>
     <BaseButton>Valider</BaseButton>
-
+    <div v-if="errorMessage" class="text-center text-red-800">
+      {{ errorMessage }}
+    </div>
+    <nav>
+      <NuxtLink :to="{path: '/forgot-password', query: {email: email}}">Mot de passe oublié</NuxtLink>
+    </nav>
   </BaseForm>
-  <nav>
-    <NuxtLink to="/forgot-password">Mot de passe oublié</NuxtLink>
-  </nav>
-
-  <div v-if="errorMessage">
-    {{ errorMessage }}
-  </div>
 </template>
 
 <style scoped>
-
+nav{
+  color: var(--color-accent);
+  text-decoration: underline;
+}
 </style>
