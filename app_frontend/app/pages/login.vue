@@ -27,7 +27,6 @@ export default defineComponent({
               }
             }
         )
-
         //handle redirection to user personnal dashboard
 
       } catch (error: any) {

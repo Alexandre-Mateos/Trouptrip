@@ -21,17 +21,15 @@ export default defineComponent({
           method: 'POST',
           body: {
             email: this.email,
-            token: this.token // Contient les 6 chiffres synchronisés
+            token: this.token
           }
         });
 
         this.success = true;
-        // On lance la redirection automatique maintenant que c'est un succès
         this.redirectToLogin();
 
       } catch (err: any) {
-        // Correction ici : on assigne à la variable de data 'this.errorMessage'
-        // pour que le template HTML puisse l'afficher
+
         this.errorMessage = 'Une erreur inattendue est survenue, veuillez réessayer';
       }
     },
@@ -62,7 +60,7 @@ export default defineComponent({
     <p>Votre email a pu être vérifié avec succès, vous allez être redirigé vers la page de connexion...</p>
   </div>
   <div v-else>
-    <BaseForm @submit.prevent="verifyEmail">
+    <BaseForm @submit="verifyEmail">
       <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></BaseInput>
       <OtpInputFields v-model="token" :length="6"/>
       <BaseButton type="submit">Vérifier mon email</BaseButton>

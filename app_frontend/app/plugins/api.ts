@@ -3,10 +3,25 @@ export default defineNuxtPlugin((nuxtApp) => {
     const api = $fetch.create({
         baseURL: config.public.apiBaseUrl,
         onRequest({ options }) {
-            const headers = new Headers(options.headers)
-            headers.set('Content-Type', 'application/ld+json')
-            headers.set('Accept', 'application/ld+json')
-            options.headers = headers
+            const headers = new Headers(options.headers);
+            headers.set('Content-Type', 'application/ld+json');
+            headers.set('Accept', 'application/ld+json');
+            options.headers = headers;
+
+            // inject le token stocké en session à chaque requete
+            const token = sessionStorage.getItem('token');
+            if(token){
+                options.headers.set('Authorization', `Bearer ${token}`)
+            }
+
+        },
+        onResponse({response}){
+            if(response.url.includes('login_check')){
+                const token = response._data?.token
+                if(token){
+                    sessionStorage.setItem('token', token)
+                }
+            }
         },
         async onResponseError({ response }) {
             if (response.status === 401) {
