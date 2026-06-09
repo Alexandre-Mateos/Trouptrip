@@ -11,22 +11,23 @@ export default defineNuxtPlugin((nuxtApp) => {
             // inject le token stocké en session à chaque requete
             const token = sessionStorage.getItem('token');
             if(token){
-                options.headers.set('Authorization', `Bearer ${token}`)
+                options.headers.set('Authorization', `Bearer ${token}`);
             }
 
         },
         onResponse({response}){
             if(response.url.includes('login_check')){
-                const token = response._data?.token
+                const token = response._data?.token;
                 if(token){
-                    sessionStorage.setItem('token', token)
+                    sessionStorage.setItem('token', token);
                 }
             }
         },
         async onResponseError({ response }) {
             if (response.status === 401) {
+                sessionStorage.removeItem('token');
                 // Le runWithContext évite les crashs de contexte Nuxt en asynchrone
-                await nuxtApp.runWithContext(() => navigateTo('/login'))
+                await nuxtApp.runWithContext(() => navigateTo('/login'));
             }
         }
     })

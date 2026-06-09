@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\UserResource\OutputUserDTO;
 use App\ApiResource\UserResource\RegisterUserDTO;
 use App\Repository\UserRepository;
 use App\State\Processor\RegisterUserProcessor;
+use App\State\Provider\UserMeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +23,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
             input: RegisterUserDTO::class,
             output: OutputUserDTO::class,
             processor: RegisterUserProcessor::class
+        ),
+        new Get(
+            uriTemplate: '/me',
+            output: OutputUserDTO::class,
+            provider: UserMeProvider::class
         )
     ]
 )]

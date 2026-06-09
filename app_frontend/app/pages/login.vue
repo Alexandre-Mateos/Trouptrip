@@ -27,7 +27,8 @@ export default defineComponent({
               }
             }
         )
-        //handle redirection to user personnal dashboard
+
+        navigateTo('/home');
 
       } catch (error: any) {
         if (error.status === 401) {
