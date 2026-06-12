@@ -47,7 +47,7 @@ export default defineComponent({
     <h1 class="text-2xl text-center">Se connecter</h1>
     <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"></BaseInput>
     <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"></BaseInput>
-    <BaseButton>Valider</BaseButton>
+    <BaseButton type="submit">Valider</BaseButton>
     <div v-if="errorMessage" class="text-center text-red-800">
       {{ errorMessage }}
     </div>

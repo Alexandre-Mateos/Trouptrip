@@ -47,7 +47,7 @@ export default defineComponent({
 
   <BaseForm @submit="submit">
     <BaseInput id="email" type="email" name="email" v-model="email" label="Email"></BaseInput>
-    <BaseButton>Envoyer</BaseButton>
+    <BaseButton type="submit">Envoyer</BaseButton>
   </BaseForm>
 
   <div v-if="errorMessage">
