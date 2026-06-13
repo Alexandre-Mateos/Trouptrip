@@ -15,9 +15,9 @@ final class BasicStory extends Story
         $user = UserFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
             'email' => 'alexandre.mateos@gmail.com',
-            'firstname' => 'Jean',
+            'firstname' => 'Alexandre',
             'isVerified' => true,
-            'lastname' => 'Martin',
+            'lastname' => 'Mateos',
             'password' => password_hash('alexandre', PASSWORD_DEFAULT),
             'roles' => ['ROLE_USER'],
         ]);

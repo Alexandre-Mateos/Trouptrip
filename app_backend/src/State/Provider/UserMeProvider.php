@@ -11,10 +11,9 @@ use Symfony\Bundle\SecurityBundle\Security;
 readonly class UserMeProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly Security $security
+        private Security $security
     )
     {
-
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null

@@ -3,33 +3,54 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Enum\ParticipationStatusEnum;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => 'trip:collection']
+        ),
+        new Get(
+            normalizationContext: ['groups' => 'trip:item'],
+            security: "is_granted('TRIP_READ', object)"
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 class Trip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['trip:collection', 'trip:item'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['trip:item'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column]
+    #[Groups(['trip:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'trips')]
@@ -352,5 +373,15 @@ class Trip
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function hasAcceptedParticipant(User $user): bool
+    {
+        foreach ($this->participations as $participation) {
+            if ($user === $participation->getParticipant() && ParticipationStatusEnum::ACCEPTED === $participation->getStatus()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
