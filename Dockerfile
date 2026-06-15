@@ -57,28 +57,28 @@ RUN chmod +x /user_entry_point.sh && /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 USER ${USER_ID}:${GROUP_ID}
 CMD ["php-fpm", "-F"]
 
-FROM node:22 as node-front
+FROM node:22 as node-base
 
-#user and group that will be used
 ARG USER_ID=1001
 ARG GROUP_ID=1001
 
-## --- synchriniser l'utilistateur ---
 COPY user_entry_point.sh /user_entry_point.sh
 RUN chmod +x /user_entry_point.sh
 RUN /user_entry_point.sh ${USER_ID} ${GROUP_ID}
 
-## défninir le dossier de destination puis copier le code app_frontend dans le dossier du container
 WORKDIR /var/www/front
-COPY ./app_frontend /var/www/front
-
-# installe ET build (indispensable pour générer le output)
-RUN npm install && npm run build
-
-#switch to the good user
 USER ${USER_ID}:${GROUP_ID}
 
-# Commande de prod par défaut (est écrasé par la commande du docker-compose en dev)
+FROM node-base as node-front
+
+USER root
+COPY ./app_frontend /var/www/front
+RUN npm install && npm run build
+
+ARG USER_ID=1001
+ARG GROUP_ID=1001
+USER ${USER_ID}:${GROUP_ID}
+
 CMD ["node", ".output/server/index.mjs"]
 
 FROM nginx:alpine as nginx-service

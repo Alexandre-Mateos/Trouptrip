@@ -23,8 +23,9 @@ export const useTripsStore = defineStore('trips', {
                 tripCollection.member.forEach((trip)=>{
                    this.trips.set(trip.id, trip)
                 });
+                console.log(tripCollection);
             } catch (error: any) {
-                console.log(error);
+                this.trips.clear();
             } finally {
                 this.fetching = false;
             }
