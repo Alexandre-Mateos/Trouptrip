@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, shallowRef } from 'vue'
-import { ScheduleXCalendar } from '@schedule-x/vue'
+import {onMounted, shallowRef} from 'vue'
+import {ScheduleXCalendar} from '@schedule-x/vue'
 import {
   createCalendar,
   createViewDay,
@@ -20,46 +20,27 @@ import 'temporal-polyfill/global'
 const calendarApp = shallowRef<any>(null)
 
 onMounted(async () => {
-  await tripsStore.fetchTrips()
+  await tripsStore.fetchTrips();
 
   calendarApp.value = createCalendar({
-    selectedDate: Temporal.PlainDate.from('2023-12-19'),
+    selectedDate: Temporal.Now.plainDateISO(),
     views: [
-      createViewDay(),
-      createViewWeekAgenda(),
-      createViewWeek(),
       createViewMonthGrid(),
       createViewMonthAgenda(),
+      createViewWeek(),
+      createViewWeekAgenda()
     ],
-    events: [
-      {
-        id: 1,
-        title: 'Event 1',
-        start: Temporal.PlainDate.from('2023-12-19'),
-        end: Temporal.PlainDate.from('2023-12-19'),
-      },
-      {
-        id: 2,
-        title: 'Event 2',
-        start: Temporal.ZonedDateTime.from('2023-12-20T12:00:00+09:00[Asia/Tokyo]'),
-        end: Temporal.ZonedDateTime.from('2023-12-20T13:00:00+09:00[Asia/Tokyo]'),
-      },
-    ],
+    events: tripsStore.calendarDatas
   })
 })
 </script>
 
 <template>
-  <p v-if="userStore.user">Bonjour {{userStore.user.firstname}}</p>
-  <ul>
-    <li v-for="(trip, index) in tripsStore.tripsList" :key="index">
-      {{ trip.title }}
-    </li>
-  </ul>
+  <p v-if="userStore.user">Bonjour {{ userStore.user.firstname }}</p>
 
-  <div class="calendar-wrapper">
+  <div>
     <ClientOnly>
-      <ScheduleXCalendar v-if="calendarApp" :calendar-app="calendarApp" />
+      <ScheduleXCalendar v-if="calendarApp" :calendar-app="calendarApp"/>
     </ClientOnly>
   </div>
 </template>
