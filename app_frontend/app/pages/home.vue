@@ -16,11 +16,12 @@ const userStore = useUserStore()
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 
-// Le shallowRef est indispensable pour que le v-if du template s'active
 const calendarApp = shallowRef<any>(null)
 
 onMounted(async () => {
   await tripsStore.fetchTrips();
+
+  const monthGrid = createViewMonthGrid()
 
   calendarApp.value = createCalendar({
     selectedDate: Temporal.Now.plainDateISO(),
@@ -30,6 +31,7 @@ onMounted(async () => {
       createViewWeek(),
       createViewWeekAgenda()
     ],
+    defaultView: monthGrid.name,
     events: tripsStore.calendarDatas
   })
 })
@@ -40,11 +42,15 @@ onMounted(async () => {
 
   <div>
     <ClientOnly>
-      <ScheduleXCalendar v-if="calendarApp" :calendar-app="calendarApp"/>
+      <ScheduleXCalendar class="calendar" v-if="calendarApp" :calendar-app="calendarApp"/>
     </ClientOnly>
   </div>
 </template>
 
 <style scoped>
-
+.calendar {
+  width: 100%;
+  height: 800px;
+  max-height: 90vh;
+}
 </style>

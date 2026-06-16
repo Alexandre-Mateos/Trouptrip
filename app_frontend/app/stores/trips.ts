@@ -1,7 +1,7 @@
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {ITripList} from "~/interfaces/i-tripList";
 import type {ITrip} from "~/interfaces/i-trip";
-import 'temporal-polyfill/global'
+import 'temporal-polyfill/global';
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -9,19 +9,13 @@ export const useTripsStore = defineStore('trips', {
         fetching: false
     }),
     getters: {
-        tripsList: (state) => Array.from(state.trips.values()),
         calendarDatas (state) {
             const calendarDatas = Array.from(state.trips.values());
-            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
             return calendarDatas.map((trip) => {
 
-                const startDateTime = Temporal.Instant.from(trip.startDate)
-                    .toZonedDateTimeISO(userTimeZone)
-                    .toPlainDate();
-
-                const endDateTime = Temporal.Instant.from(trip.endDate)
-                    .toZonedDateTimeISO(userTimeZone)
-                    .toPlainDate();
+                const startDateTime = getFormatedDate(trip.startDate);
+                const endDateTime = getFormatedDate(trip.endDate);
 
                 return {
                     id: trip.id,
@@ -30,7 +24,8 @@ export const useTripsStore = defineStore('trips', {
                     end: endDateTime
                 }
             });
-        }
+        },
+        tripList: (state) => Array.from(state.trips.values()),
     },
     actions: {
         async fetchTrips() {
@@ -50,6 +45,14 @@ export const useTripsStore = defineStore('trips', {
             } finally {
                 this.fetching = false;
             }
-        },
+        }
     }
 })
+
+function getFormatedDate(rawDate: string){
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    return  Temporal.Instant.from(rawDate)
+        .toZonedDateTimeISO(userTimeZone)
+        .toPlainDate();
+}

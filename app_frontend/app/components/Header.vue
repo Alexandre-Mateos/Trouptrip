@@ -10,10 +10,11 @@ export default defineComponent({
       unLoggedUserLinks: [
         {to: '/', label: 'Accueil'},
         {to: '/login', label: 'Se connecter'},
-        {to: '/register', label: 'Créer un compte'}
+        {to: '/register', label: 'Créer un compte'},
       ],
       loggedUserLinks: [
-        {to: '/home', label: 'Mon espace'}
+        {to: '/home', label: 'Mon espace'},
+        {to: '/trips', label: 'Mes séjours'}
       ]
     }
   },
