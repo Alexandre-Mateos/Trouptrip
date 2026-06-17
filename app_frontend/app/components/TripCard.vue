@@ -24,7 +24,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="card bg-primary text-primary-content max-w-96">
+  <div class="card bg-primary text-primary-content">
     <div class="card-body">
       <h2 class="card-title">{{trip.title}}</h2>
       <p>Du {{getFormatedDate(trip.startDate)}} au {{getFormatedDate(trip.endDate)}}</p>
