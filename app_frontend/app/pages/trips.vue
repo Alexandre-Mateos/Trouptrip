@@ -12,68 +12,69 @@ export default defineComponent({
     }
   },
   methods: {
-   getScreenSize(){
-     this.windowWidth = window.innerWidth;
-   }
-  },
-  computed: {
-    isDesktop() {
-      const mobilWidth = 768;
-      return this.windowWidth > mobilWidth;
-    },
-    isTripViewVisible(){
-      if(this.route.params.id){
-        return true;
-      }
-      return false;
+    getScreenSize() {
+      this.windowWidth = window.innerWidth;
     }
   },
-  async mounted() {
-    await this.tripStore.fetchTrips();
-    window.addEventListener('resize', () => {
-      this.getScreenSize();
-    })
+  computed: {
+    isDesktop(): boolean {
+      return this.windowWidth > 768;
+    },
+    isTripViewVisible(): boolean {
+      return !!this.route.params.id;
+    },
+    trips() {
+      return this.tripStore.tripList;
+    }
+  },
+  mounted() {
+    this.tripStore.fetchTrips();
+    window.addEventListener('resize', this.getScreenSize);
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.getScreenSize);
   }
-
-})
+});
 </script>
 
 <template>
   <p>Page des séjours</p>
   <div :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
+
     <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
-      <template v-for="(trip, index) in tripStore.tripList">
+      <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
         <TripCard :trip="trip"></TripCard>
-      </template>
+      </NuxtLink>
     </div>
+
     <div class="tripView" :class="{'hidden': !isTripViewVisible && !isDesktop}">
       <NuxtPage/>
     </div>
-</div>
-
+  </div>
 </template>
 
 <style scoped>
 
-.trip-container{
+.trip-container {
   min-height: 100vh;
 }
 
-.mobilStyle{
-  .tripList{
+.mobilStyle {
+  .tripList {
     max-width: 450px;
   }
 }
 
-.desktopStyle{
+.desktopStyle {
   display: flex;
 
-  .tripList{
+  .tripList {
     flex: 0 0 23%;
     min-width: 300px;
     max-width: 450px;
   }
-  .tripView{
+
+  .tripView {
     flex-grow: 1;
   }
 }
