@@ -9,6 +9,20 @@ export default defineComponent({
     return {
       id: null as number | null,
       tripStore: useTripsStore(),
+      navTab: [
+        {key: 'my-trip', label: 'Mon séjour'},
+        {key: 'activities', label: 'Mes activités'},
+        {key: 'tasks', label: 'Mes tâches'}
+      ],
+      activeTabKey: 'my-trip'
+    }
+  },
+  methods: {
+    activateTab(key: string) {
+      this.activeTabKey = key;
+    },
+    isActiveTab(tabId: string) {
+      return this.activeTabKey === tabId;
     }
   },
   mounted() {
@@ -28,16 +42,36 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="trip">
-    <p>{{ trip.title }}</p>
-    <p>{{ trip.description }}</p>
-    <p>Du {{ trip.startDate }} au {{ trip.endDate }}</p>
-  </div>
-  <div v-else>
-    <p>Chargement des infos du séjour</p>
+  <div>
+    <div class="flex gap-2 justify-around">
+      <template v-for="tab in navTab" :key="tab.key">
+        <BaseTab @click="activateTab(tab.key)">{{ tab.label }}</BaseTab>
+      </template>
+    </div>
+
+    <div>
+      <div id="my-trip" :class="{ 'active-tab': isActiveTab('my-trip'), 'inactive-tab': !isActiveTab('my-trip') }">
+        <TripDetailTab></TripDetailTab>
+      </div>
+
+      <div id="activities"
+           :class="{ 'active-tab': isActiveTab('activities'), 'inactive-tab': !isActiveTab('activities') }">
+        <TripActivityTab></TripActivityTab>
+      </div>
+
+      <div id="tasks" :class="{ 'active-tab': isActiveTab('tasks'), 'inactive-tab': !isActiveTab('tasks') }">
+        <TripTaskTab></TripTaskTab>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.active-tab {
+  display: block;
+}
 
+.inactive-tab {
+  display: none;
+}
 </style>
