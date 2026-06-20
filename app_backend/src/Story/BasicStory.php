@@ -2,6 +2,8 @@
 
 namespace App\Story;
 
+use App\Enum\ParticipationStatusEnum;
+use App\Factory\ParticipationFactory;
 use App\Factory\TripFactory;
 use App\Factory\UserFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
@@ -12,9 +14,9 @@ final class BasicStory extends Story
 {
     public function build(): void
     {
-        $user = UserFactory::createOne([
+        $userAlexandre = UserFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-            'email' => 'alexandre.mateos@gmail.com',
+            'email' => 'alexandre.mateos@mail.com',
             'firstname' => 'Alexandre',
             'isVerified' => true,
             'lastname' => 'Mateos',
@@ -85,15 +87,63 @@ final class BasicStory extends Story
             ],
         ];
 
+
+        $paticipantsData = [
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'jean.papon@mail.com',
+                'firstname' => 'Jean',
+                'isVerified' => true,
+                'lastname' => 'Papon',
+                'password' => password_hash('jean', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'camille.dupont@mail.com',
+                'firstname' => 'Camille',
+                'isVerified' => true,
+                'lastname' => 'Dupont',
+                'password' => password_hash('camille', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'paul.tiredon@mail.com',
+                'firstname' => 'Paul',
+                'isVerified' => true,
+                'lastname' => 'Tiredon',
+                'password' => password_hash('paul', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ]
+        ];
+
+        $participants = array_map( function($user){
+            return UserFactory::createOne($user);
+        } ,$paticipantsData);
+
         foreach ($trips as $trip) {
-            TripFactory::createOne([
+
+            $associatedTrip = TripFactory::createOne([
                 'createdAt' => new \DateTimeImmutable(),
-                'owner' => $user,
+                'owner' => $userAlexandre,
                 'title' => $trip['title'],
                 'description' => $trip['description'],
                 'startDate' => new \DateTimeImmutable($trip['start']),
-                'endDate' => new \DateTimeImmutable($trip['end']),
+                'endDate' => new \DateTimeImmutable($trip['end'])
             ]);
+
+            foreach ($participants as $participant) {
+
+                ParticipationFactory::createOne([
+                    'createdAt' => new \DateTimeImmutable('2026-06-14 00:00:00'),
+                    'invitedBy' => $userAlexandre,
+                    'participant' => $participant,
+                    'status' => ParticipationStatusEnum::ACCEPTED,
+                    'trip' => $associatedTrip
+                ]);
+
+            }
         }
     }
 }

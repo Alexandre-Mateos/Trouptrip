@@ -61,6 +61,7 @@ class Trip
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'trip')]
+    #[Groups(['trip:item'])]
     private Collection $participations;
 
     /**

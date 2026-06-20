@@ -6,8 +6,6 @@ export default defineComponent({
   name: "trip",
   data() {
     return {
-      route: useRoute(),
-      tripStore: useTripsStore(),
       windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024
     }
   },
@@ -21,14 +19,18 @@ export default defineComponent({
       return this.windowWidth > 768;
     },
     isTripViewVisible(): boolean {
-      return !!this.route.params.id;
+      if (this.$route.params.id) {
+        return true;
+      } else {
+        return false;
+      }
     },
     trips() {
-      return this.tripStore.tripList;
+      return useTripsStore().tripList;
     }
   },
   mounted() {
-    this.tripStore.fetchTrips();
+    useTripsStore().fetchTrips();
     window.addEventListener('resize', this.getScreenSize);
   },
   unmounted() {

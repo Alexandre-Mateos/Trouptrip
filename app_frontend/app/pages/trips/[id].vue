@@ -8,7 +8,6 @@ export default defineComponent({
   data() {
     return {
       id: null as number | null,
-      tripStore: useTripsStore(),
       navTab: [
         {key: 'my-trip', label: 'Mon séjour'},
         {key: 'activities', label: 'Mes activités'},
@@ -26,23 +25,23 @@ export default defineComponent({
     }
   },
   mounted() {
-    const idParam = useRoute().params.id;
-    if (idParam) {
-      this.id = Number(idParam);
-      this.tripStore.fetchTrip(this.id);
+    const tripId = useRoute().params.id;
+    if (tripId) {
+      this.id = Number(tripId);
+      useTripsStore().fetchTrip(this.id);
     }
   },
   computed: {
     trip() {
       if (this.id === null) return null;
-      return this.tripStore.getTripById(this.id) as IMapTripDetails | undefined;
+      return useTripsStore().getTripById(this.id) as IMapTripDetails | undefined;
     }
   }
 })
 </script>
 
 <template>
-  <div>
+  <div v-if="trip">
     <div class="flex gap-2 justify-around">
       <template v-for="tab in navTab" :key="tab.key">
         <BaseTab @click="activateTab(tab.key)">{{ tab.label }}</BaseTab>
@@ -51,7 +50,7 @@ export default defineComponent({
 
     <div>
       <div id="my-trip" :class="{ 'active-tab': isActiveTab('my-trip'), 'inactive-tab': !isActiveTab('my-trip') }">
-        <TripDetailTab></TripDetailTab>
+        <TripDetailTab :trip="trip"></TripDetailTab>
       </div>
 
       <div id="activities"
@@ -63,6 +62,9 @@ export default defineComponent({
         <TripTaskTab></TripTaskTab>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <p>Chargement des données du voyage</p>
   </div>
 </template>
 

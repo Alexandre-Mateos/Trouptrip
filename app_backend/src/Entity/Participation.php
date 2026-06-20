@@ -2,20 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use App\Enum\ParticipationStatusEnum;
 use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 class Participation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['trip:item'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $status = null;
+    #[ORM\Column(length: 50, enumType: ParticipationStatusEnum::class)]
+    #[Groups(['trip:item'])]
+    private ?ParticipationStatusEnum $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -29,6 +35,7 @@ class Participation
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['trip:item'])]
     private ?User $participant = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentParticipations')]
@@ -40,12 +47,12 @@ class Participation
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?ParticipationStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?ParticipationStatusEnum $status): static
     {
         $this->status = $status;
 

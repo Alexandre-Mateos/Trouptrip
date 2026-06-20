@@ -9,17 +9,6 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    getFormatedDate(rawDate: string){
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const date = Temporal.Instant.from(rawDate)
-          .toZonedDateTimeISO(userTimeZone)
-          .toPlainDate();
-      const dateFormatter = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' });
-      return dateFormatter.format(date);
-    }
-  }
 })
 </script>
 
