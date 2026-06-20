@@ -5,8 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\TripResource\InputTripDTO;
 use App\Enum\ParticipationStatusEnum;
 use App\Repository\TripRepository;
+use App\State\Processor\PostTripProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -16,11 +19,18 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            normalizationContext: ['groups' => 'trip:collection']
+            normalizationContext: ['groups' => 'trip:collection'],
+            security: "is_granted('ROLE_USER')"
         ),
         new Get(
             normalizationContext: ['groups' => 'trip:item'],
             security: "is_granted('TRIP_READ', object)"
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'trip:item'],
+            security: "is_granted('ROLE_USER')",
+            input: InputTripDTO::class,
+            processor: PostTripProcessor::class
         )
     ]
 )]
@@ -34,19 +44,19 @@ class Trip
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['trip:collection', 'trip:item'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['trip:item'])]
+    #[Groups(['trip:item', 'trip:post'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column]
@@ -61,7 +71,7 @@ class Trip
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'trip')]
-    #[Groups(['trip:item'])]
+    #[Groups(['trip:item', 'trip:post'])]
     private Collection $participations;
 
     /**

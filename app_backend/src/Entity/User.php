@@ -7,14 +7,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\UserResource\OutputUserDTO;
 use App\ApiResource\UserResource\RegisterUserDTO;
-use App\Enum\ParticipationStatusEnum;
 use App\Repository\UserRepository;
 use App\State\Processor\RegisterUserProcessor;
 use App\State\Provider\UserMeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,7 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['trip:item'])]
     private ?string $email = null;
 
     /**

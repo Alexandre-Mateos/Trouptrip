@@ -9,3 +9,7 @@ api_platform:
     exception_to_status:
         App\Exception\TokenExpiredException: 400
         App\Exception\VerifiedUserException: 400
+
+    formats:
+        jsonld: [ 'application/ld+json' ]
+        json: [ 'application/json' ]

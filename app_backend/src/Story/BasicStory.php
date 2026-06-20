@@ -24,6 +24,26 @@ final class BasicStory extends Story
             'roles' => ['ROLE_USER'],
         ]);
 
+        $userJulia = UserFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+            'email' => 'julia.lorenzo@mail.com',
+            'firstname' => 'Julia',
+            'isVerified' => true,
+            'lastname' => 'Lorenzo',
+            'password' => password_hash('julia', PASSWORD_DEFAULT),
+            'roles' => ['ROLE_USER'],
+        ]);
+
+        $userMarie = UserFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+            'email' => 'marie.bergamotte@mail.com',
+            'firstname' => 'Marie',
+            'isVerified' => true,
+            'lastname' => 'Bergamotte',
+            'password' => password_hash('marie', PASSWORD_DEFAULT),
+            'roles' => ['ROLE_USER'],
+        ]);
+
         $trips = [
             [
                 'title' => 'Week-end à Rome',
