@@ -9,7 +9,8 @@ import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
 export const useTripsStore = defineStore('trips', {
     state: () => ({
         trips: new Map<number, IMapTrip | IMapTripDetails>(),
-        fetching: false
+        fetching: false,
+        errors: {} as Record<string, string[]>,
     }),
     getters: {
         calendarDatas(state) {
@@ -74,6 +75,50 @@ export const useTripsStore = defineStore('trips', {
                 this.trips.clear();
             } finally {
                 this.fetching = false;
+            }
+        },
+        async submitTrip(body: {
+            tripTitle: string,
+            tripDescription: string,
+            tripStartDate: string,
+            tripEndDate: string,
+        }) {
+            this.errors = {};
+            const {$api} = useNuxtApp();
+            try {
+                const response = await $api<ITripDetails>(
+                    apiEndpoints.trips,
+                    {
+                        method: 'POST',
+                        body: {
+                            title: body.tripTitle,
+                            description: body.tripDescription,
+                            startDate: body.tripStartDate,
+                            endDate: body.tripEndDate
+                        }
+                    }
+                )
+
+                this.trips.set(response.id, {...response, isDetail: true});
+                return response;
+
+            } catch (error: any) {
+                throw error;
+            }
+        },
+        handleErrors(error: any) {
+            if (error?.data?.violations && Array.isArray(error.data.violations)) {
+                for (const violation of error.data.violations) {
+                    const key = violation.propertyPath;
+                    const message = violation.message;
+
+                    if (!this.errors[key]) {
+                        this.errors[key] = [];
+                    }
+                    this.errors[key].push(message);
+                }
+            } else {
+                this.errors['unexpected'] = ["Une erreur inattendue est survenue. Veuillez réessayer."];
             }
         }
     }

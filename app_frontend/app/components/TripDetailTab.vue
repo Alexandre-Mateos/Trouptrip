@@ -14,9 +14,17 @@ export default defineComponent({
 </script>
 
 <template>
+
+  <BaseButton >
+    <Icon name="lucide:edit" ></Icon>
+    Modifier
+  </BaseButton>
+
   <p>{{trip.title}}</p>
   <p>{{trip.description}}</p>
   <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
+
+  <div v-if="trip.participations && trip.participations.length > 0">
   <table>
     <thead>
     <tr>
@@ -33,6 +41,10 @@ export default defineComponent({
     </tr>
     </tbody>
   </table>
+  </div>
+  <div v-else>
+    <p>Invitez quelques amis pour ce séjour</p>
+  </div>
 </template>
 
 <style scoped>

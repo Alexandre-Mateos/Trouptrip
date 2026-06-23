@@ -24,26 +24,16 @@ readonly class PostTripProcessor extends CustomProcessor
     {
         $currentUser = $this->getUser();
 
+        $startDate = new \DateTimeImmutable($data->startDate);
+        $endDate = new \DateTimeImmutable($data->endDate);
+
         $trip = new Trip();
         $trip->setOwner($currentUser)
             ->setTitle($data->title)
             ->setDescription($data->description)
-            ->setStartDate($data->startDate)
-            ->setEndDate($data->endDate)
+            ->setStartDate($startDate)
+            ->setEndDate($endDate)
             ->setCreatedAt(new \DateTimeImmutable());
-
-
-        if (null !== $data->participants) {
-            foreach ($data->participants as $participantDTO) {
-
-                $participation = $this->inviteParticipantService->inviteParticipant($participantDTO->email, $currentUser, $trip);
-
-                if (null !== $participation) {
-                    $this->em->persist($participation);
-                    $trip->addParticipation($participation);
-                }
-            }
-        }
 
         $this->em->persist($trip);
         $this->em->flush();

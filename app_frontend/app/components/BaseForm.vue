@@ -10,6 +10,7 @@ export default defineComponent({
 <template>
   <form @submit.prevent="$emit('submit')"
         class="p-6 max-w-xs md:max-w-md flex flex-col gap-4 rounded-md mx-auto mt-4"
+        v-bind="$attrs"
   >
     <slot></slot>
   </form>

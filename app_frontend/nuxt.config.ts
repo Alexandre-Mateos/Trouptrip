@@ -39,7 +39,7 @@ export default defineNuxtConfig({
             }
         }
     },
-    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
+    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/icon'],
     tailwindcss: {
         // Force le module à surveiller ce fichier spécifiquement
         configPath: 'tailwind.config.ts',

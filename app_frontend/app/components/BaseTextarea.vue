@@ -1,8 +1,9 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
+import Input from "~/components/BaseInput.vue";
 
 export default defineComponent({
-  name: "Input",
+  name: "BaseTextarea",
   inheritAttrs: false,
   props: {
     label: {
@@ -13,15 +14,11 @@ export default defineComponent({
       type: String,
       default: '',
       required: true
-    },
-    errors: {
-      type: Array<string>,
-      required: false
     }
   },
   methods: {
     emitValue(event: Event) {
-      const target = event.target as HTMLInputElement
+      const target = event.target as HTMLTextAreaElement
       this.$emit('update:modelValue', target.value)
     }
   }
@@ -32,26 +29,17 @@ export default defineComponent({
   <div class="flex flex-col gap-1">
     <label :for="$attrs.id as string">{{ label }}</label>
 
-    <ul v-if="errors && errors.length > 0" >
-      <li v-for="(error, index) in errors" :key="index"
-      class="text-xs text-red-800"
-      >
-        {{ error }}
-      </li>
-    </ul>
-
-    <input
+    <textarea
         v-bind="$attrs"
         :value="modelValue"
         @input="emitValue($event)"
         class="rounded-md"
-        :class="{'border-2 border-red-800': errors && errors.length > 0}"
-    >
+    ></textarea>
   </div>
 </template>
 
 <style scoped>
-input{
+textarea{
   background-color: var(--color-bg);
 }
 </style>

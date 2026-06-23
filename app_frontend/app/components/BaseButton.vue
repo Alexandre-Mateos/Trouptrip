@@ -17,7 +17,7 @@ export default defineComponent({
   <button
       :type="type"
       v-bind="$attrs"
-      class="px-3 py-1 rounded-md"
+      class="px-3 py-1 rounded-md w-max"
   >
     <slot></slot>
   </button>
