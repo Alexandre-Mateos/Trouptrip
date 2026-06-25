@@ -6,8 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\ApiResource\TripResource\InputTripDTO;
 use App\Enum\ParticipationStatusEnum;
+use App\Interface\CreatedAtInterface;
 use App\Repository\TripRepository;
 use App\State\Processor\PostTripProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
@@ -28,14 +29,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Post(
             normalizationContext: ['groups' => 'trip:item'],
+            denormalizationContext: ['groups' => 'trip:create'],
             security: "is_granted('ROLE_USER')",
-            input: InputTripDTO::class,
             processor: PostTripProcessor::class
         )
     ]
 )]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-class Trip
+class Trip implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -44,19 +45,22 @@ class Trip
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer un titre')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['trip:item', 'trip:post'])]
+    #[Groups(['trip:item', 'trip:create'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'trip:post'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column]
