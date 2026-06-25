@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Enum\ParticipationStatusEnum;
 use App\Interface\CreatedAtInterface;
@@ -32,6 +33,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'trip:create'],
             security: "is_granted('ROLE_USER')",
             processor: PostTripProcessor::class
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'trip:item'],
+            denormalizationContext: ['groups' => 'trip:create'],
+            security: "is_granted('TRIP_EDIT', object)"
         )
     ]
 )]

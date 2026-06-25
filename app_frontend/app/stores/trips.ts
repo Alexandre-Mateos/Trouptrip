@@ -77,29 +77,38 @@ export const useTripsStore = defineStore('trips', {
                 this.fetching = false;
             }
         },
-        async submitTrip(body: {
-            tripTitle: string,
-            tripDescription: string,
-            tripStartDate: string,
-            tripEndDate: string,
-        }) {
+        async submitTrip(
+            body: {
+                tripTitle: string,
+                tripDescription: string,
+                tripStartDate: string,
+                tripEndDate: string,
+            },
+            id: string | null = null,
+        ) {
             this.errors = {};
-            const {$api} = useNuxtApp();
-            try {
-                const response = await $api<ITripDetails>(
-                    apiEndpoints.trips,
-                    {
-                        method: 'POST',
-                        body: {
-                            title: body.tripTitle,
-                            description: body.tripDescription,
-                            startDate: body.tripStartDate,
-                            endDate: body.tripEndDate
-                        }
-                    }
-                )
+            const { $api } = useNuxtApp();
 
-                this.trips.set(response.id, {...response, isDetail: true});
+            let url: string = apiEndpoints.trips;
+            let method: 'POST' | 'PATCH' = 'POST';
+
+            if (id) {
+                url = `${apiEndpoints.trips}/${id}`;
+                method = 'PATCH';
+            }
+
+            try {
+                const response = await $api<ITripDetails>(url, {
+                    method: method,
+                    body: {
+                        title: body.tripTitle,
+                        description: body.tripDescription,
+                        startDate: body.tripStartDate,
+                        endDate: body.tripEndDate
+                    }
+                });
+
+                this.trips.set(response.id, { ...response, isDetail: true });
                 return response;
 
             } catch (error: any) {

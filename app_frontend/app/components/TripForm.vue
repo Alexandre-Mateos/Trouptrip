@@ -32,6 +32,8 @@ export default defineComponent({
       };
 
       try {
+
+
         const response = await useTripsStore().submitTrip(payload);
 
         this.$emit('done');
