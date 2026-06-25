@@ -6,11 +6,12 @@ export default defineComponent({
   inheritAttrs: false,
   methods: {
     open() {
-      (this.$refs.modal as HTMLDialogElement).showModal()
+      const dialog = this.$refs.modal as HTMLDialogElement | undefined;
+      dialog?.showModal();
     },
-
     close() {
-      (this.$refs.modal as HTMLDialogElement).close()
+      const dialog = this.$refs.modal as HTMLDialogElement | undefined;
+      dialog?.close();
     }
   }
 })

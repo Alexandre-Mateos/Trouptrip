@@ -10,12 +10,26 @@ export default defineComponent({
       required: true
     }
   },
+  methods: {
+    openModal() {
+      const modal = this.$refs.editTripModal as any;
+      if (modal) {
+        modal.open();
+      }
+    },
+    closeModal() {
+      const modal = this.$refs.editTripModal as any;
+      if (modal) {
+        modal.close();
+      }
+    },
+  }
 })
 </script>
 
 <template>
 
-  <BaseButton >
+  <BaseButton @click="openModal">
     <Icon name="lucide:edit" ></Icon>
     Modifier
   </BaseButton>
@@ -45,6 +59,11 @@ export default defineComponent({
   <div v-else>
     <p>Invitez quelques amis pour ce séjour</p>
   </div>
+
+  <BaseModal ref="editTripModal">
+    <TripForm @done="closeModal" :tripToEdit="trip"/>
+  </BaseModal>
+
 </template>
 
 <style scoped>

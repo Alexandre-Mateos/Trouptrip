@@ -105,21 +105,6 @@ export const useTripsStore = defineStore('trips', {
             } catch (error: any) {
                 throw error;
             }
-        },
-        handleErrors(error: any) {
-            if (error?.data?.violations && Array.isArray(error.data.violations)) {
-                for (const violation of error.data.violations) {
-                    const key = violation.propertyPath;
-                    const message = violation.message;
-
-                    if (!this.errors[key]) {
-                        this.errors[key] = [];
-                    }
-                    this.errors[key].push(message);
-                }
-            } else {
-                this.errors['unexpected'] = ["Une erreur inattendue est survenue. Veuillez réessayer."];
-            }
         }
     }
 })
