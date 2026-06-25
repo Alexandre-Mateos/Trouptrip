@@ -17,6 +17,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as TripAssert;
 
 #[ApiResource(
     operations: [
@@ -41,7 +42,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         )
     ]
 )]
+
 #[ORM\Entity(repositoryClass: TripRepository::class)]
+#[TripAssert\RangeDate]
 class Trip implements CreatedAtInterface
 {
     #[ORM\Id]
