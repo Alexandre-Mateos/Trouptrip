@@ -10,19 +10,18 @@ export default defineComponent({
       required: true
     }
   },
+  data(){
+    return{
+      isModalOpen: false,
+    }
+  },
   methods: {
-    openModal() {
-      const modal = this.$refs.editTripModal as any;
-      if (modal) {
-        modal.open();
-      }
+    openModal(){
+      this.isModalOpen = true;
     },
-    closeModal() {
-      const modal = this.$refs.editTripModal as any;
-      if (modal) {
-        modal.close();
-      }
-    },
+    closeModal(){
+      this.isModalOpen = false;
+    }
   }
 })
 </script>
@@ -60,8 +59,12 @@ export default defineComponent({
     <p>Invitez quelques amis pour ce séjour</p>
   </div>
 
-  <BaseModal ref="editTripModal">
-    <TripForm @done="closeModal" :tripToEdit="trip"/>
+  <BaseModal :open="isModalOpen">
+    <TripForm
+        v-if="isModalOpen"
+        :tripToEdit="trip"
+        @done="closeModal"
+    />
   </BaseModal>
 
 </template>

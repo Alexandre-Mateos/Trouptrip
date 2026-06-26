@@ -14,6 +14,7 @@ export default defineComponent({
       errors: {} as Record<string, string[]>,
       isSubmitting: false,
       isSuccess: false,
+      isModalOpen: false
     }
   },
   methods: {
@@ -21,16 +22,10 @@ export default defineComponent({
       this.windowWidth = window.innerWidth;
     },
     openModal() {
-      const modal = this.$refs.createTripModal as any;
-      if (modal) {
-        modal.open();
-      }
+      this.isModalOpen = true;
     },
     closeModal() {
-      const modal = this.$refs.createTripModal as any;
-      if (modal) {
-        modal.close();
-      }
+      this.isModalOpen = false;
     }
   },
   computed: {
@@ -78,7 +73,7 @@ export default defineComponent({
     </div>
   </div>
 
-  <BaseModal ref="createTripModal">
+  <BaseModal ref="createTripModal" :open="isModalOpen">
     <TripForm @done="closeModal" />
   </BaseModal>
 

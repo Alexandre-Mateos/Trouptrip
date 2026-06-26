@@ -1,35 +1,44 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: "BaseModal",
   inheritAttrs: false,
-  methods: {
-    open() {
-      const dialog = this.$refs.modal as HTMLDialogElement | undefined;
-      dialog?.showModal();
-    },
-    close() {
-      const dialog = this.$refs.modal as HTMLDialogElement | undefined;
-      dialog?.close();
+  props: {
+    open: {
+      type: Boolean,
+      default: false
     }
   }
 })
 </script>
 
 <template>
-  <dialog ref="modal" v-bind="$attrs" class="modal modal-bottom sm:modal-middle">
+  <Transition name="modal-fade">
+  <div
+      v-bind="$attrs"
+      v-if="open"
+      class="modal modal-open modal-bottom sm:modal-middle"
+  >
     <div class="modal-box">
-      <div class="modal-action">
-        <slot>
-        </slot>
-      </div>
+      <slot></slot>
     </div>
-  </dialog>
+  </div>
+  </Transition>
 </template>
 
 <style scoped>
-.modal-box{
+.modal-box {
   background-color: var(--color-bg);
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
 }
 </style>
