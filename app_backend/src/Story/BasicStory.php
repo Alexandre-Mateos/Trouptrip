@@ -150,7 +150,8 @@ final class BasicStory extends Story
                 'title' => $trip['title'],
                 'description' => $trip['description'],
                 'startDate' => new \DateTimeImmutable($trip['start']),
-                'endDate' => new \DateTimeImmutable($trip['end'])
+                'endDate' => new \DateTimeImmutable($trip['end']),
+                'isDeleted' => true
             ]);
 
             foreach ($participants as $participant) {
