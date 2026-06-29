@@ -32,6 +32,10 @@ export const useTripsStore = defineStore('trips', {
         tripList: (state) => Array.from(state.trips.values()),
         getTripById: (state) => {
             return (id: number) => state.trips.get(id);
+        },
+        getFirstTripId: (state) => {
+            const keys = Array.from(state.trips.keys());
+            return keys[0];
         }
     },
     actions: {
@@ -44,11 +48,17 @@ export const useTripsStore = defineStore('trips', {
 
             try {
                 const tripCollection = await $api<ITripList>(apiEndpoints.trips);
+
                 tripCollection.member.forEach((trip) => {
-                    this.trips.set(trip.id, {...trip, isDetail: false});
+                    const existingTrip = this.trips.get(trip.id);
+                    if (existingTrip && existingTrip.isDetail) {
+                        this.trips.set(trip.id, { ...trip, ...existingTrip });
+                    } else {
+                        this.trips.set(trip.id, { ...trip, isDetail: false });
+                    }
                 });
             } catch (error: any) {
-                this.trips.clear();
+                throw error;
             } finally {
                 this.fetching = false;
             }
@@ -57,7 +67,7 @@ export const useTripsStore = defineStore('trips', {
 
             const tripListView = this.trips.get(tripId);
 
-            if (this.fetching || (tripListView && tripListView.isDetail)) {
+            if (tripListView && tripListView.isDetail) {
                 return;
             }
 
@@ -72,9 +82,7 @@ export const useTripsStore = defineStore('trips', {
                 }
 
             } catch (error: any) {
-                this.trips.clear();
-            } finally {
-                this.fetching = false;
+                throw error;
             }
         },
         async submitTrip(

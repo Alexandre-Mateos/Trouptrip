@@ -10,12 +10,18 @@ export default defineComponent({
       // réinitialiser état utilisateur
       this.userStore.user = null;
       navigateTo('/');
+
+    //   vider le tripsStore pour qu'il se mette à jour à la prochaine reconnexion
+      this.tripStore.trips.clear();
     }
   },
   computed: {
     userStore() {
-      return useUserStore()
+      return useUserStore();
     },
+    tripStore(){
+      return useTripsStore();
+    }
   },
 })
 </script>

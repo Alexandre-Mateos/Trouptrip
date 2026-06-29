@@ -14,7 +14,9 @@ export default defineComponent({
       errors: {} as Record<string, string[]>,
       isSubmitting: false,
       isSuccess: false,
-      isModalOpen: false
+      isModalOpen: false,
+      isLoading: true,
+      hasError: false
     }
   },
   methods: {
@@ -41,10 +43,24 @@ export default defineComponent({
     },
     trips() {
       return useTripsStore().tripList;
+    },
+    getFirstTripId(){
+      return useTripsStore().getFirstTripId;
     }
   },
-  mounted() {
-    useTripsStore().fetchTrips();
+  async mounted() {
+    this.getScreenSize();
+    try {
+      await useTripsStore().fetchTrips();
+      if (this.isDesktop && this.getFirstTripId) {
+        navigateTo({ name: 'trips-id', params: { id: this.getFirstTripId } });
+      }
+    } catch (error) {
+      this.hasError = true;
+    } finally {
+      this.isLoading = false;
+    }
+
     window.addEventListener('resize', this.getScreenSize);
   },
   unmounted() {
@@ -60,8 +76,16 @@ export default defineComponent({
     Créer un séjour
   </BaseButton>
 
-  <div :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
+  <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
+    <p>Chargement de vos séjours...</p>
+  </div>
 
+  <div v-else-if="hasError" class="error-container">
+    <p>Impossible de charger vos séjours pour le moment.</p>
+    <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
+  </div>
+
+  <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
     <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
       <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
         <TripCard :trip="trip"></TripCard>

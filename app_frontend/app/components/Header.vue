@@ -1,28 +1,15 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import LogoutButton from "~/components/LogoutButton.vue";
+import {useDisplayStore} from "~/stores/display";
 
 export default defineComponent({
   name: "Header",
   components: {LogoutButton},
-  data() {
-    return {
-      unLoggedUserLinks: [
-        {to: '/', label: 'Accueil'},
-        {to: '/login', label: 'Se connecter'},
-        {to: '/register', label: 'Créer un compte'},
-      ],
-      loggedUserLinks: [
-        {to: '/home', label: 'Mon espace'},
-        {to: '/trips', label: 'Mes séjours'}
-      ]
-    }
-  },
   computed: {
-    // On mappe le store en tant que propriété calculée
-    userStore() {
-      return useUserStore()
-    },
+    headerNav(){
+      return useDisplayStore().constructHeader();
+    }
   },
 })
 </script>
@@ -42,14 +29,8 @@ export default defineComponent({
 
       <div class="navbar-end">
         <div class="hidden lg:flex">
-
-          <div v-if="userStore.user">
-            <BaseNav :links="loggedUserLinks" class="menu menu-horizontal px-1 gap-2">
-              <LogoutButton></LogoutButton>
-            </BaseNav>
-          </div>
-          <div v-else>
-            <BaseNav :links="unLoggedUserLinks" class="menu menu-horizontal px-1 gap-2"></BaseNav>
+          <div>
+            <BaseNav :links="headerNav" class="menu menu-horizontal px-1 gap-2"></BaseNav>
           </div>
         </div>
 
@@ -62,13 +43,8 @@ export default defineComponent({
     </div>
 
     <div class="collapse-content lg:hidden z-1 container mx-auto px-4 md:px-6 lg:px-8">
-      <div v-if="userStore.user">
-        <BaseNav :links="loggedUserLinks" class="menu flex flex-column gap-2">
-          <LogoutButton></LogoutButton>
-        </BaseNav>
-      </div>
-      <div v-else>
-        <BaseNav :links="unLoggedUserLinks" class="menu flex flex-column gap-2"></BaseNav>
+      <div>
+        <BaseNav :links="headerNav" class="menu flex flex-column gap-2"></BaseNav>
       </div>
     </div>
 

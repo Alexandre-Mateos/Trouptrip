@@ -12,7 +12,6 @@ export default defineComponent({
   methods: {
     addParticipant(){
       const participantEmail = this.email.trim();
-      console.log(participantEmail);
       if (!this.participantList.has(participantEmail)){
         this.participantList.set(participantEmail, {participantEmail});
       }

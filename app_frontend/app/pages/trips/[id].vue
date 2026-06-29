@@ -13,7 +13,8 @@ export default defineComponent({
         {key: 'activities', label: 'Mes activités'},
         {key: 'tasks', label: 'Mes tâches'}
       ],
-      activeTabKey: 'my-trip'
+      activeTabKey: 'my-trip',
+      hasError: false
     }
   },
   methods: {
@@ -24,11 +25,15 @@ export default defineComponent({
       return this.activeTabKey === tabId;
     }
   },
-  mounted() {
+  async mounted() {
     const tripId = useRoute().params.id;
     if (tripId) {
       this.id = Number(tripId);
-      useTripsStore().fetchTrip(this.id);
+      try {
+        await useTripsStore().fetchTrip(this.id);
+      } catch (error) {
+        this.hasError = true;
+      }
     }
   },
   computed: {
@@ -41,7 +46,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="trip">
+  <div v-if="hasError" class="p-4 text-center text-red-500">
+    <p>Impossible de charger les détails de ce séjour.</p>
+    <p class="text-sm text-gray-400 mt-1">Ce voyage n'existe plus ou vous n'y avez pas accès.</p>
+  </div>
+
+  <div v-else-if="trip">
     <div class="flex gap-2 justify-around">
       <template v-for="tab in navTab" :key="tab.key">
         <BaseTab @click="activateTab(tab.key)">{{ tab.label }}</BaseTab>
@@ -53,8 +63,7 @@ export default defineComponent({
         <TripDetailTab :trip="trip"></TripDetailTab>
       </div>
 
-      <div id="activities"
-           :class="{ 'active-tab': isActiveTab('activities'), 'inactive-tab': !isActiveTab('activities') }">
+      <div id="activities" :class="{ 'active-tab': isActiveTab('activities'), 'inactive-tab': !isActiveTab('activities') }">
         <TripActivityTab></TripActivityTab>
       </div>
 
@@ -63,8 +72,9 @@ export default defineComponent({
       </div>
     </div>
   </div>
-  <div v-else>
-    <p>Chargement des données du voyage</p>
+
+  <div v-else class="p-4 text-center">
+    <p>Chargement des données du voyage...</p>
   </div>
 </template>
 

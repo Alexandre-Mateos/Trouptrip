@@ -9,6 +9,11 @@ export default defineComponent({
       type: Array as PropType<{ to: string, label: string }[]>,
       required: true,
     }
+  },
+  computed:{
+    userStore(){
+      return useUserStore();
+    }
   }
 })
 </script>
@@ -21,7 +26,10 @@ export default defineComponent({
           {{ link.label }}
         </NuxtLink>
       </li>
-      <slot></slot>
+
+      <div v-if="userStore.user">
+        <LogoutButton></LogoutButton>
+      </div>
     </ul>
   </nav>
 </template>
