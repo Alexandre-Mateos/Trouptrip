@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -39,6 +40,9 @@ use App\Validator as TripAssert;
             normalizationContext: ['groups' => 'trip:item'],
             denormalizationContext: ['groups' => 'trip:create'],
             security: "is_granted('TRIP_EDIT', object)"
+        ),
+        new Delete(
+            processor: PostTripProcessor::class,
         )
     ]
 )]
@@ -114,7 +118,7 @@ class Trip implements CreatedAtInterface
     /**
      * @var Collection<int, Expense>
      */
-    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'tri�p')]
+    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'trip')]
     private Collection $expenses;
 
     #[ORM\Column(nullable: true)]
