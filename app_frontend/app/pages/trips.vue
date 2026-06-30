@@ -44,7 +44,7 @@ export default defineComponent({
     trips() {
       return useTripsStore().tripList;
     },
-    getFirstTripId(){
+    getFirstTripId() {
       return useTripsStore().getFirstTripId;
     }
   },
@@ -52,8 +52,8 @@ export default defineComponent({
     this.getScreenSize();
     try {
       await useTripsStore().fetchTrips();
-      if (this.isDesktop && this.getFirstTripId) {
-        navigateTo({ name: 'trips-id', params: { id: this.getFirstTripId } });
+      if (useDisplayStore().isDesktop && this.getFirstTripId) {
+        navigateTo({name: 'trips-id', params: {id: this.getFirstTripId}});
       }
     } catch (error) {
       this.hasError = true;
@@ -72,33 +72,36 @@ export default defineComponent({
 <template>
 
   <BaseButton @click="openModal">
-    <Icon name="fa6-solid:circle-plus" ></Icon>
+    <Icon name="fa6-solid:circle-plus"></Icon>
     Créer un séjour
   </BaseButton>
-
-  <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
-    <p>Chargement de vos séjours...</p>
-  </div>
-
-  <div v-else-if="hasError" class="error-container">
-    <p>Impossible de charger vos séjours pour le moment.</p>
-    <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
-  </div>
-
-  <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
-    <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
-      <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
-        <TripCard :trip="trip"></TripCard>
-      </NuxtLink>
+  <div v-if="useTripsStore().trips.size > 0">
+    <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
+      <p>Chargement de vos séjours...</p>
     </div>
 
-    <div class="tripView" :class="{'hidden': !isTripViewVisible && !isDesktop}">
-      <NuxtPage/>
+    <div v-else-if="hasError" class="error-container">
+      <p>Impossible de charger vos séjours pour le moment.</p>
+      <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
+    </div>
+
+    <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
+      <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
+        <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
+          <TripCard :trip="trip"></TripCard>
+        </NuxtLink>
+      </div>
+
+      <div class="tripView" :class="{'hidden': !isTripViewVisible && !isDesktop}">
+        <NuxtPage/>
+      </div>
     </div>
   </div>
-
+  <div v-else>
+    <p>Vous n'avez pas encore de voyages à afficher</p>
+  </div>
   <BaseModal ref="createTripModal" :open="isModalOpen">
-    <TripForm @done="closeModal" />
+    <TripForm @done="closeModal"/>
   </BaseModal>
 
 </template>

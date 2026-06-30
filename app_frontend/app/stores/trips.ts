@@ -94,7 +94,6 @@ export const useTripsStore = defineStore('trips', {
             },
             id: string | null = null,
         ) {
-            this.errors = {};
             const { $api } = useNuxtApp();
 
             let url: string = apiEndpoints.trips;
@@ -118,6 +117,20 @@ export const useTripsStore = defineStore('trips', {
 
                 this.trips.set(response.id, { ...response, isDetail: true });
                 return response;
+
+            } catch (error: any) {
+                throw error;
+            }
+        },
+        async deleteTrip(tripId: number){
+            const deleteUrl = `${apiEndpoints.trips}/${tripId}`;
+            const { $api } = useNuxtApp();
+
+            try{
+                await $api(deleteUrl, {
+                    method: 'DELETE'
+                });
+                this.trips.delete(tripId)
 
             } catch (error: any) {
                 throw error;

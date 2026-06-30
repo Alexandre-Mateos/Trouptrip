@@ -13,6 +13,7 @@ export default defineComponent({
   data(){
     return{
       isModalOpen: false,
+      error: '',
     }
   },
   methods: {
@@ -21,6 +22,16 @@ export default defineComponent({
     },
     closeModal(){
       this.isModalOpen = false;
+    },
+    async deleteTrip(){
+      try{
+        await useTripsStore().deleteTrip(this.trip.id);
+        if (useDisplayStore().isDesktop && useTripsStore().getFirstTripId) {
+          navigateTo({ name: 'trips-id', params: { id: useTripsStore().getFirstTripId } });
+        }
+      } catch(error: any) {
+        this.error = 'une erreur inattendue est survenue. Veuillez réessayer plus tard'
+      }
     }
   }
 })
@@ -31,6 +42,10 @@ export default defineComponent({
   <BaseButton @click="openModal">
     <Icon name="lucide:edit" ></Icon>
     Modifier
+  </BaseButton>
+  <BaseButton @click="deleteTrip">
+    <Icon name="material-symbols:delete-outline"></Icon>
+    Supprimer
   </BaseButton>
 
   <p>{{trip.title}}</p>
