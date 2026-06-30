@@ -151,7 +151,7 @@ final class BasicStory extends Story
                 'description' => $trip['description'],
                 'startDate' => new \DateTimeImmutable($trip['start']),
                 'endDate' => new \DateTimeImmutable($trip['end']),
-                'isDeleted' => true
+                'isDeleted' => false
             ]);
 
             foreach ($participants as $participant) {
@@ -163,7 +163,6 @@ final class BasicStory extends Story
                     'status' => ParticipationStatusEnum::ACCEPTED,
                     'trip' => $associatedTrip
                 ]);
-
             }
         }
     }

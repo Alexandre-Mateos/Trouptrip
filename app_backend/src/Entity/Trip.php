@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Enum\ParticipationStatusEnum;
 use App\Interface\CreatedAtInterface;
 use App\Repository\TripRepository;
+use App\State\Processor\DeleteTripProcessor;
 use App\State\Processor\PostTripProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,7 +43,7 @@ use App\Validator as TripAssert;
             security: "is_granted('TRIP_EDIT', object)"
         ),
         new Delete(
-            processor: PostTripProcessor::class,
+            processor: DeleteTripProcessor::class,
         )
     ]
 )]

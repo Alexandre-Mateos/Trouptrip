@@ -20,11 +20,12 @@ final readonly class TripExtension implements QueryCollectionExtensionInterface
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $this->addParticipantWhere($queryBuilder, $resourceClass);
+        $this->addIsDeletedWhere($queryBuilder, $resourceClass);
     }
 
 
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
+    private function addParticipantWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
         if (Trip::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
             return;
@@ -36,5 +37,16 @@ final readonly class TripExtension implements QueryCollectionExtensionInterface
             ->andWhere(sprintf('%s.owner = :user OR (p.participant = :user AND p.status = :status)', $rootAlias))
             ->setParameter('user', $user)
             ->setParameter('status', ParticipationStatusEnum::ACCEPTED);
+    }
+
+    private function addIsDeletedWhere(QueryBuilder $queryBuilder, string $resourceClass): void
+    {
+        if (Trip::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+            return;
+        }
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryBuilder
+            ->andWhere(sprintf('%s.isDeleted = :isDeleted', $rootAlias))
+            ->setParameter('isDeleted', false);
     }
 }
