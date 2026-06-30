@@ -10,7 +10,6 @@ export const useTripsStore = defineStore('trips', {
     state: () => ({
         trips: new Map<number, IMapTrip | IMapTripDetails>(),
         fetching: false,
-        errors: {} as Record<string, string[]>,
     }),
     getters: {
         calendarDatas(state) {

@@ -43,7 +43,8 @@ use App\Validator as TripAssert;
             security: "is_granted('TRIP_EDIT', object)"
         ),
         new Delete(
-            processor: DeleteTripProcessor::class,
+            security: "is_granted('TRIP_DELETE', object)",
+            processor: DeleteTripProcessor::class
         )
     ]
 )]
@@ -126,7 +127,7 @@ class Trip implements CreatedAtInterface
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
-    private ?bool $isDeleted = null;
+    private ?bool $isDeleted = false;
 
     public function __construct()
     {

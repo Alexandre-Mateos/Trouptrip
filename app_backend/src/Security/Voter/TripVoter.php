@@ -12,6 +12,8 @@ final class TripVoter extends Voter
     public const EDIT = 'TRIP_EDIT';
     public const READ = 'TRIP_READ';
 
+    public const  DELETE = 'TRIP_DELETE';
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
@@ -33,6 +35,7 @@ final class TripVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
+            case self::DELETE:
             case self::EDIT:
                 if($user === $subject->getOwner()){
                     return true;
