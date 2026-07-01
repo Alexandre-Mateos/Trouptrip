@@ -4,7 +4,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         baseURL: config.public.apiBaseUrl,
         onRequest({ options }) {
             const headers = new Headers(options.headers);
-            headers.set('Content-Type', 'application/ld+json');
+
+            if (!headers.has('Content-Type')) {
+                headers.set('Content-Type', 'application/ld+json');
+            }
             headers.set('Accept', 'application/ld+json');
             options.headers = headers;
 

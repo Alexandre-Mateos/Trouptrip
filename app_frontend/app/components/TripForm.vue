@@ -24,6 +24,7 @@ export default defineComponent({
     async handleSubmit() {
       this.errors = {};
       this.isSubmitting = true;
+
       const payload = {
         tripTitle: this.tripTitle,
         tripDescription: this.tripDescription,
@@ -31,14 +32,18 @@ export default defineComponent({
         tripEndDate: this.tripEndDate,
       };
 
+      let response;
+
       try {
-
-
-        const response = await useTripsStore().submitTrip(payload);
+        if (this.tripToEdit && this.tripToEdit.id) {
+          response = await useTripsStore().updateTrip(String(this.tripToEdit.id), payload);
+        } else {
+          response = await useTripsStore().submitTrip(payload);
+        }
 
         this.$emit('done');
         if (response && response.id) {
-          await navigateTo({name: 'trips-id', params: {id: response.id}});
+          await navigateTo({ name: 'trips-id', params: { id: response.id } });
         }
 
       } catch (errors) {

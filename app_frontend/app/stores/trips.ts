@@ -1,10 +1,10 @@
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {ITripList} from "~/interfaces/i-tripList";
-import type {ITrip} from "~/interfaces/i-trip";
 import 'temporal-polyfill/global';
 import type {ITripDetails} from "~/interfaces/i-tripDetails";
 import type {IMapTrip} from "~/interfaces/i-mapTrip";
 import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
+import type {ITripForm} from "~/interfaces/i-tripForm";
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -84,28 +84,38 @@ export const useTripsStore = defineStore('trips', {
                 throw error;
             }
         },
-        async submitTrip(
-            body: {
-                tripTitle: string,
-                tripDescription: string,
-                tripStartDate: string,
-                tripEndDate: string,
-            },
-            id: string | null = null,
-        ) {
+        async submitTrip(body: ITripForm) {
             const { $api } = useNuxtApp();
-
-            let url: string = apiEndpoints.trips;
-            let method: 'POST' | 'PATCH' = 'POST';
-
-            if (id) {
-                url = `${apiEndpoints.trips}/${id}`;
-                method = 'PATCH';
-            }
+            const url = apiEndpoints.trips;
 
             try {
                 const response = await $api<ITripDetails>(url, {
-                    method: method,
+                    method: 'POST',
+                    body: {
+                        title: body.tripTitle,
+                        description: body.tripDescription,
+                        startDate: body.tripStartDate,
+                        endDate: body.tripEndDate
+                    }
+                });
+
+                this.trips.set(response.id, { ...response, isDetail: true });
+                return response;
+
+            } catch (error: any) {
+                throw error;
+            }
+        },
+        async updateTrip(id: string, body: ITripForm) {
+            const { $api } = useNuxtApp();
+            const url = `${apiEndpoints.trips}/${id}`;
+
+            try {
+                const response = await $api<ITripDetails>(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/merge-patch+json'
+                    },
                     body: {
                         title: body.tripTitle,
                         description: body.tripDescription,
