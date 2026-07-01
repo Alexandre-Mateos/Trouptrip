@@ -12,16 +12,23 @@ export default defineComponent({
   },
   data() {
     return {
-      isModalOpen: false,
+      isEditTripModalOpen: false,
+      isDeleteTripModalOpen: false,
       error: '',
     }
   },
   methods: {
-    openModal() {
-      this.isModalOpen = true;
+    openEditTripModal() {
+      this.isEditTripModalOpen = true;
     },
-    closeModal() {
-      this.isModalOpen = false;
+    closeEditTripModal() {
+      this.isEditTripModalOpen = false;
+    },
+    openDeleteTripModal() {
+      this.isDeleteTripModalOpen = true;
+    },
+    closeDeleteTripModal() {
+      this.isDeleteTripModalOpen = false;
     },
     async deleteTrip() {
       this.error = '';
@@ -35,6 +42,7 @@ export default defineComponent({
       } catch (error: any) {
         this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
+      this.closeDeleteTripModal();
     }
   },
   computed: {
@@ -52,12 +60,11 @@ export default defineComponent({
 </script>
 
 <template>
-
-  <BaseButton @click="openModal">
+  <BaseButton @click="openEditTripModal">
     <Icon name="lucide:edit"></Icon>
     Modifier
   </BaseButton>
-  <BaseButton @click="deleteTrip">
+  <BaseButton @click="openDeleteTripModal">
     <Icon name="material-symbols:delete-outline"></Icon>
     Supprimer
   </BaseButton>
@@ -92,12 +99,20 @@ export default defineComponent({
     <p>Invitez quelques amis pour ce séjour</p>
   </div>
 
-  <BaseModal :open="isModalOpen">
+  <BaseModal :open="isEditTripModalOpen">
     <TripForm
-        v-if="isModalOpen"
+        v-if="isEditTripModalOpen"
         :tripToEdit="trip"
-        @done="closeModal"
+        @done="closeEditTripModal"
     />
+  </BaseModal>
+  <BaseModal :open="isDeleteTripModalOpen">
+    <div>
+      <p>Vous Etes sur le point de supprimer ce voyage</p>
+      <p>Etes vous sûr de vouloir continuer ?</p>
+      <BaseButton @click="deleteTrip">Supprimer</BaseButton>
+      <BaseButton @click="closeDeleteTripModal">Annuler</BaseButton>
+    </div>
   </BaseModal>
 
 </template>
