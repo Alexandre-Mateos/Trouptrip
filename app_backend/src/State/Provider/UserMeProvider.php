@@ -27,6 +27,7 @@ readonly class UserMeProvider implements ProviderInterface
 //        le dernier séjour. A calculer dans le back car données statiques
 
         return new OutputUserMeDTO(
+            $user->getId(),
             $user->getFirstname(),
             $user->getLastname(),
             $user->getEmail(),

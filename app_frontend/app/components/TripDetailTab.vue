@@ -36,7 +36,18 @@ export default defineComponent({
         this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
     }
-  }
+  },
+  computed: {
+    // On exclue le user connecté de la liste des participants à afficher
+    otherParticipants(): any[] {
+      if (!this.trip.participations) return [];
+
+      const currentUserId = useUserStore().user?.id;
+      return this.trip.participations.filter(
+          participation => participation.participant.id !== currentUserId
+      );
+    }
+  },
 })
 </script>
 
@@ -69,10 +80,10 @@ export default defineComponent({
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(participant, index) in trip.participations" :key="participant.id">
-        <th scope="row">{{ participant.participant.firstname }}</th>
-        <td>{{ participant.participant.lastname }}</td>
-        <td>{{ participant.status }}</td>
+      <tr v-for="participation in otherParticipants" :key="participation.id">
+        <th scope="row">{{ participation.participant.firstname }}</th>
+        <td>{{ participation.participant.lastname }}</td>
+        <td>{{ participation.status }}</td>
       </tr>
       </tbody>
     </table>

@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\UserResource\OutputUserDTO;
+use App\ApiResource\UserResource\OutputUserMeDTO;
 use App\ApiResource\UserResource\RegisterUserDTO;
 use App\Repository\UserRepository;
 use App\State\Processor\RegisterUserProcessor;
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Get(
             uriTemplate: '/me',
-            output: OutputUserDTO::class,
+            output: OutputUserMeDTO::class,
             provider: UserMeProvider::class
         )
     ]

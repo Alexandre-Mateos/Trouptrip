@@ -35,7 +35,7 @@ class Participation
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['trip:item', 'trip:post'])]
+    #[Groups(['trip:item'])]
     private ?User $participant = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentParticipations')]

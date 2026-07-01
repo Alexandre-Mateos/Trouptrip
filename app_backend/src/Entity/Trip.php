@@ -90,7 +90,7 @@ class Trip implements CreatedAtInterface
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'trip')]
-    #[Groups(['trip:item', 'trip:post'])]
+    #[Groups(['trip:item'])]
     private Collection $participations;
 
     /**

@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', {
 
             try {
                 this.user = await $api<IUserMe>(apiEndpoints.userMe);
+                console.log(this.user);
             } catch (error: any) {
                 this.user = null;
             } finally {
