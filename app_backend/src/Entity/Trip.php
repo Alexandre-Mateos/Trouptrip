@@ -84,6 +84,7 @@ class Trip implements CreatedAtInterface
 
     #[ORM\ManyToOne(inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['trip:item'])]
     private ?User $owner = null;
 
     /**

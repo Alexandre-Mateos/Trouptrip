@@ -54,21 +54,28 @@ export default defineComponent({
       return this.trip.participations.filter(
           participation => participation.participant.id !== currentUserId
       );
+    },
+    isTripOwner(): boolean {
+      const currentUserId = useUserStore().user?.id;
+      const ownerId = this.trip?.owner?.id;
+
+      return currentUserId === ownerId;
     }
   },
 })
 </script>
 
 <template>
-  <BaseButton @click="openEditTripModal">
-    <Icon name="lucide:edit"></Icon>
-    Modifier
-  </BaseButton>
-  <BaseButton @click="openDeleteTripModal">
-    <Icon name="material-symbols:delete-outline"></Icon>
-    Supprimer
-  </BaseButton>
-
+  <div v-if="isTripOwner">
+    <BaseButton @click="openEditTripModal">
+      <Icon name="lucide:edit"></Icon>
+      Modifier
+    </BaseButton>
+    <BaseButton @click="openDeleteTripModal">
+      <Icon name="material-symbols:delete-outline"></Icon>
+      Supprimer
+    </BaseButton>
+  </div>
   <div v-if="error" class="text-red-700 p-3 rounded mb-4">
     {{ error }}
   </div>
