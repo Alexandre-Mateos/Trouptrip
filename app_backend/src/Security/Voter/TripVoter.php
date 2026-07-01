@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Trip;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -18,8 +19,8 @@ final class TripVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::READ])
-            && $subject instanceof \App\Entity\Trip;
+        return in_array($attribute, [self::EDIT, self::READ, self::DELETE])
+            && $subject instanceof Trip;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
