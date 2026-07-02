@@ -39,6 +39,13 @@ export default defineNuxtConfig({
             }
         }
     },
-    modules: ['@nuxtjs/tailwindcss'],
+    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/icon'],
+    tailwindcss: {
+        // Force le module à surveiller ce fichier spécifiquement
+        configPath: 'tailwind.config.ts',
+        // Optionnel : force une recompilation complète si le config change
+        exposeConfig: false,
+        viewer: true,
+    },
     css: ['~/assets/styles/main.css'],
 })

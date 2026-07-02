@@ -4,4 +4,6 @@ export const apiEndpoints = {
     verifyEmail: '/verify_email',
     forgotPassword: '/forgot_password',
     resetPassword: '/reset_password',
+    userMe: '/me',
+    trips: '/trips'
 } as const

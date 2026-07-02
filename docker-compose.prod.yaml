@@ -20,12 +20,14 @@ services:
     restart: always
 
   node-front:
+    build:
+      target: node-front
     restart: always
     networks:
       - default
       - web
     environment:
-      - NUXT_PUBLIC_API_BASE_URL=https://mon-vrai-domaine.com/api
+      - NUXT_PUBLIC_API_BASE_URL=https://trouptrip.com/api
 
 networks:
   web:

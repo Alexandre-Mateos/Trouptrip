@@ -3,43 +3,95 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Enum\ParticipationStatusEnum;
+use App\Interface\CreatedAtInterface;
 use App\Repository\TripRepository;
+use App\State\Processor\DeleteTripProcessor;
+use App\State\Processor\PostTripProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as TripAssert;
+
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => 'trip:collection'],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Get(
+            normalizationContext: ['groups' => 'trip:item'],
+            security: "is_granted('TRIP_READ', object)"
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'trip:item'],
+            denormalizationContext: ['groups' => 'trip:create'],
+            security: "is_granted('ROLE_USER')",
+            processor: PostTripProcessor::class
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'trip:item'],
+            denormalizationContext: ['groups' => 'trip:create'],
+            security: "is_granted('TRIP_EDIT', object)"
+        ),
+        new Delete(
+            security: "is_granted('TRIP_DELETE', object)",
+            processor: DeleteTripProcessor::class
+        )
+    ]
+)]
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-class Trip
+#[TripAssert\RangeDate]
+class Trip implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer un titre')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['trip:item', 'trip:create'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column]
+    #[Groups(['trip:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['trip:item'])]
     private ?User $owner = null;
 
     /**
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'trip')]
+    #[Groups(['trip:item'])]
     private Collection $participations;
 
     /**
@@ -69,11 +121,14 @@ class Trip
     /**
      * @var Collection<int, Expense>
      */
-    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'tri�p')]
+    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'trip')]
     private Collection $expenses;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column]
+    private ?bool $isDeleted = false;
 
     public function __construct()
     {
@@ -350,6 +405,28 @@ class Trip
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function hasAcceptedParticipant(User $user): bool
+    {
+        foreach ($this->participations as $participation) {
+            if ($user === $participation->getParticipant() && ParticipationStatusEnum::ACCEPTED === $participation->getStatus()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): static
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

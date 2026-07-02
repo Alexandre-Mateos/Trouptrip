@@ -3,17 +3,21 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\UserResource\OutputUserDTO;
+use App\ApiResource\UserResource\OutputUserMeDTO;
 use App\ApiResource\UserResource\RegisterUserDTO;
 use App\Repository\UserRepository;
 use App\State\Processor\RegisterUserProcessor;
+use App\State\Provider\UserMeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations: [
@@ -21,6 +25,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
             input: RegisterUserDTO::class,
             output: OutputUserDTO::class,
             processor: RegisterUserProcessor::class
+        ),
+        new Get(
+            uriTemplate: '/me',
+            output: OutputUserMeDTO::class,
+            provider: UserMeProvider::class
         )
     ]
 )]
@@ -33,6 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
@@ -51,9 +61,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['trip:item'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['trip:item'])]
     private ?string $lastname = null;
 
     #[ORM\Column]

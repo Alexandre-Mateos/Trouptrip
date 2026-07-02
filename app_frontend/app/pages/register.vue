@@ -96,7 +96,7 @@ export default defineComponent({
       <BaseInput id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password"
                  v-model="passwordConfirmation"
                  label="Confirmer le mot de passe"></BaseInput>
-      <BaseButton>Valider</BaseButton>
+      <BaseButton type="submit">Valider</BaseButton>
 
       <div v-if="errors?.unexpected">
         <ul>

@@ -30,6 +30,8 @@ services:
       - db
 
   node-front:
+    build:
+      target: node-base
     tty: true
     ports:
       - "3000:3000"

@@ -1,12 +1,13 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent, type PropType } from 'vue'
 
 export default defineComponent({
-  name: "Button",
+  name: "BaseButton",
+  inheritAttrs: false,
   props: {
     type: {
-      type: String as PropType<'submit'>,
-      default: 'submit'
+      type: String as PropType<'button' | 'submit' | 'reset'>,
+      default: 'button'
     }
   },
 })
@@ -15,7 +16,8 @@ export default defineComponent({
 <template>
   <button
       :type="type"
-      class="px-3 py-1 rounded-md"
+      v-bind="$attrs"
+      class="px-3 py-1 rounded-md w-max"
   >
     <slot></slot>
   </button>

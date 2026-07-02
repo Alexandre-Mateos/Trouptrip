@@ -19,7 +19,6 @@ export default defineComponent({
       required: false
     }
   },
-
   methods: {
     emitValue(event: Event) {
       const target = event.target as HTMLInputElement

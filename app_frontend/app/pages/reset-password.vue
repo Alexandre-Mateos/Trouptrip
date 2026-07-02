@@ -51,7 +51,7 @@ export default defineComponent({
       <OtpInputFields v-model="token" :length="6"></OtpInputFields>
       <BaseInput id="password" type="password" name="password" v-model="password" label="Nouveau mot de passe :"></BaseInput>
       <BaseInput id="password_confirmation" type="password" name="password_confirmation" v-model="passwordConfirmation" label="Confirmer le nouveau mot de passe :"></BaseInput>
-      <BaseButton>Valider</BaseButton>
+      <BaseButton type="submit">Valider</BaseButton>
 
     </BaseForm>
 
