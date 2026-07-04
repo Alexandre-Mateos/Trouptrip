@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@nuxt/icon": "^2.2.3",
-    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@nuxt/ui": "^4.9.0",
+    "tailwindcss": "^4.0.0",
     "@pinia/nuxt": "^0.11.3",
     "@schedule-x/calendar": "^4.6.0",
     "@schedule-x/events-service": "^4.6.0",
