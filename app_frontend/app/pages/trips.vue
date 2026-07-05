@@ -86,7 +86,7 @@ export default defineComponent({
     </div>
 
     <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
-      <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
+      <div class="tripList tripList flex flex-col gap-2" :class="{'hidden': isTripViewVisible && !isDesktop}">
         <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
           <TripCard :trip="trip"></TripCard>
         </NuxtLink>
@@ -111,20 +111,8 @@ export default defineComponent({
   min-height: 100vh;
 }
 
-.mobilStyle {
-  .tripList {
-    max-width: 450px;
-  }
-}
-
 .desktopStyle {
   display: flex;
-
-  .tripList {
-    flex: 0 0 23%;
-    min-width: 300px;
-    max-width: 450px;
-  }
 
   .tripView {
     flex-grow: 1;

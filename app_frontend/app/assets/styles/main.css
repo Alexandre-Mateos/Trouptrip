@@ -8,7 +8,6 @@ body {
 }
 
 @theme static {
-    /* 1. Ton Accent (#0E9AA7) */
     --color-trouptrip-accent-50: #effafb;
     --color-trouptrip-accent-100: #d7f1f4;
     --color-trouptrip-accent-200: #b3e3e9;
@@ -21,7 +20,6 @@ body {
     --color-trouptrip-accent-900: #12454e;
     --color-trouptrip-accent-950: #062d35;
 
-    /* 2. Ton Violet (#B973F2) */
     --color-trouptrip-secondary-50: #fbf6ff;
     --color-trouptrip-secondary-100: #f5eaff;
     --color-trouptrip-secondary-200: #edd7ff;
@@ -34,7 +32,6 @@ body {
     --color-trouptrip-secondary-900: #5f298a;
     --color-trouptrip-secondary-950: #3f1561;
 
-    /* 3. Ton Rouge (#E9585B) */
     --color-trouptrip-error-50: #fff5f5;
     --color-trouptrip-error-100: #ffe5e6;
     --color-trouptrip-error-200: #fecdcf;
@@ -52,13 +49,12 @@ body {
     --color-trouptrip-neutral-200: #e5e7eb;
     --color-trouptrip-neutral-300: #d1d5db;
     --color-trouptrip-neutral-400: #9ca3af;
-    --color-trouptrip-neutral-500: #6b7280; /* Ton #6B7280 */
+    --color-trouptrip-neutral-500: #6b7280;
     --color-trouptrip-neutral-600: #4b5563;
     --color-trouptrip-neutral-700: #374151;
     --color-trouptrip-neutral-800: #1f2937;
     --color-trouptrip-neutral-950: #030712;
 
-    /* 4. Tes couleurs brutes de structure */
     --color-surface-primary-trouptrip: #edf7f6;
     --color-surface-secondary-trouptrip: #F7FAF9;
     --color-trouptrip-title: #292843;
