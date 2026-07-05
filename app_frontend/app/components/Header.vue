@@ -7,58 +7,80 @@ export default defineComponent({
   name: "Header",
   components: {LogoutButton},
   computed: {
-    headerNav(){
+    headerNav() {
       return useDisplayStore().constructHeader();
+    },
+    userStore(){
+      return useUserStore();
     }
   },
 })
 </script>
 
 <template>
-  <header class="collapse shadow-sm w-full">
-    <input id="navbar-1-toggle" class="peer hidden" type="checkbox"/>
-    <div class="collapse-title cursor-default navbar p-0 container mx-auto px-4 md:px-6 lg:px-8">
-      <div class="navbar-start">
-        <NuxtLink to="/"><img src="/trouptrip_logo_no_background.png" alt="logo de Trouptrip" title="retour à l'accueil"
-                              class="h-10 w-auto"></NuxtLink>
+  <UHeader
+      mode="slideover"
+      :toggle="{
+        variant: 'ghost',
+        class: 'rounded-md text-trouptrip-title hover:bg-trouptrip-accent-500 hover:text-white'
+      }"
+      :ui="{
+        root: 'bg-surface-primary-trouptrip border-none shadow-md',
+        content: 'bg-surface-primary-trouptrip text-trouptrip-title w-72 max-w-xs',
+        header: 'border-b-0'
+      }"
+  >
+    <template #title>
+      <div class="flex flex-row items-center gap-2">
+      <NuxtLink to="/">
+        <img
+            src="/trouptrip_logo_no_background.png"
+            alt="logo de Trouptrip"
+            title="retour à l'accueil"
+            class="h-10 w-auto"
+        />
+      </NuxtLink>
+      <p class="trouptrip">Trouptrip</p>
       </div>
+    </template>
 
-      <div class="navbar-center">
-        <p>Trouptrip</p>
+    <UNavigationMenu
+        :items="headerNav"
+        variant="link"
+        :ui="{
+          root: 'w-auto',
+          list: 'flex flex-row gap-x-6',
+          item: 'shrink-0',
+          link: 'text-md whitespace-nowrap text-trouptrip-title hover:text-trouptrip-accent-500 hover:underline hover:underline-offset-4 transform hover:-translate-y-1 transition-all duration-200'
+        }"
+    />
+
+    <template #right>
+      <div v-if="userStore.user" class="hidden md:block">
+        <LogoutButton class="text-md text-trouptrip-title hover:text-trouptrip-accent-500 hover:underline hover:underline-offset-4 transform hover:-translate-y-1 transition-all duration-200"/>
       </div>
+    </template>
 
-      <div class="navbar-end">
-        <div class="hidden lg:flex">
-          <div>
-            <BaseNav :links="headerNav" class="menu menu-horizontal px-1 gap-2"></BaseNav>
-          </div>
-        </div>
-
-        <label for="navbar-1-toggle" class="lg:hidden cursor-pointer toggle-btn p-2 rounded-md">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
-          </svg>
-        </label>
+    <template #body>
+      <UNavigationMenu
+          :items="headerNav"
+          orientation="vertical"
+          variant="link"
+          class="-mx-2.5"
+          :ui="{
+            root: 'w-full border-none',
+            link: 'text-trouptrip-title hover:text-trouptrip-accent-500 hover:underline hover:underline-offset-4 transition-all text-md'
+          }"
+      />
+      <div v-if="userStore.user" class="mt-4 pt-2 border-solid border-t border-trouptrip-neutral-500">
+        <LogoutButton class="text-trouptrip-title hover:text-trouptrip-accent-500 hover:underline hover:underline-offset-4 transition-all text-md"/>
       </div>
-    </div>
-
-    <div class="collapse-content lg:hidden z-1 container mx-auto px-4 md:px-6 lg:px-8">
-      <div>
-        <BaseNav :links="headerNav" class="menu flex flex-column gap-2"></BaseNav>
-      </div>
-    </div>
-
-  </header>
-
+    </template>
+  </UHeader>
 </template>
 
 <style scoped>
-header {
-  background-color: var(--color-surface);
-}
-
-.toggle-btn:hover {
-  background-color: var(--color-accent);
-  color: #ffffff;
+.trouptrip{
+  color: var(--color-trouptrip-title);
 }
 </style>

@@ -1,36 +1,32 @@
 <script lang="ts">
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  data() {
-    return {
-      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
-    }
-  },
   computed: {
     displayStore() {
       return useDisplayStore();
     }
   },
   methods: {
-    handleResize() {
-      this.windowWidth = window.innerWidth;
-      this.displayStore.isDesktop = this.windowWidth > 768;
-    },
+    updateIsDesktop() {
+      this.displayStore.isDesktop = window.innerWidth > 768;
+    }
   },
   mounted() {
-    this.handleResize();
-
-    window.addEventListener('resize', this.handleResize);
+    this.updateIsDesktop();
+    window.addEventListener("resize", this.updateIsDesktop);
   },
+
   unmounted() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.updateIsDesktop);
   }
 });
 </script>
 
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UApp>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UApp>
 </template>

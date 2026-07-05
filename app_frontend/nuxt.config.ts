@@ -40,5 +40,10 @@ export default defineNuxtConfig({
         }
     },
     modules: ['@pinia/nuxt', '@nuxt/icon', '@nuxt/ui'],
+    ui: {
+        theme: {
+            colors: ['primary', 'secondary', 'error', 'trouptrip-accent', 'trouptrip-secondary', 'trouptrip-error', 'trouptrip-neutral']
+        }
+    },
     css: ['~/assets/styles/main.css'],
 })

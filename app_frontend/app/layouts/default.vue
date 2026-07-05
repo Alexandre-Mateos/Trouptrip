@@ -9,7 +9,7 @@
 
 <style scoped>
 .main-theme{
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-surface-secondary-trouptrip);
+  color: var(--color-trouptrip-title);
 }
 </style>

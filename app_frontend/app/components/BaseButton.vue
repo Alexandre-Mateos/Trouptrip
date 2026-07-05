@@ -17,7 +17,7 @@ export default defineComponent({
   <button
       :type="type"
       v-bind="$attrs"
-      class="px-3 py-1 rounded-md w-max"
+      class="px-3 py-1 rounded-md w-max cursor-pointer"
   >
     <slot></slot>
   </button>
@@ -25,7 +25,7 @@ export default defineComponent({
 
 <style scoped>
 button {
-  background-color: var(--color-accent);
+  background-color: var(--color-trouptrip-accent-500);
   color: white;
 }
 </style>
