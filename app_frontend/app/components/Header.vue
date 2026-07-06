@@ -56,7 +56,7 @@ export default defineComponent({
     />
 
     <template #right>
-      <div v-if="userStore.user" class="hidden md:block">
+      <div v-if="userStore.user" class="hidden lg:block">
         <LogoutButton class="text-md text-trouptrip-title hover:text-trouptrip-accent-500 hover:underline hover:underline-offset-4 transform hover:-translate-y-1 transition-all duration-200"/>
       </div>
     </template>
