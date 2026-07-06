@@ -46,6 +46,9 @@ export default defineComponent({
     },
     getFirstTripId() {
       return useTripsStore().getFirstTripId;
+    },
+    displayStore(){
+      return useDisplayStore();
     }
   },
   async mounted() {
@@ -85,16 +88,24 @@ export default defineComponent({
       <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
     </div>
 
-    <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
-      <div class="tripList tripList flex flex-col gap-2" :class="{'hidden': isTripViewVisible && !isDesktop}">
+    <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}">
+
+      <div class="cards-block flex flex-col gap-2" :class="{'hidden': isTripViewVisible && !isDesktop}">
         <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
           <TripCard :trip="trip"></TripCard>
         </NuxtLink>
       </div>
 
-      <div class="tripView" :class="{'hidden': !isTripViewVisible && !isDesktop}">
+      <div class="nav-block flex gap-2 justify-around">
+        <template v-for="tab in displayStore.tripNavTab" :key="tab.key">
+          <BaseTab @click="displayStore.activateTripTab(tab.key)">{{ tab.label }}</BaseTab>
+        </template>
+      </div>
+
+      <div class="page-block" :class="{'hidden': !isTripViewVisible && !isDesktop}">
         <NuxtPage/>
       </div>
+
     </div>
   </div>
   <div v-else>
@@ -107,15 +118,32 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.trip-container {
-  min-height: 100vh;
-}
 
 .desktopStyle {
-  display: flex;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
 
-  .tripView {
-    flex-grow: 1;
+  .nav-block {
+    grid-column: 2;
+    grid-row: 1;
   }
+
+  .cards-block {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .page-block {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+}
+
+.mobilStyle {
+  display: flex;
+  flex-direction: column;
 }
 </style>

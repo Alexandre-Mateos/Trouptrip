@@ -15,8 +15,9 @@ export default defineComponent({
 <template>
   <UCard
       :ui="{
-      root: 'bg-white border border-solid border-trouptrip-accent-500 shadow-md transform hover:translate-x-3 transition-all duration-200',
-    }"
+    root: 'bg-white shadow-md transform hover:translate-x-4 transition-all duration-200 border border-solid border-trouptrip-accent-500 ring-0',
+    body: 'divide-none'
+  }"
   >
     <h2 class="text-trouptrip-title">{{ trip.title }}</h2>
     <p class="text-trouptrip-neutral-500 text-sm">Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>

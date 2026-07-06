@@ -9,21 +9,13 @@ export default defineComponent({
     return {
       id: null as number | null,
       navTab: [
-        {key: 'my-trip', label: 'Mon séjour'},
-        {key: 'activities', label: 'Mes activités'},
-        {key: 'tasks', label: 'Mes tâches'}
+        {key: 'my-trip', label: 'Mon séjour'}
       ],
       activeTabKey: 'my-trip',
       hasError: false
     }
   },
   methods: {
-    activateTab(key: string) {
-      this.activeTabKey = key;
-    },
-    isActiveTab(tabId: string) {
-      return this.activeTabKey === tabId;
-    }
   },
   async mounted() {
     const tripId = useRoute().params.id;
@@ -40,6 +32,9 @@ export default defineComponent({
     trip() {
       if (this.id === null) return null;
       return useTripsStore().getTripById(this.id) as IMapTripDetails | undefined;
+    },
+    displayStore(){
+      return useDisplayStore();
     }
   }
 })
@@ -52,25 +47,15 @@ export default defineComponent({
   </div>
 
   <div v-else-if="trip">
-    <div class="flex gap-2 justify-around">
-      <template v-for="tab in navTab" :key="tab.key">
-        <BaseTab @click="activateTab(tab.key)">{{ tab.label }}</BaseTab>
-      </template>
-    </div>
-
-    <div>
-      <div id="my-trip" :class="{ 'active-tab': isActiveTab('my-trip'), 'inactive-tab': !isActiveTab('my-trip') }">
+    <UCard
+        :ui="{
+          root: 'bg-white shadow-md border-none ring-0',
+          body: 'divide-none'
+        }">
+      <div id="my-trip" :class="{ 'active-tab': displayStore.isActiveTab('my-trip'), 'inactive-tab': !displayStore.isActiveTab('my-trip') }">
         <TripDetailTab :trip="trip"></TripDetailTab>
       </div>
-
-      <div id="activities" :class="{ 'active-tab': isActiveTab('activities'), 'inactive-tab': !isActiveTab('activities') }">
-        <TripActivityTab></TripActivityTab>
-      </div>
-
-      <div id="tasks" :class="{ 'active-tab': isActiveTab('tasks'), 'inactive-tab': !isActiveTab('tasks') }">
-        <TripTaskTab></TripTaskTab>
-      </div>
-    </div>
+    </UCard>
   </div>
 
   <div v-else class="p-4 text-center">
