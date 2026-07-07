@@ -8,14 +8,13 @@ export default defineComponent({
   data() {
     return {
       id: null as number | null,
-      navTab: [
-        {key: 'my-trip', label: 'Mon séjour'}
-      ],
-      activeTabKey: 'my-trip',
-      hasError: false
+      hasError: false,
+      tabs: [
+        {label: "Mon séjour", slot: "myTrip" },
+        {label: "Le coffre", slot: "theTrunk"},
+        {label: "Sac à dos", slot: "myBackPack"  }
+      ]
     }
-  },
-  methods: {
   },
   async mounted() {
     const tripId = useRoute().params.id;
@@ -32,9 +31,6 @@ export default defineComponent({
     trip() {
       if (this.id === null) return null;
       return useTripsStore().getTripById(this.id) as IMapTripDetails | undefined;
-    },
-    displayStore(){
-      return useDisplayStore();
     }
   }
 })
@@ -46,15 +42,34 @@ export default defineComponent({
     <p class="text-sm text-gray-400 mt-1">Ce voyage n'existe plus ou vous n'y avez pas accès.</p>
   </div>
 
-  <div v-else-if="trip">
+  <div v-else-if="trip" class="w-full">
     <UCard
         :ui="{
-          root: 'bg-white shadow-md border-none ring-0',
-          body: 'divide-none'
-        }">
-      <div id="my-trip" :class="{ 'active-tab': displayStore.isActiveTab('my-trip'), 'inactive-tab': !displayStore.isActiveTab('my-trip') }">
-        <TripDetailTab :trip="trip"></TripDetailTab>
-      </div>
+              root: 'bg-white shadow-md border-none ring-0',
+              body: 'divide-none'
+            }"
+    >
+      <UTabs
+          :items="tabs"
+          :ui="{
+            list: 'bg-surface-primary-trouptrip p-1 rounded-md',
+            indicator: 'bg-trouptrip-accent-500 rounded-lg transition-all duration-300 ease-in-out',
+            trigger: 'data-[state=inactive]:text-trouptrip-title data-[state=active]:text-white',
+            label: 'text-base'
+          }"
+      >
+        <template #myTrip>
+            <TripDetailTab :trip="trip"></TripDetailTab>
+        </template>
+        <template #theTrunk>
+          <p>A venir</p>
+          <p>C'est ici que seront renseigné les items du groupes</p>
+        </template>
+        <template #myBackPack>
+          <p>A venir</p>
+          <p>C'est ici que seront renseigné les items personnels de l'utilisateur</p>
+        </template>
+      </UTabs>
     </UCard>
   </div>
 
@@ -62,13 +77,5 @@ export default defineComponent({
     <p>Chargement des données du voyage...</p>
   </div>
 </template>
-
 <style scoped>
-.active-tab {
-  display: block;
-}
-
-.inactive-tab {
-  display: none;
-}
 </style>

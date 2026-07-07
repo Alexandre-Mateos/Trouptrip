@@ -6,7 +6,6 @@ export default defineComponent({
   name: "trip",
   data() {
     return {
-      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
       tripTitle: '',
       tripDescription: '',
       tripStartDate: '',
@@ -20,9 +19,6 @@ export default defineComponent({
     }
   },
   methods: {
-    getScreenSize() {
-      this.windowWidth = window.innerWidth;
-    },
     openModal() {
       this.isModalOpen = true;
     },
@@ -31,9 +27,6 @@ export default defineComponent({
     }
   },
   computed: {
-    isDesktop(): boolean {
-      return this.windowWidth > 768;
-    },
     isTripViewVisible(): boolean {
       if (this.$route.params.id) {
         return true;
@@ -52,7 +45,6 @@ export default defineComponent({
     }
   },
   async mounted() {
-    this.getScreenSize();
     try {
       await useTripsStore().fetchTrips();
       if (useDisplayStore().isDesktop && this.getFirstTripId) {
@@ -63,11 +55,6 @@ export default defineComponent({
     } finally {
       this.isLoading = false;
     }
-
-    window.addEventListener('resize', this.getScreenSize);
-  },
-  unmounted() {
-    window.removeEventListener('resize', this.getScreenSize);
   }
 });
 </script>
@@ -88,24 +75,29 @@ export default defineComponent({
       <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
     </div>
 
-    <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}">
-
-      <div class="cards-block flex flex-col gap-2" :class="{'hidden': isTripViewVisible && !isDesktop}">
-        <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
-          <TripCard :trip="trip"></TripCard>
+    <div
+        class="layout mt-4"
+        :class="{ 'layout-mobile': !displayStore.isDesktop }"
+    >
+      <div
+          class="cards-block flex flex-col gap-2"
+          :class="{ 'hidden-mobile': isTripViewVisible }"
+      >
+        <NuxtLink
+            v-for="trip in trips"
+            :key="trip.id"
+            :to="{ name: 'trips-id', params: { id: trip.id } }"
+        >
+          <TripCard :trip="trip" />
         </NuxtLink>
       </div>
 
-      <div class="nav-block flex gap-2 justify-around">
-        <template v-for="tab in displayStore.tripNavTab" :key="tab.key">
-          <BaseTab @click="displayStore.activateTripTab(tab.key)">{{ tab.label }}</BaseTab>
-        </template>
+      <div
+          class="page-block"
+          :class="{ 'hidden-mobile': !isTripViewVisible }"
+      >
+        <NuxtPage />
       </div>
-
-      <div class="page-block" :class="{'hidden': !isTripViewVisible && !isDesktop}">
-        <NuxtPage/>
-      </div>
-
     </div>
   </div>
   <div v-else>
@@ -118,32 +110,27 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
-.desktopStyle {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  grid-template-rows: auto auto;
+.layout {
+  display: flex;
   gap: 1.5rem;
 
-  .nav-block {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
   .cards-block {
-    grid-column: 1;
-    grid-row: 2;
+    width: 300px;
+    flex-shrink: 0;
   }
 
   .page-block {
-    grid-column: 2;
-    grid-row: 2;
+    flex: 1;
+    width: 100%;
   }
-
 }
 
-.mobilStyle {
-  display: flex;
+.layout-mobile {
   flex-direction: column;
+  gap: 0;
+
+  .hidden-mobile {
+    display: none;
+  }
 }
 </style>
