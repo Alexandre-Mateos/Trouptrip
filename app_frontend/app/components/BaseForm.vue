@@ -9,7 +9,7 @@ export default defineComponent({
 
 <template>
   <form @submit.prevent="$emit('submit')"
-        class="p-6 max-w-xs md:max-w-md flex flex-col gap-4 rounded-md mx-auto mt-4"
+        class="p-6 max-w-xs md:max-w-md flex flex-col gap-4 rounded-md mx-auto mt-4 shadow-md"
         v-bind="$attrs"
   >
     <slot></slot>
@@ -18,7 +18,7 @@ export default defineComponent({
 
 <style scoped>
 form{
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-primary-trouptrip);
 }
 
 </style>

@@ -44,7 +44,7 @@ export default defineComponent({
         v-bind="$attrs"
         :value="modelValue"
         @input="emitValue($event)"
-        class="rounded-md"
+        class="rounded-md px-2"
         :class="{'border-2 border-red-800': errors && errors.length > 0}"
     >
   </div>
@@ -52,6 +52,7 @@ export default defineComponent({
 
 <style scoped>
 input{
-  background-color: var(--color-bg);
+  background-color: var(--color-surface-secondary-trouptrip);
+  border: solid 1px var(--color-trouptrip-accent-200);
 }
 </style>
