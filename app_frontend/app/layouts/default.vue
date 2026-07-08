@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen main-theme">
-    <Header></Header>
+    <Header class="mb-4"></Header>
     <main class="container mx-auto px-4 md:px-6 lg:px-8">
       <slot />
     </main>

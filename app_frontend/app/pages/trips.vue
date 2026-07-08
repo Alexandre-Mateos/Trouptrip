@@ -60,11 +60,8 @@ export default defineComponent({
 </script>
 
 <template>
+  <ActionButton type="submit" @click="openModal" icon="fa6-solid:circle-plus">Créer un séjour</ActionButton>
 
-  <BaseButton @click="openModal">
-    <Icon name="fa6-solid:circle-plus"></Icon>
-    Créer un séjour
-  </BaseButton>
   <div v-if="useTripsStore().trips.size > 0">
     <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
       <p>Chargement de vos séjours...</p>

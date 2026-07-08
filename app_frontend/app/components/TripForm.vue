@@ -75,8 +75,10 @@ export default defineComponent({
     <BaseInput id="end_date" type="date" label="Date de fin" v-model="tripEndDate" :errors="errors?.endDate"/>
 
     <div class="flex gap-2">
-      <BaseButton type="submit" :disabled="isSubmitting">Valider</BaseButton>
-      <BaseButton type="button" @click="$emit('done')">Annuler</BaseButton>
+<!--      <BaseButton type="submit" :disabled="isSubmitting">Valider</BaseButton>-->
+      <ActionButton type="submit" :disabled="isSubmitting"></ActionButton>
+<!--      <BaseButton type="button" @click="$emit('done')">Annuler</BaseButton>-->
+      <CancelButton type="button" @click="$emit('done')"></CancelButton>
     </div>
   </BaseForm>
 </template>

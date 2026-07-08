@@ -44,6 +44,18 @@ body {
     --color-trouptrip-error-900: #7c1e20;
     --color-trouptrip-error-950: #440b0c;
 
+    --color-trouptrip-success-50: #f1fcf2;
+    --color-trouptrip-success-100: #def9e0;
+    --color-trouptrip-success-200: #bef2c3;
+    --color-trouptrip-success-300: #8ee596;
+    --color-trouptrip-success-400: #55cf60;
+    --color-trouptrip-success-500: #26B32D;
+    --color-trouptrip-success-600: #1b9322;
+    --color-trouptrip-success-700: #18741e;
+    --color-trouptrip-success-800: #185c1d;
+    --color-trouptrip-success-900: #164c1b;
+    --color-trouptrip-success-950: #072a0b;
+
     --color-trouptrip-neutral-50: #f9fafb;
     --color-trouptrip-neutral-100: #f3f4f6;
     --color-trouptrip-neutral-200: #e5e7eb;

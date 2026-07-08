@@ -55,7 +55,7 @@ export default defineComponent({
             list: 'bg-surface-primary-trouptrip p-1 rounded-md',
             indicator: 'bg-trouptrip-accent-500 rounded-lg transition-all duration-300 ease-in-out',
             trigger: 'data-[state=inactive]:text-trouptrip-title data-[state=active]:text-white',
-            label: 'text-base'
+            label: 'text-base cursor-pointer'
           }"
       >
         <template #myTrip>

@@ -66,16 +66,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="isTripOwner">
-    <BaseButton @click="openEditTripModal">
-      <Icon name="lucide:edit"></Icon>
-      Modifier
-    </BaseButton>
-    <BaseButton @click="openDeleteTripModal">
-      <Icon name="material-symbols:delete-outline"></Icon>
-      Supprimer
-    </BaseButton>
-  </div>
   <div v-if="error" class="text-red-700 p-3 rounded mb-4">
     {{ error }}
   </div>
@@ -105,6 +95,12 @@ export default defineComponent({
   <div v-else>
     <p>Invitez quelques amis pour ce séjour</p>
   </div>
+  <div class="flex justify-end">
+    <div v-if="isTripOwner" class="flex flex-row gap-2">
+      <EditButton @click="openEditTripModal"></EditButton>
+      <DeleteButton @click="openDeleteTripModal"></DeleteButton>
+    </div>
+  </div>
 
   <BaseModal :open="isEditTripModalOpen">
     <TripForm
@@ -115,10 +111,13 @@ export default defineComponent({
   </BaseModal>
   <BaseModal :open="isDeleteTripModalOpen">
     <div>
-      <p>Vous Etes sur le point de supprimer ce voyage</p>
+      <p>Vous Etes sur le point de supprimer le voyage suivant :</p>
+      <p>{{trip.title}}</p>
       <p>Etes vous sûr de vouloir continuer ?</p>
-      <BaseButton @click="deleteTrip">Supprimer</BaseButton>
-      <BaseButton @click="closeDeleteTripModal">Annuler</BaseButton>
+      <div class="flex flex-row justify-center gap-2">
+        <DeleteButton @click="deleteTrip"></DeleteButton>
+        <CancelButton @click="closeDeleteTripModal"></CancelButton>
+      </div>
     </div>
   </BaseModal>
 
