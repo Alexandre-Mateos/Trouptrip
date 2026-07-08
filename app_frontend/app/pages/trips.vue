@@ -103,7 +103,8 @@ export default defineComponent({
   <div v-else>
     <p>Vous n'avez pas encore de voyages à afficher</p>
   </div>
-  <BaseModal ref="createTripModal" :open="isModalOpen">
+
+  <BaseModal :open="isModalOpen">
     <TripForm @done="closeModal"/>
   </BaseModal>
 

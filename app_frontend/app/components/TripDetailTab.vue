@@ -108,7 +108,7 @@ export default defineComponent({
 
   <BaseModal :open="isEditTripModalOpen">
     <TripForm
-        v-if="isEditTripModalOpen"
+        :open="isEditTripModalOpen"
         :tripToEdit="trip"
         @done="closeEditTripModal"
     />
