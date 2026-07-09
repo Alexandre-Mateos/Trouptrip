@@ -14,21 +14,15 @@ export default defineComponent({
     return {
       isEditTripModalOpen: false,
       isDeleteTripModalOpen: false,
-      error: '',
+      error: ''
     }
   },
   methods: {
-    openEditTripModal() {
-      this.isEditTripModalOpen = true;
+    toggleEditTripModal() {
+      this.isEditTripModalOpen = !this.isEditTripModalOpen;
     },
-    closeEditTripModal() {
-      this.isEditTripModalOpen = false;
-    },
-    openDeleteTripModal() {
-      this.isDeleteTripModalOpen = true;
-    },
-    closeDeleteTripModal() {
-      this.isDeleteTripModalOpen = false;
+    toggleDeleteTripModal(){
+      this.isDeleteTripModalOpen = !this.isDeleteTripModalOpen;
     },
     async deleteTrip() {
       this.error = '';
@@ -42,24 +36,18 @@ export default defineComponent({
       } catch (error: any) {
         this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
-      this.closeDeleteTripModal();
+      this.toggleDeleteTripModal();
     }
   },
   computed: {
-    // On exclue le user connecté de la liste des participants à afficher
-    otherParticipants(): any[] {
-      if (!this.trip.participations) return [];
-
-      const currentUserId = useUserStore().user?.id;
-      return this.trip.participations.filter(
-          participation => participation.participant.id !== currentUserId
-      );
-    },
     isTripOwner(): boolean {
       const currentUserId = useUserStore().user?.id;
       const ownerId = this.trip?.owner?.id;
 
       return currentUserId === ownerId;
+    },
+    participant(){
+      return useTripsStore().getParticipantListByTripId(this.trip.id)
     }
   },
 })
@@ -70,35 +58,23 @@ export default defineComponent({
     {{ error }}
   </div>
 
-  <p>{{ trip.title }}</p>
-  <p>{{ trip.description }}</p>
-  <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
+  <div class="flex flex-col gap-2">
+    <p class="text-lg text-center">{{ trip.title }}</p>
+    <p v-if="trip.description">{{ trip.description }}</p>
+    <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
+  </div>
 
-  <div v-if="trip.participations && trip.participations.length > 0">
-    <table>
-      <thead>
-      <tr>
-        <th scope="col">Prénom</th>
-        <th scope="col">Nom</th>
-        <th scope="col">Statut</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="participation in otherParticipants" :key="participation.id">
-        <th scope="row">{{ participation.participant.firstname }}</th>
-        <td>{{ participation.participant.lastname }}</td>
-        <td>{{ participation.status }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div v-if="trip.participations && trip.participations.length > 0" class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
+    <p class="text-center">Participants du voyage </p>
+      <UTable :data="participant" class="flex-1" />
   </div>
   <div v-else>
     <p>Invitez quelques amis pour ce séjour</p>
   </div>
   <div class="flex justify-end">
     <div v-if="isTripOwner" class="flex flex-row gap-2">
-      <EditButton @click="openEditTripModal"></EditButton>
-      <DeleteButton @click="openDeleteTripModal"></DeleteButton>
+      <EditButton @click="toggleEditTripModal"></EditButton>
+      <DeleteButton @click="toggleDeleteTripModal"></DeleteButton>
     </div>
   </div>
 
@@ -106,7 +82,7 @@ export default defineComponent({
     <TripForm
         :open="isEditTripModalOpen"
         :tripToEdit="trip"
-        @done="closeEditTripModal"
+        @done="toggleEditTripModal"
     />
   </BaseModal>
   <BaseModal :open="isDeleteTripModalOpen">
@@ -116,7 +92,7 @@ export default defineComponent({
       <p>Etes vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton @click="deleteTrip"></DeleteButton>
-        <CancelButton @click="closeDeleteTripModal"></CancelButton>
+        <CancelButton @click="toggleDeleteTripModal"></CancelButton>
       </div>
     </div>
   </BaseModal>

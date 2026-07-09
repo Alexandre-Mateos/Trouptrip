@@ -19,11 +19,8 @@ export default defineComponent({
     }
   },
   methods: {
-    openModal() {
-      this.isModalOpen = true;
-    },
-    closeModal() {
-      this.isModalOpen = false;
+    toggleModal(){
+      this.isModalOpen = !this.isModalOpen;
     }
   },
   computed: {
@@ -60,7 +57,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <ActionButton type="submit" @click="openModal" icon="fa6-solid:circle-plus">Créer un séjour</ActionButton>
+  <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">Créer un séjour</ActionButton>
 
   <div v-if="useTripsStore().trips.size > 0">
     <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
@@ -102,7 +99,7 @@ export default defineComponent({
   </div>
 
   <BaseModal :open="isModalOpen">
-    <TripForm @done="closeModal"/>
+    <TripForm @done="toggleModal"/>
   </BaseModal>
 
 </template>
@@ -125,6 +122,7 @@ export default defineComponent({
 
 .layout-mobile {
   flex-direction: column;
+  align-items: center;
   gap: 0;
 
   .hidden-mobile {

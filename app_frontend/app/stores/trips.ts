@@ -5,6 +5,8 @@ import type {ITripDetails} from "~/interfaces/i-tripDetails";
 import type {IMapTrip} from "~/interfaces/i-mapTrip";
 import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
 import type {ITripForm} from "~/interfaces/i-tripForm";
+import type {IParticipantList} from "~/interfaces/i-participantList";
+import type {IParticipation} from "~/interfaces/i-participation";
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -35,6 +37,32 @@ export const useTripsStore = defineStore('trips', {
         getFirstTripId: (state) => {
             const keys = Array.from(state.trips.keys());
             return keys[0];
+        },
+        getParticipantListByTripId: (state) => {
+            return (tripId: number) => {
+                const trip = state.trips.get(tripId);
+                if (!trip || !trip.isDetail) {
+                    return [];
+                }
+
+                const currentUserId = useUserStore().user?.id;
+                const ownerId = trip.owner.id;
+
+                const participantList: IParticipantList[]  = [];
+                trip.participations.forEach((participation) => {
+
+                    if(currentUserId !== participation.participant.id){
+                        participantList.push(
+                            {
+                                firstname: participation.participant.firstname,
+                                lastname: participation.participant.lastname,
+                                status: participation.status,
+                            }
+                        );
+                    }
+                });
+                return participantList;
+            }
         }
     },
     actions: {
