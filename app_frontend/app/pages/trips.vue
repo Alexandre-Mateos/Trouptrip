@@ -6,7 +6,6 @@ export default defineComponent({
   name: "trip",
   data() {
     return {
-      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
       tripTitle: '',
       tripDescription: '',
       tripStartDate: '',
@@ -20,20 +19,11 @@ export default defineComponent({
     }
   },
   methods: {
-    getScreenSize() {
-      this.windowWidth = window.innerWidth;
-    },
-    openModal() {
-      this.isModalOpen = true;
-    },
-    closeModal() {
-      this.isModalOpen = false;
+    toggleModal(){
+      this.isModalOpen = !this.isModalOpen;
     }
   },
   computed: {
-    isDesktop(): boolean {
-      return this.windowWidth > 768;
-    },
     isTripViewVisible(): boolean {
       if (this.$route.params.id) {
         return true;
@@ -46,10 +36,12 @@ export default defineComponent({
     },
     getFirstTripId() {
       return useTripsStore().getFirstTripId;
+    },
+    displayStore(){
+      return useDisplayStore();
     }
   },
   async mounted() {
-    this.getScreenSize();
     try {
       await useTripsStore().fetchTrips();
       if (useDisplayStore().isDesktop && this.getFirstTripId) {
@@ -60,21 +52,13 @@ export default defineComponent({
     } finally {
       this.isLoading = false;
     }
-
-    window.addEventListener('resize', this.getScreenSize);
-  },
-  unmounted() {
-    window.removeEventListener('resize', this.getScreenSize);
   }
 });
 </script>
 
 <template>
+  <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">Créer un séjour</ActionButton>
 
-  <BaseButton @click="openModal">
-    <Icon name="fa6-solid:circle-plus"></Icon>
-    Créer un séjour
-  </BaseButton>
   <div v-if="useTripsStore().trips.size > 0">
     <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
       <p>Chargement de vos séjours...</p>
@@ -85,49 +69,64 @@ export default defineComponent({
       <p>Veuillez vérifier votre connexion ou réessayer plus tard.</p>
     </div>
 
-    <div v-else :class="{'desktopStyle': isDesktop, 'mobilStyle': !isDesktop}" class="trip-container">
-      <div class="tripList" :class="{'hidden': isTripViewVisible && !isDesktop}">
-        <NuxtLink v-for="trip in trips" :key="trip.id" :to="{name: 'trips-id', params: { id: trip.id}}">
-          <TripCard :trip="trip"></TripCard>
+    <div
+        class="layout mt-4"
+        :class="{ 'layout-mobile': !displayStore.isDesktop }"
+    >
+      <div
+          class="cards-block flex flex-col gap-2"
+          :class="{ 'hidden-mobile': isTripViewVisible }"
+      >
+        <NuxtLink
+            v-for="trip in trips"
+            :key="trip.id"
+            :to="{ name: 'trips-id', params: { id: trip.id } }"
+        >
+          <TripCard :trip="trip" />
         </NuxtLink>
       </div>
 
-      <div class="tripView" :class="{'hidden': !isTripViewVisible && !isDesktop}">
-        <NuxtPage/>
+      <div
+          class="page-block"
+          :class="{ 'hidden-mobile': !isTripViewVisible }"
+      >
+        <NuxtPage />
       </div>
     </div>
   </div>
   <div v-else>
     <p>Vous n'avez pas encore de voyages à afficher</p>
   </div>
-  <BaseModal ref="createTripModal" :open="isModalOpen">
-    <TripForm @done="closeModal"/>
+
+  <BaseModal :open="isModalOpen">
+    <TripForm @done="toggleModal"/>
   </BaseModal>
 
 </template>
 
 <style scoped>
-.trip-container {
-  min-height: 100vh;
-}
-
-.mobilStyle {
-  .tripList {
-    max-width: 450px;
-  }
-}
-
-.desktopStyle {
+.layout {
   display: flex;
+  gap: 1.5rem;
 
-  .tripList {
-    flex: 0 0 23%;
-    min-width: 300px;
-    max-width: 450px;
+  .cards-block {
+    width: 300px;
+    flex-shrink: 0;
   }
 
-  .tripView {
-    flex-grow: 1;
+  .page-block {
+    flex: 1;
+    width: 100%;
+  }
+}
+
+.layout-mobile {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+
+  .hidden-mobile {
+    display: none;
   }
 }
 </style>

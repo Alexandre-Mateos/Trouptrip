@@ -39,13 +39,11 @@ export default defineNuxtConfig({
             }
         }
     },
-    modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/icon'],
-    tailwindcss: {
-        // Force le module à surveiller ce fichier spécifiquement
-        configPath: 'tailwind.config.ts',
-        // Optionnel : force une recompilation complète si le config change
-        exposeConfig: false,
-        viewer: true,
+    modules: ['@pinia/nuxt', '@nuxt/icon', '@nuxt/ui'],
+    ui: {
+        theme: {
+            colors: ['primary', 'secondary', 'error', 'trouptrip-accent', 'trouptrip-secondary', 'trouptrip-error', 'trouptrip-neutral']
+        }
     },
     css: ['~/assets/styles/main.css'],
 })

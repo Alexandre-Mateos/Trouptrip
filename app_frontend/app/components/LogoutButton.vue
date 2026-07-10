@@ -27,9 +27,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <BaseButton type="button" @click="logout">
+  <button type="button" @click="logout" v-bind="$attrs" class="cursor-pointer">
     Déconnexion
-  </BaseButton>
+  </button>
 </template>
 
 <style scoped>

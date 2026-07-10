@@ -8,21 +8,12 @@ export default defineComponent({
   data() {
     return {
       id: null as number | null,
-      navTab: [
-        {key: 'my-trip', label: 'Mon séjour'},
-        {key: 'activities', label: 'Mes activités'},
-        {key: 'tasks', label: 'Mes tâches'}
-      ],
-      activeTabKey: 'my-trip',
-      hasError: false
-    }
-  },
-  methods: {
-    activateTab(key: string) {
-      this.activeTabKey = key;
-    },
-    isActiveTab(tabId: string) {
-      return this.activeTabKey === tabId;
+      hasError: false,
+      tabs: [
+        {label: "Mon séjour", slot: "myTrip" },
+        {label: "Le coffre", slot: "theTrunk"},
+        {label: "Sac à dos", slot: "myBackPack"  }
+      ]
     }
   },
   async mounted() {
@@ -51,39 +42,40 @@ export default defineComponent({
     <p class="text-sm text-gray-400 mt-1">Ce voyage n'existe plus ou vous n'y avez pas accès.</p>
   </div>
 
-  <div v-else-if="trip">
-    <div class="flex gap-2 justify-around">
-      <template v-for="tab in navTab" :key="tab.key">
-        <BaseTab @click="activateTab(tab.key)">{{ tab.label }}</BaseTab>
-      </template>
-    </div>
-
-    <div>
-      <div id="my-trip" :class="{ 'active-tab': isActiveTab('my-trip'), 'inactive-tab': !isActiveTab('my-trip') }">
-        <TripDetailTab :trip="trip"></TripDetailTab>
-      </div>
-
-      <div id="activities" :class="{ 'active-tab': isActiveTab('activities'), 'inactive-tab': !isActiveTab('activities') }">
-        <TripActivityTab></TripActivityTab>
-      </div>
-
-      <div id="tasks" :class="{ 'active-tab': isActiveTab('tasks'), 'inactive-tab': !isActiveTab('tasks') }">
-        <TripTaskTab></TripTaskTab>
-      </div>
-    </div>
+  <div v-else-if="trip" class="w-full">
+    <UCard
+        :ui="{
+              root: 'bg-white shadow-md border-none ring-0',
+              body: 'divide-none'
+            }"
+    >
+      <UTabs
+          :items="tabs"
+          :ui="{
+            list: 'bg-surface-primary-trouptrip p-1 rounded-md',
+            indicator: 'bg-trouptrip-accent-500 rounded-lg transition-all duration-300 ease-in-out',
+            trigger: 'data-[state=inactive]:text-trouptrip-title data-[state=active]:text-white',
+            label: 'text-base cursor-pointer'
+          }"
+      >
+        <template #myTrip>
+            <TripDetailTab :trip="trip"></TripDetailTab>
+        </template>
+        <template #theTrunk>
+          <p>A venir</p>
+          <p>C'est ici que seront renseigné les items du groupes</p>
+        </template>
+        <template #myBackPack>
+          <p>A venir</p>
+          <p>C'est ici que seront renseigné les items personnels de l'utilisateur</p>
+        </template>
+      </UTabs>
+    </UCard>
   </div>
 
   <div v-else class="p-4 text-center">
     <p>Chargement des données du voyage...</p>
   </div>
 </template>
-
 <style scoped>
-.active-tab {
-  display: block;
-}
-
-.inactive-tab {
-  display: none;
-}
 </style>

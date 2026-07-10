@@ -13,12 +13,15 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="card bg-primary text-primary-content">
-    <div class="card-body">
-      <h2 class="card-title">{{trip.title}}</h2>
-      <p>Du {{getFormatedDate(trip.startDate)}} au {{getFormatedDate(trip.endDate)}}</p>
-    </div>
-  </div>
+  <UCard
+      :ui="{
+    root: 'bg-white shadow-md transform hover:translate-x-4 transition-all duration-200 border border-solid border-trouptrip-accent-500 ring-0',
+    body: 'divide-none'
+  }"
+  >
+    <h2 class="text-trouptrip-title text-base">{{ trip.title }}</h2>
+    <p class="text-trouptrip-neutral-500 text-sm">Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
+  </UCard>
 </template>
 
 <style scoped>

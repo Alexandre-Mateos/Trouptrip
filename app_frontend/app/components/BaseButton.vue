@@ -8,6 +8,10 @@ export default defineComponent({
     type: {
       type: String as PropType<'button' | 'submit' | 'reset'>,
       default: 'button'
+    },
+    color: {
+      type: String,
+      default: 'var(--color-trouptrip-accent-500)'
     }
   },
 })
@@ -17,7 +21,7 @@ export default defineComponent({
   <button
       :type="type"
       v-bind="$attrs"
-      class="px-3 py-1 rounded-md w-max"
+      class="inline-flex items-center justify-center gap-1 px-3 py-1 rounded-md w-max cursor-pointer"
   >
     <slot></slot>
   </button>
@@ -25,7 +29,7 @@ export default defineComponent({
 
 <style scoped>
 button {
-  background-color: var(--color-accent);
+  background-color: v-bind(color);
   color: white;
 }
 </style>

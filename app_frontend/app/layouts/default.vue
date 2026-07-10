@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen main-theme">
-    <Header></Header>
+    <Header class="mb-4"></Header>
     <main class="container mx-auto px-4 md:px-6 lg:px-8">
       <slot />
     </main>
@@ -9,7 +9,7 @@
 
 <style scoped>
 .main-theme{
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-surface-secondary-trouptrip);
+  color: var(--color-trouptrip-title);
 }
 </style>

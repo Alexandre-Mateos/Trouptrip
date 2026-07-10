@@ -40,6 +40,7 @@ export default defineComponent({
 
 <style scoped>
 textarea{
-  background-color: var(--color-bg);
+  background-color: var(--color-surface-secondary-trouptrip);
+  border: solid 1px var(--color-trouptrip-accent-200);
 }
 </style>

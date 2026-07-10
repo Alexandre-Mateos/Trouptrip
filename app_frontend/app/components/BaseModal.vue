@@ -14,31 +14,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <Transition name="modal-fade">
-  <div
-      v-bind="$attrs"
-      v-if="open"
-      class="modal modal-open modal-bottom sm:modal-middle"
+
+  <UModal v-model:open="open"
+          :close="false"
+          :ui="{
+            body: 'bg-white border-none ring-0'
+          }"
   >
-    <div class="modal-box">
+    <template #body>
       <slot></slot>
-    </div>
-  </div>
-  </Transition>
+    </template>
+  </UModal>
+
 </template>
 
 <style scoped>
-.modal-box {
-  background-color: var(--color-bg);
-}
 
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.2s ease-in-out;
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
 </style>
