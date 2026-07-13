@@ -9,7 +9,9 @@ use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ApiResource]
+#[ApiResource(
+    operations:[]
+)]
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 class Participation
 {

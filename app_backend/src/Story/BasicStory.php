@@ -3,6 +3,7 @@
 namespace App\Story;
 
 use App\Enum\ParticipationStatusEnum;
+use App\Factory\GroupItemFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\TripFactory;
 use App\Factory\UserFactory;
@@ -138,6 +139,79 @@ final class BasicStory extends Story
             ]
         ];
 
+        $groupItemData = [
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 10:00:00'),
+                'name' => 'Tente 4 places',
+                'totalQuantity' => 1,
+                'trip' => TripFactory::new(),
+                'unit' => 'unité',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 10:15:00'),
+                'name' => 'Pâtes',
+                'totalQuantity' => 3,
+                'trip' => TripFactory::new(),
+                'unit' => 'kg',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 11:00:00'),
+                'name' => 'Eau minérale',
+                'totalQuantity' => 6,
+                'trip' => TripFactory::new(),
+                'unit' => 'L',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-13 09:30:00'),
+                'name' => 'Sac de couchage',
+                'totalQuantity' => 3,
+                'trip' => TripFactory::new(),
+                'unit' => 'unité',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-13 14:00:00'),
+                'name' => 'Café moulu',
+                'totalQuantity' => 500,
+                'trip' => TripFactory::new(),
+                'unit' => 'g',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-14 08:00:00'),
+                'name' => 'Réchaud à gaz',
+                'totalQuantity' => 2,
+                'trip' => TripFactory::new(),
+                'unit' => 'unité',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-14 16:45:00'),
+                'name' => 'Huile d\'olive',
+                'totalQuantity' => 750,
+                'trip' => TripFactory::new(),
+                'unit' => 'ml',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 10:20:00'),
+                'name' => 'Trousse de secours',
+                'totalQuantity' => 1,
+                'trip' => TripFactory::new(),
+                'unit' => 'unité',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
+                'name' => 'Riz',
+                'totalQuantity' => 2,
+                'trip' => TripFactory::new(),
+                'unit' => 'kg',
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 18:30:00'),
+                'name' => 'Lampe torche',
+                'totalQuantity' => 3,
+                'trip' => TripFactory::new(),
+                'unit' => 'unité',
+            ],
+        ];
+
         $participants = array_map( function($user){
             return UserFactory::createOne($user);
         } ,$paticipantsData);
@@ -162,6 +236,16 @@ final class BasicStory extends Story
                     'participant' => $participant,
                     'status' => ParticipationStatusEnum::ACCEPTED,
                     'trip' => $associatedTrip
+                ]);
+            }
+
+            foreach ($groupItemData as $groupItem) {
+                GroupItemFactory::createOne([
+                    'createdAt' => new $groupItem['createdAt'],
+                    'name' => $groupItem['name'],
+                    'totalQuantity' => $groupItem['totalQuantity'],
+                    'trip' => $associatedTrip,
+                    'unit' => $groupItem['unit'],
                 ]);
             }
         }
