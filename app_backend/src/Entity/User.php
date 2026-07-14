@@ -27,11 +27,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
             processor: RegisterUserProcessor::class
         ),
         new Get(
+            output: OutputUserDTO::class
+        ),
+        new Get(
             uriTemplate: '/me',
             output: OutputUserMeDTO::class,
             provider: UserMeProvider::class
         )
-    ]
+    ],
+    output: OutputUserDTO::class
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -42,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:item'])]
+    #[Groups(['trip:item', 'assignment:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]

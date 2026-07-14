@@ -35,7 +35,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Patch(
             normalizationContext: ['groups' => 'groupItem:collection'],
-            denormalizationContext: ['groups' => 'groupItem:create'],
+            denormalizationContext: ['groups' => 'groupItem:edit'],
             security: "is_granted('GROUP_ITEM_CREATE', object)"
         ),
         new Delete(
@@ -53,15 +53,15 @@ class GroupItem implements CreatedAtInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['groupItem:collection', 'groupItem:create'])]
+    #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['groupItem:collection', 'groupItem:create'])]
+    #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
     private ?int $totalQuantity = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['groupItem:collection', 'groupItem:create'])]
+    #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
     private ?string $unit = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupItems')]
@@ -73,6 +73,7 @@ class GroupItem implements CreatedAtInterface
      * @var Collection<int, Assignment>
      */
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'groupItem')]
+    #[Groups(['groupItem:collection'])]
     private Collection $assignments;
 
     #[ORM\Column]
