@@ -16,7 +16,7 @@ class AssignmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assignment::class);
     }
 
-    public function getAssignmentsByTripId(int $tripId)
+    public function getAssignmentsByTripId(int $tripId): array
     {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.groupItem', 'g')
@@ -25,5 +25,16 @@ class AssignmentRepository extends ServiceEntityRepository
             ->setParameter('id', $tripId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getAssignedQuantityByGroupItemId(int $groupId): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COALESCE(SUM(a.assignedQuantity), 0)')
+            ->leftJoin('a.groupItem', 'g')
+            ->where('g.id = :id')
+            ->setParameter('id', $groupId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

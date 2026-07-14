@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations:[
@@ -54,19 +55,30 @@ class GroupItem implements CreatedAtInterface
 
     #[ORM\Column(length: 255)]
     #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le nom doit faire au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $name = null;
 
     #[ORM\Column]
     #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
+    #[Assert\NotNull(message: "La quantité totale est requise.")]
+    #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
     private ?int $totalQuantity = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
+    #[Assert\NotBlank(message: "L'unité est requise (ex: g, kg, pièces...).")]
     private ?string $unit = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupItems')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['groupItem:collection', 'groupItem:create'])]
+    #[Assert\NotNull()]
     private ?Trip $trip = null;
 
     /**

@@ -14,6 +14,8 @@ use App\State\Processor\PostAssignmentProcessor;
 use App\State\Provider\AssignmentProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssignmentAssert;
 
 #[ApiResource(
     operations: [
@@ -45,6 +47,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     ]
 )]
 #[ORM\Entity(repositoryClass: AssignmentRepository::class)]
+#[AssignmentAssert\AssignedQuantity]
 class Assignment implements CreatedAtInterface
 {
     #[ORM\Id]
@@ -55,6 +58,7 @@ class Assignment implements CreatedAtInterface
 
     #[ORM\Column]
     #[Groups(['assignment:create', 'assignment:collection', 'assignment:edit'])]
+    #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
     private ?int $assignedQuantity = null;
 
     #[ORM\Column]
