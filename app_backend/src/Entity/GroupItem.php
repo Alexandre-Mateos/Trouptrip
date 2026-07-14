@@ -84,7 +84,7 @@ class GroupItem implements CreatedAtInterface
     /**
      * @var Collection<int, Assignment>
      */
-    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'groupItem')]
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'groupItem', cascade: ['remove'], orphanRemoval: true)]
     #[Groups(['groupItem:collection'])]
     private Collection $assignments;
 
