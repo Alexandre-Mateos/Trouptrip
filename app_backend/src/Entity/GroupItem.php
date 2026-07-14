@@ -25,7 +25,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
                     fromClass: Trip::class
                 )
             ],
-            normalizationContext: ['groups' => 'groupItem:collection']
+            normalizationContext: ['groups' => 'groupItem:collection'],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
         ),
         new Post(
             normalizationContext: ['groups' => 'groupItem:collection'],
@@ -35,10 +36,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Patch(
             normalizationContext: ['groups' => 'groupItem:collection'],
             denormalizationContext: ['groups' => 'groupItem:create'],
-            securityPostDenormalize: "is_granted('GROUP_ITEM_CREATE', object)"
+            security: "is_granted('GROUP_ITEM_CREATE', object)"
         ),
         new Delete(
-            securityPostDenormalize: "is_granted('GROUP_ITEM_CREATE', object)"
+            security: "is_granted('GROUP_ITEM_CREATE', object)"
         )
     ]
 )]
