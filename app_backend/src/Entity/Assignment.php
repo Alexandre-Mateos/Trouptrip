@@ -2,29 +2,77 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Interface\CreatedAtInterface;
 use App\Repository\AssignmentRepository;
+use App\State\Processor\PostAssignmentProcessor;
+use App\State\Provider\AssignmentProvider;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssignmentAssert;
 
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/trips/{tripId}/assignments',
+            uriVariables: [
+                'tripId' => new Link(
+                    fromClass: Trip::class
+                )
+            ],
+            normalizationContext: ['groups' => 'assignment:collection'],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+            provider: AssignmentProvider::class,
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'assignment:collection'],
+            denormalizationContext: ['groups' => 'assignment:create'],
+            securityPostDenormalize: "is_granted('ASSIGNMENT_CREATE', object)",
+            processor: PostAssignmentProcessor::class
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'assignment:collection'],
+            denormalizationContext: ['groups' => 'assignment:edit'],
+            security: "is_granted('ASSIGNMENT_CREATE', object)"
+        ),
+        new Delete(
+            security: "is_granted('ASSIGNMENT_CREATE', object)"
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: AssignmentRepository::class)]
-class Assignment
+#[AssignmentAssert\AssignedQuantity]
+class Assignment implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['assignment:collection', 'groupItem:collection'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['assignment:create', 'assignment:collection', 'assignment:edit'])]
+    #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
     private ?int $assignedQuantity = null;
 
     #[ORM\Column]
+    #[Groups(['assignment:collection'])]
     private ?bool $IsPacked = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['assignment:create'])]
     private ?GroupItem $groupItem = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['assignment:collection'])]
     private ?User $assignedTo = null;
 
     #[ORM\Column]

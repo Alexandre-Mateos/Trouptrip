@@ -16,28 +16,25 @@ class AssignmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assignment::class);
     }
 
-    //    /**
-    //     * @return Assignment[] Returns an array of Assignment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getAssignmentsByTripId(int $tripId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.groupItem', 'g')
+            ->leftJoin('g.trip', 't')
+            ->where('t.id = :id')
+            ->setParameter('id', $tripId)
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Assignment
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getAssignedQuantityByGroupItemId(int $groupId): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COALESCE(SUM(a.assignedQuantity), 0)')
+            ->leftJoin('a.groupItem', 'g')
+            ->where('g.id = :id')
+            ->setParameter('id', $groupId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
