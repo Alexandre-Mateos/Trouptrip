@@ -1,4 +1,4 @@
-import type {ITrip} from "~/interfaces/i-trip";
+import type {ITrip} from "~/interfaces/trip/i-trip";
 
 export interface ITripList {
     member: Array<ITrip>;

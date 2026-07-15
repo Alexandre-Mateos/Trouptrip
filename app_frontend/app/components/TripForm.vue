@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
-import type {ITripDetails} from "~/interfaces/i-tripDetails";
+import type {ITripDetails} from "~/interfaces/trip/i-tripDetails";
 
 export default defineComponent({
   props: {

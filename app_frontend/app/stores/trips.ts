@@ -1,12 +1,11 @@
 import {apiEndpoints} from "~/utils/apiEndpoints";
-import type {ITripList} from "~/interfaces/i-tripList";
+import type {ITripList} from "~/interfaces/trip/i-tripList";
 import 'temporal-polyfill/global';
-import type {ITripDetails} from "~/interfaces/i-tripDetails";
-import type {IMapTrip} from "~/interfaces/i-mapTrip";
-import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
+import type {ITripDetails} from "~/interfaces/trip/i-tripDetails";
+import type {IMapTrip} from "~/interfaces/trip/store/i-mapTrip";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {ITripForm} from "~/interfaces/i-tripForm";
 import type {IParticipantList} from "~/interfaces/i-participantList";
-import type {IParticipation} from "~/interfaces/i-participation";
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -46,7 +45,6 @@ export const useTripsStore = defineStore('trips', {
                 }
 
                 const currentUserId = useUserStore().user?.id;
-                const ownerId = trip.owner.id;
 
                 const participantList: IParticipantList[]  = [];
                 trip.participations.forEach((participation) => {
