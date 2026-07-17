@@ -1,32 +1,38 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails"
-import Collapsible from "~/components/Collapsible.vue"
 
-const props = defineProps<{
-  trip: IMapTripDetails
-}>()
-
-const columns = [
-  { accessorKey: "name", header: "A amener" },
-  { accessorKey: "totalQuantity", header: "Quantité" },
-  { accessorKey: "unit", header: "Unité" }
-]
-
-const groupItems = computed(() => {
-  return useGroupItemsStore().getGroupItemListByTrip(props.trip)
+export default defineComponent({
+  name: 'GroupItemTab',
+  props: {
+    trip: {
+      type: Object as PropType<IMapTripDetails>,
+      required: true
+    }
+  },
+  computed: {
+    groupItems() {
+      return useGroupItemsStore().getGroupItemListByTrip(this.trip)
+    }
+  }
 })
 </script>
 
 <template>
   <Collapsible>
-    <UTable :data="groupItems"
-            :columns="columns"
-            :ui="{
-              thead: 'bg-surface-primary-trouptrip',
-              th: 'text-trouptrip-title'
-            }"
-            class="flex-1 my-4"
-    />
+    <div class="p-2 flex flex-col gap-2">
+      <template v-for="groupItem in groupItems" :key="groupItem.id">
+        <CollapsibleCard >
+          <template #header>
+            ceci est le header de la card {{ groupItem.id }}
+          </template>
+          <template #body>
+            ceci est le body de la card {{ groupItem.id }}
+          </template>
+        </CollapsibleCard>
+      </template>
+    </div>
   </Collapsible>
 </template>
 

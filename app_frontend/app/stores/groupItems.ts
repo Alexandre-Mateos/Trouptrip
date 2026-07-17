@@ -40,7 +40,7 @@ export const useGroupItemsStore = defineStore('groupItems', {
             this.fetching = true;
 
             try{
-                const groupItemCollection = await $api<IGroupItemList>(apiEndpoints.groupItemsCollection(tripId));
+                const groupItemCollection = await $api<IGroupItemList>(apiEndpoints.groupItemCollection(tripId));
 
                 groupItemCollection.member.forEach((item) => {
 

@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 readonly class OutputUserDTO
 {
     public function __construct(
-        #[Groups(['trip:item'])]
+        #[Groups(['trip:item', 'assignment:collection'])]
         public int $id,
         #[Groups(['trip:item'])]
         public string $firstname,

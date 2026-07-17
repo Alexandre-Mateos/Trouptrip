@@ -6,5 +6,6 @@ export const apiEndpoints = {
     resetPassword: '/reset_password',
     userMe: '/me',
     trips: '/trips',
-    groupItemsCollection: (tripId: number) => `/trips/${tripId}/group_items`
+    groupItemCollection: (tripId: number) => `/trips/${tripId}/group_items`,
+    assignmentCollection: (tripId: number) => `/trips/${tripId}/assignments`
 } as const

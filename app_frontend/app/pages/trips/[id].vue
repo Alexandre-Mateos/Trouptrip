@@ -2,6 +2,7 @@
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
 import {useGroupItemsStore} from "~/stores/groupItems";
+import {useAssignmentsStore} from "~/stores/assignments";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 
 export default defineComponent({
@@ -12,7 +13,7 @@ export default defineComponent({
       hasError: false,
       tabs: [
         {label: "Mon séjour", slot: "myTrip" },
-        {label: "Sac à dos", slot: "theBackPack"}
+        {label: "La valise", slot: "theSuitCase"}
       ]
     }
   },
@@ -22,6 +23,7 @@ export default defineComponent({
     try {
       await useTripsStore().fetchTrip(id);
       await useGroupItemsStore().fetchGroupItems(id);
+      await useAssignmentsStore().fetchAssignments(id)
     } catch {
       this.hasError = true;
     }
@@ -60,7 +62,7 @@ export default defineComponent({
         <template #myTrip>
             <TripDetailTab :trip="trip"></TripDetailTab>
         </template>
-        <template #theBackPack>
+        <template #theSuitCase>
           <GroupItemTab :trip="trip"></GroupItemTab>
         </template>
       </UTabs>
