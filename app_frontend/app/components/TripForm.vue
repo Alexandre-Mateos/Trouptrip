@@ -1,12 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
-import type {ITripDetails} from "~/interfaces/trip/i-tripDetails";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 
 export default defineComponent({
   props: {
     tripToEdit: {
-      type: Object as PropType<ITripDetails | null>,
+      type: Object as PropType<IMapTripDetails | null>,
       default: null
     }
   },

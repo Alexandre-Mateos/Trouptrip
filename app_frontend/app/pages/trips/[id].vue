@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
+import {useGroupItemsStore} from "~/stores/groupItems";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 
 export default defineComponent({
@@ -11,26 +12,24 @@ export default defineComponent({
       hasError: false,
       tabs: [
         {label: "Mon séjour", slot: "myTrip" },
-        {label: "Le coffre", slot: "theTrunk"},
-        {label: "Sac à dos", slot: "myBackPack"  }
+        {label: "Sac à dos", slot: "theBackPack"}
       ]
     }
   },
   async mounted() {
-    const tripId = useRoute().params.id;
-    if (tripId) {
-      this.id = Number(tripId);
-      try {
-        await useTripsStore().fetchTrip(this.id);
-      } catch (error) {
-        this.hasError = true;
-      }
+    const id = Number(this.$route.params.id);
+
+    try {
+      await useTripsStore().fetchTrip(id);
+      await useGroupItemsStore().fetchGroupItems(id);
+    } catch {
+      this.hasError = true;
     }
   },
   computed: {
     trip() {
-      if (this.id === null) return null;
-      return useTripsStore().getTripById(this.id) as IMapTripDetails | undefined;
+      const id = Number(this.$route.params.id);
+      return useTripsStore().getTripById(id) as IMapTripDetails | undefined;
     }
   }
 })
@@ -61,13 +60,8 @@ export default defineComponent({
         <template #myTrip>
             <TripDetailTab :trip="trip"></TripDetailTab>
         </template>
-        <template #theTrunk>
-          <p>A venir</p>
-          <p>C'est ici que seront renseigné les items du groupes</p>
-        </template>
-        <template #myBackPack>
-          <p>A venir</p>
-          <p>C'est ici que seront renseigné les items personnels de l'utilisateur</p>
+        <template #theBackPack>
+          <GroupItemTab :trip="trip"></GroupItemTab>
         </template>
       </UTabs>
     </UCard>

@@ -100,10 +100,21 @@ export const useTripsStore = defineStore('trips', {
             const apiUrl = apiEndpoints.trips + '/' + tripId;
             try {
                 const tripDetail = await $api<ITripDetails>(apiUrl);
+                const groupItemIds = tripDetail.groupItems?.map(item => item.id) ?? [];
+
                 if (tripListView) {
-                    this.trips.set(tripId, {...tripListView, ...tripDetail, isDetail: true})
+                    this.trips.set(tripId, {
+                        ...tripListView,
+                        ...tripDetail,
+                        isDetail: true,
+                        groupItemIds: groupItemIds
+                    });
                 } else {
-                    this.trips.set(tripId, {...tripDetail, isDetail: true})
+                    this.trips.set(tripId, {
+                        ...tripDetail,
+                        isDetail: true,
+                        groupItemIds: groupItemIds
+                    });
                 }
 
             } catch (error: any) {
@@ -125,7 +136,13 @@ export const useTripsStore = defineStore('trips', {
                     }
                 });
 
-                this.trips.set(response.id, { ...response, isDetail: true });
+                const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+
+                this.trips.set(response.id, {
+                    ...response,
+                    isDetail: true,
+                    groupItemIds: groupItemIds
+                });
                 return response;
 
             } catch (error: any) {
@@ -150,7 +167,13 @@ export const useTripsStore = defineStore('trips', {
                     }
                 });
 
-                this.trips.set(response.id, { ...response, isDetail: true });
+                const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+
+                this.trips.set(response.id, {
+                    ...response,
+                    isDetail: true,
+                    groupItemIds: groupItemIds
+                });
                 return response;
 
             } catch (error: any) {

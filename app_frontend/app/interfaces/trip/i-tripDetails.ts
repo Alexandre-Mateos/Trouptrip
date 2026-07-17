@@ -6,4 +6,5 @@ export interface ITripDetails extends ITrip{
     description: string;
     participations: IParticipation[];
     owner: ITripOwner;
+    groupItems: {id: number}[]
 }

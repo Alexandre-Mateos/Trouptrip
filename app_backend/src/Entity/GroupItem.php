@@ -50,7 +50,7 @@ class GroupItem implements CreatedAtInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['groupItem:collection'])]
+    #[Groups(['groupItem:collection', 'trip:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -77,7 +77,7 @@ class GroupItem implements CreatedAtInterface
 
     #[ORM\ManyToOne(inversedBy: 'groupItems')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['groupItem:collection', 'groupItem:create'])]
+    #[Groups(['groupItem:create'])]
     #[Assert\NotNull()]
     private ?Trip $trip = null;
 

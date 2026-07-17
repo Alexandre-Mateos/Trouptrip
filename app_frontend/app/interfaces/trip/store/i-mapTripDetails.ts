@@ -7,4 +7,5 @@ export interface IMapTripDetails extends IBaseMapTrip{
     description: string;
     participations: IParticipation[];
     owner: ITripOwner;
+    groupItemIds: number[]
 }
