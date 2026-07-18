@@ -4,6 +4,7 @@ import type {IAssignmentList} from "~/interfaces/assignment/i-assignmentList";
 import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 import type {IGroupItemRow} from "~/interfaces/groupItem/i-groupItemRow";
+import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
 
 export const useAssignmentsStore = defineStore('assignments', {
     state: () => ({
@@ -30,11 +31,15 @@ export const useAssignmentsStore = defineStore('assignments', {
         },
         getAssignmentsByGroupItem: (state) => {
             return (groupItem: IMapGroupItem) => {
-                const storedAssignments: IAssignment[] = [];
+                const storedAssignments: IDetailedAssignment[] = [];
                 groupItem.assignments.forEach((groupItemId) => {
                     const assignment = state.assignments.get(groupItemId);
                     if (undefined !== assignment) {
-                        storedAssignments.push(assignment);
+                        const user = useUserStore().tripUsers.get(assignment.assignedTo.id);
+
+                        if(undefined !== user){
+                            storedAssignments.push({...assignment, assignedTo: user});
+                        }
                     }
                 });
                 return storedAssignments;

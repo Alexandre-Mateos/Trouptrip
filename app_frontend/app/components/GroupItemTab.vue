@@ -15,6 +15,9 @@ export default defineComponent({
   methods: {
     remainingQty(groupItem: IMapGroupItem) {
       return useAssignmentsStore().getRemainingQtyByGroupItem(groupItem)
+    },
+    assignments(groupItem: IMapGroupItem) {
+      return useAssignmentsStore().getAssignmentsByGroupItem(groupItem)
     }
   },
   computed: {
@@ -40,7 +43,9 @@ export default defineComponent({
             </div>
           </template>
           <template #body>
-
+            <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
+              <AssignmentLabel :assignment="assignment"></AssignmentLabel>
+            </template>
           </template>
         </CollapsibleCard>
       </template>
