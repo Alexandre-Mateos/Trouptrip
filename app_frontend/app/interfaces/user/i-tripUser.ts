@@ -1,7 +1,7 @@
-export interface IParticipant{
+export interface ITripUser {
     "@id": string,
     "@type": string,
-    id: number,
     firstname: string
+    id: number,
     lastname: string
 }

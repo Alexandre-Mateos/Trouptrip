@@ -12,22 +12,17 @@ export const useGroupItemsStore = defineStore('groupItems', {
     getters: {
         getGroupItemListByTrip: (state) => {
             return (trip: IMapTripDetails) => {
-                const result: IGroupItemRow[] = [];
+                const storedGroupItems: IMapGroupItem[] = [];
 
                 for (const groupItemId of trip.groupItemIds) {
                     const groupItem = state.groupItems.get(groupItemId);
 
                     if (groupItem !== undefined) {
-                        result.push({
-                            id: groupItem.id,
-                            name: groupItem.name,
-                            totalQuantity: groupItem.totalQuantity,
-                            unit: groupItem.unit,
-                        });
+                        storedGroupItems.push(groupItem);
                     }
                 }
 
-                return result;
+                return storedGroupItems;
             };
         }
     },

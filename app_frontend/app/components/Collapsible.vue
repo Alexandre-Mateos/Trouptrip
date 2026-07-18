@@ -10,7 +10,7 @@ export default defineComponent({
   <UCollapsible class="flex flex-col"
   >
     <UButton
-        class="group bg-surface-primary-trouptrip hover:bg-trouptrip-accent-500 hover:text-white"
+        class="group bg-surface-primary-trouptrip hover:bg-trouptrip-accent-500 hover:text-white cursor-pointer"
         label="Open"
         trailing-icon="i-lucide-chevron-down"
         :ui="{

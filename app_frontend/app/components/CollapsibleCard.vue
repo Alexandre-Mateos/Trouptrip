@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: "GroupItemCard",
@@ -9,7 +9,7 @@ export default defineComponent({
     }
   },
   methods: {
-    toggleCard(){
+    toggleCard() {
       this.isExpanded = !this.isExpanded
     }
   }
@@ -17,11 +17,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <UCard
-  >
-    <div class="flex items-center justify-between" @click="toggleCard">
-      <slot name="header">
-      </slot>
+  <UCard>
+    <div class="flex items-center justify-between cursor-pointer select-none" @click="toggleCard">
+      <slot name="header"></slot>
 
       <Icon name="i-lucide-chevron-down"
             :class="[
@@ -32,15 +30,16 @@ export default defineComponent({
     </div>
 
     <div
-        v-if="isExpanded"
+        :class="[
+        'grid transition-[grid-template-rows] duration-300 ease-in-out',
+        isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+      ]"
     >
-      <slot name="body">
-
-      </slot>
+      <div class="overflow-hidden">
+        <div class="pt-4">
+          <slot name="body"></slot>
+        </div>
+      </div>
     </div>
   </UCard>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,7 +1,8 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import type { PropType } from 'vue'
-import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails"
+import {defineComponent} from 'vue'
+import type {PropType} from 'vue'
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails"
+import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 
 export default defineComponent({
   name: 'GroupItemTab',
@@ -9,6 +10,11 @@ export default defineComponent({
     trip: {
       type: Object as PropType<IMapTripDetails>,
       required: true
+    }
+  },
+  methods: {
+    remainingQty(groupItem: IMapGroupItem) {
+      return useAssignmentsStore().getRemainingQtyByGroupItem(groupItem)
     }
   },
   computed: {
@@ -23,12 +29,18 @@ export default defineComponent({
   <Collapsible>
     <div class="p-2 flex flex-col gap-2">
       <template v-for="groupItem in groupItems" :key="groupItem.id">
-        <CollapsibleCard >
+        <CollapsibleCard>
           <template #header>
-            ceci est le header de la card {{ groupItem.id }}
+            <div class="flex flex-1 justify-between px-2">
+              {{ groupItem.name }}
+              <div>
+                {{ remainingQty(groupItem) }}
+                {{ groupItem.unit }}
+              </div>
+            </div>
           </template>
           <template #body>
-            ceci est le body de la card {{ groupItem.id }}
+
           </template>
         </CollapsibleCard>
       </template>
