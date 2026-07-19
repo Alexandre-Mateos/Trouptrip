@@ -13,8 +13,8 @@ export default defineComponent({
     }
   },
   methods: {
-    remainingQty(groupItem: IMapGroupItem) {
-      return useAssignmentsStore().getRemainingQtyByGroupItem(groupItem)
+    handledQty(groupItem: IMapGroupItem) {
+      return useAssignmentsStore().getHandledQtyByGroupItem(groupItem)
     },
     assignments(groupItem: IMapGroupItem) {
       return useAssignmentsStore().getAssignmentsByGroupItem(groupItem)
@@ -34,11 +34,40 @@ export default defineComponent({
       <template v-for="groupItem in groupItems" :key="groupItem.id">
         <CollapsibleCard>
           <template #header>
-            <div class="flex flex-1 justify-between px-2">
-              {{ groupItem.name }}
-              <div>
-                {{ remainingQty(groupItem) }}
-                {{ groupItem.unit }}
+            <div class="flex flex-1 justify-between items-center px-2">
+              <div class="flex gap-2 items-center">
+
+                <Icon
+                    v-if="handledQty(groupItem) === groupItem.totalQuantity"
+                    name="tabler:circle-check"
+                    class="text-trouptrip-success-500 text-xl fill-trouptrip-success-500"
+                ></Icon>
+                <Icon
+                    v-else-if="handledQty(groupItem) >0 && handledQty(groupItem) < groupItem.totalQuantity"
+                    name="mdi-light:minus-circle"
+                    class="text-trouptrip-accent-500 text-xl"
+                ></Icon>
+                <Icon
+                    v-else
+                    name="system-uicons:cross-circle"
+                    class="text-trouptrip-neutral-500 text-xl"
+                ></Icon>
+
+
+                <span>
+                {{ groupItem.name }}
+                </span>
+              </div>
+              <div class="flex gap-1 items-center">
+                <span>
+                  {{ handledQty(groupItem) }}
+                </span>
+                <span class="text-trouptrip-neutral-400">
+                  /{{ groupItem.totalQuantity }}
+                </span>
+                <span class="text-xs">
+                  {{ groupItem.unit }}
+                </span>
               </div>
             </div>
           </template>

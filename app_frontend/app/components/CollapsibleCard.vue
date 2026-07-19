@@ -17,7 +17,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <UCard>
+  <UCard
+      :ui="{
+    root: 'bg-white shadow-md transform border border-solid border-trouptrip-accent-500 ring-0'
+  }"
+  >
     <div class="flex items-center justify-between cursor-pointer select-none" @click="toggleCard">
       <slot name="header"></slot>
 

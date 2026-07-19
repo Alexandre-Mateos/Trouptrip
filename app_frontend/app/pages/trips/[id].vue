@@ -12,7 +12,7 @@ export default defineComponent({
       id: null as number | null,
       hasError: false,
       tabs: [
-        {label: "Mon séjour", slot: "myTrip" },
+        {label: "Mon séjour", slot: "myTrip"},
         {label: "La valise", slot: "theSuitCase"}
       ]
     }
@@ -60,7 +60,7 @@ export default defineComponent({
           }"
       >
         <template #myTrip>
-            <TripDetailTab :trip="trip"></TripDetailTab>
+          <TripDetailTab :trip="trip"></TripDetailTab>
         </template>
         <template #theSuitCase>
           <GroupItemTab :trip="trip"></GroupItemTab>

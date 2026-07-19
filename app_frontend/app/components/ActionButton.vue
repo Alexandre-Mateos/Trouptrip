@@ -6,7 +6,7 @@ export default defineComponent({
   props: {
     icon: {
       type: String,
-      default: "qlementine-icons:success-16"
+      default: "tabler:circle-check"
     },
     label: {
       type: String,

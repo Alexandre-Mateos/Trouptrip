@@ -12,21 +12,22 @@ export const useAssignmentsStore = defineStore('assignments', {
         fetching: false
     }),
     getters: {
-        getRemainingQtyByGroupItem: (state) => {
+        getHandledQtyByGroupItem: (state) => {
             return (groupItem: IMapGroupItem) => {
-                let remainingQty = groupItem.totalQuantity;
+                let handledQty: number = 0;
                 groupItem.assignments.forEach((assignmentId) => {
                     const storedAssignment = state.assignments.get(assignmentId);
 
                     if (undefined !== storedAssignment) {
-                        remainingQty -= storedAssignment.assignedQuantity;
+                        handledQty += storedAssignment.assignedQuantity;
                     }
                 })
 
-                if (remainingQty < 0) {
-                    return 0;
+                if(handledQty > groupItem.totalQuantity){
+                    return groupItem.totalQuantity
                 }
-                return remainingQty;
+
+                return handledQty;
             }
         },
         getAssignmentsByGroupItem: (state) => {
