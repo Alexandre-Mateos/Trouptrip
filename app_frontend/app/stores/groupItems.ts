@@ -93,6 +93,29 @@ export const useGroupItemsStore = defineStore('groupItems', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        async deleteGroupItem(trip: IMapTripDetails, groupItemId: number){
+            const {$api} = useNuxtApp();
+            const url = `${apiEndpoints.groupItems}/${groupItemId}`;
+
+            try {
+                await $api<IMapGroupItem>(url, {
+                    method: 'DELETE'
+                });
+
+                this.groupItems.delete(groupItemId);
+
+                if(!trip.groupItemIds.includes(groupItemId)){
+                    const index = trip.groupItemIds.indexOf(groupItemId);
+                    if(index){
+                        trip.groupItemIds.splice(index, 1);
+                    }
+                }
+
+            } catch (error: any) {
+                throw error;
+            }
+
         }
     }
 })

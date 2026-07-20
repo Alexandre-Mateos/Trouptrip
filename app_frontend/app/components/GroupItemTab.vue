@@ -16,7 +16,10 @@ export default defineComponent({
     return{
       isCreateModalOpen: false,
       isEditModalOpen: false,
-      activeGroupItemForUpdate: {} as IMapGroupItem
+      isDeleteModalOpen: false,
+      isAlertModalOpen: false,
+      activeGroupItem: {} as IMapGroupItem,
+      error: ''
     }
   },
   methods: {
@@ -32,10 +35,29 @@ export default defineComponent({
     toggleEditGroupItemModal(groupItem: IMapGroupItem){
 
       if(!this.isEditModalOpen){
-        this.activeGroupItemForUpdate = groupItem;
+        this.activeGroupItem = groupItem;
       }
 
       this.isEditModalOpen = !this.isEditModalOpen;
+    },
+    toggleDeleteGroupItemModal(groupItem: IMapGroupItem){
+
+      if(!this.isDeleteModalOpen){
+        this.activeGroupItem = groupItem;
+      }
+
+      this.isDeleteModalOpen = !this.isDeleteModalOpen;
+    },
+    async deleteGroupItem(groupItem: IMapGroupItem){
+      this.error = '';
+      try {
+        await useGroupItemsStore().deleteGroupItem(this.trip, groupItem.id);
+
+      } catch (error: any) {
+        this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
+      }
+
+      this.toggleDeleteGroupItemModal(groupItem);
     }
   },
   computed: {
@@ -49,6 +71,10 @@ export default defineComponent({
 <template>
   <Collapsible>
     <div class="p-2 flex flex-col gap-2">
+
+      <div v-if="error" class="text-red-700 p-3 rounded mb-4">
+        {{ error }}
+      </div>
 
       <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
 
@@ -96,7 +122,7 @@ export default defineComponent({
             <div class="flex justify-end">
               <div class="flex flex-row gap-2">
                 <EditButton @click="toggleEditGroupItemModal(groupItem)"></EditButton>
-                <DeleteButton ></DeleteButton>
+                <DeleteButton @click="toggleDeleteGroupItemModal(groupItem)"></DeleteButton>
               </div>
             </div>
             <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
@@ -113,7 +139,19 @@ export default defineComponent({
   </BaseModal>
 
   <BaseModal :open="isEditModalOpen">
-    <GroupItemForm @done="toggleEditGroupItemModal" :trip="trip" :group-item-to-edit="activeGroupItemForUpdate"></GroupItemForm>
+    <GroupItemForm @done="toggleEditGroupItemModal" :trip="trip" :group-item-to-edit="activeGroupItem"></GroupItemForm>
+  </BaseModal>
+
+  <BaseModal :open="isDeleteModalOpen">
+    <div>
+      <p>Vous Etes sur le point de supprimer l'item suivant :</p>
+      <p>{{activeGroupItem.name}}</p>
+      <p>Etes vous sûr de vouloir continuer ?</p>
+      <div class="flex flex-row justify-center gap-2">
+        <DeleteButton @click="deleteGroupItem(activeGroupItem)" label="Supprimer"></DeleteButton>
+        <CancelButton @click="toggleDeleteGroupItemModal"></CancelButton>
+      </div>
+    </div>
   </BaseModal>
 
 </template>
