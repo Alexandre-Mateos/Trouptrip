@@ -3,6 +3,7 @@ import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {IGroupItemList} from "~/interfaces/groupItem/i-groupItemList";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {IGroupItemRow} from "~/interfaces/groupItem/i-groupItemRow";
+import type {IGroupItemForm} from "~/interfaces/groupItem/i-groupItemForm";
 
 export const useGroupItemsStore = defineStore('groupItems', {
     state: () => ({
@@ -27,14 +28,14 @@ export const useGroupItemsStore = defineStore('groupItems', {
         }
     },
     actions: {
-        async fetchGroupItems(tripId: number){
+        async fetchGroupItems(tripId: number) {
             if (this.fetching) {
                 return;
             }
             const {$api} = useNuxtApp();
             this.fetching = true;
 
-            try{
+            try {
                 const groupItemCollection = await $api<IGroupItemList>(apiEndpoints.groupItemCollection(tripId));
 
                 groupItemCollection.member.forEach((item) => {
@@ -47,10 +48,27 @@ export const useGroupItemsStore = defineStore('groupItems', {
                     });
                 });
 
-            }catch (error: any) {
+            } catch (error: any) {
                 throw error;
             } finally {
                 this.fetching = false;
+            }
+        },
+        async submitGroupItem(trip: IMapTripDetails, body: IGroupItemForm) {
+            const {$api} = useNuxtApp();
+            const url = apiEndpoints.groupItems;
+
+            try {
+                const response = await $api<IMapGroupItem>(url, {
+                    method: 'POST',
+                    body: body
+                });
+
+                this.groupItems.set(response.id, response);
+                trip.groupItemIds.push(response.id);
+
+            } catch (error: any) {
+                throw error;
             }
         }
     }

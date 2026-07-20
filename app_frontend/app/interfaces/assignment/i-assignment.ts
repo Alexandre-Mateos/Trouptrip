@@ -1,7 +1,6 @@
-export interface IAssignment{
-    "@context": string,
-    "@id": string,
-    "@type": string,
+import type {IApiResource} from "~/interfaces/i-apiResource";
+
+export interface IAssignment extends IApiResource{
     id: number,
     assignedQuantity: number,
     IsPacked: boolean,

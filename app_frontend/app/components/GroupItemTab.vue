@@ -12,12 +12,20 @@ export default defineComponent({
       required: true
     }
   },
+  data() {
+    return{
+      isModalOpen: false,
+    }
+  },
   methods: {
     handledQty(groupItem: IMapGroupItem) {
       return useAssignmentsStore().getHandledQtyByGroupItem(groupItem)
     },
     assignments(groupItem: IMapGroupItem) {
       return useAssignmentsStore().getAssignmentsByGroupItem(groupItem)
+    },
+    toggleModal(){
+      this.isModalOpen = !this.isModalOpen;
     }
   },
   computed: {
@@ -31,6 +39,9 @@ export default defineComponent({
 <template>
   <Collapsible>
     <div class="p-2 flex flex-col gap-2">
+
+      <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
+
       <template v-for="groupItem in groupItems" :key="groupItem.id">
         <CollapsibleCard>
           <template #header>
@@ -80,6 +91,11 @@ export default defineComponent({
       </template>
     </div>
   </Collapsible>
+
+  <BaseModal :open="isModalOpen">
+    <GroupItemForm @done="toggleModal" :trip="trip"></GroupItemForm>
+  </BaseModal>
+
 </template>
 
 <style scoped>
