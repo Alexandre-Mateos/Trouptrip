@@ -70,6 +70,29 @@ export const useGroupItemsStore = defineStore('groupItems', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        async updateGroupItem(trip: IMapTripDetails, body: IGroupItemForm, groupItemId: number){
+            const {$api} = useNuxtApp();
+            const url = `${apiEndpoints.groupItems}/${groupItemId}`;
+
+            try {
+                const response = await $api<IMapGroupItem>(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/merge-patch+json'
+                    },
+                    body: body
+                });
+
+                this.groupItems.set(response.id, response);
+
+                if(!trip.groupItemIds.includes(groupItemId)){
+                    trip.groupItemIds.push(groupItemId)
+                }
+
+            } catch (error: any) {
+                throw error;
+            }
         }
     }
 })

@@ -14,7 +14,9 @@ export default defineComponent({
   },
   data() {
     return{
-      isModalOpen: false,
+      isCreateModalOpen: false,
+      isEditModalOpen: false,
+      activeGroupItemForUpdate: {} as IMapGroupItem
     }
   },
   methods: {
@@ -25,7 +27,15 @@ export default defineComponent({
       return useAssignmentsStore().getAssignmentsByGroupItem(groupItem)
     },
     toggleModal(){
-      this.isModalOpen = !this.isModalOpen;
+      this.isCreateModalOpen = !this.isCreateModalOpen;
+    },
+    toggleEditGroupItemModal(groupItem: IMapGroupItem){
+
+      if(!this.isEditModalOpen){
+        this.activeGroupItemForUpdate = groupItem;
+      }
+
+      this.isEditModalOpen = !this.isEditModalOpen;
     }
   },
   computed: {
@@ -83,6 +93,12 @@ export default defineComponent({
             </div>
           </template>
           <template #body>
+            <div class="flex justify-end">
+              <div class="flex flex-row gap-2">
+                <EditButton @click="toggleEditGroupItemModal(groupItem)"></EditButton>
+                <DeleteButton ></DeleteButton>
+              </div>
+            </div>
             <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
               <AssignmentLabel :assignment="assignment"></AssignmentLabel>
             </template>
@@ -92,8 +108,12 @@ export default defineComponent({
     </div>
   </Collapsible>
 
-  <BaseModal :open="isModalOpen">
+  <BaseModal :open="isCreateModalOpen">
     <GroupItemForm @done="toggleModal" :trip="trip"></GroupItemForm>
+  </BaseModal>
+
+  <BaseModal :open="isEditModalOpen">
+    <GroupItemForm @done="toggleEditGroupItemModal" :trip="trip" :group-item-to-edit="activeGroupItemForUpdate"></GroupItemForm>
   </BaseModal>
 
 </template>

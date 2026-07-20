@@ -37,34 +37,39 @@ export default defineComponent({
 </script>
 
 <template>
-  <label :for="selectName"></label>
+  <div class="flex flex-col gap-1">
+    <label :for="selectName">{{ label }}</label>
 
-  <ul v-if="errors && errors.length > 0" >
-    <li v-for="(error, index) in errors" :key="index"
-        class="text-xs text-red-800"
-    >
-      {{ error }}
-    </li>
-  </ul>
+    <ul v-if="errors && errors.length > 0">
+      <li v-for="(error, index) in errors" :key="index"
+          class="text-xs text-red-800"
+      >
+        {{ error }}
+      </li>
+    </ul>
 
-  <select :id="selectName"
-          v-bind="$attrs"
-          :value="modelValue"
-          @input="emitValue($event)"
-          class="rounded-md px-2"
-          :class="{'border-2 border-red-800': errors && errors.length > 0}"
-  >
-    <option value="">--Veuillez choisir une option--</option>
-    <option
-        v-for="option in selectOptions"
-        :key="option.value"
-        :value="option.value"
+    <select :id="selectName"
+            v-bind="$attrs"
+            :value="modelValue"
+            @input="emitValue($event)"
+            class="rounded-md px-2 py-1"
+            :class="{'border-2 border-red-800': errors && errors.length > 0}"
     >
-      {{ option.label }}
-    </option>
-  </select>
+      <option value="">--Veuillez choisir une option--</option>
+      <option
+          v-for="option in selectOptions"
+          :key="option.value"
+          :value="option.value"
+      >
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
 </template>
 
 <style scoped>
-
+select {
+  background-color: var(--color-surface-secondary-trouptrip);
+  border: solid 1px var(--color-trouptrip-accent-200);
+}
 </style>

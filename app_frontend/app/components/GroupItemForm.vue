@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 
 export default defineComponent({
   name: "GroupItemForm",
@@ -8,6 +9,10 @@ export default defineComponent({
     trip: {
       type: Object as PropType<IMapTripDetails>,
       required: true
+    },
+    groupItemToEdit: {
+      type: Object as PropType<IMapGroupItem | null>,
+      default: null
     }
   },
   data() {
@@ -41,7 +46,12 @@ export default defineComponent({
       let response;
 
       try {
-        response = await useGroupItemsStore().submitGroupItem(this.trip, body);
+
+        if(this.groupItemToEdit){
+          response = await useGroupItemsStore().updateGroupItem(this.trip, body, this.groupItemToEdit.id);
+        }else{
+          response = await useGroupItemsStore().submitGroupItem(this.trip, body);
+        }
 
         this.$emit('done');
 
@@ -50,6 +60,13 @@ export default defineComponent({
       } finally {
         this.isSubmitting = false;
       }
+    }
+  },
+  mounted(): any {
+    if(this.groupItemToEdit){
+      this.groupItemName = this.groupItemToEdit.name;
+      this.groupItemTotalQty = this.groupItemToEdit.totalQuantity;
+      this.groupItemType = this.groupItemToEdit.unit;
     }
   }
 });
@@ -60,7 +77,7 @@ export default defineComponent({
     <BaseInput id="groupItem_name" label="Nom" v-model="groupItemName"/>
     <NumberInput id="groupItem_totalQty" type="number" label="Quantité" min="1"
                  v-model="groupItemTotalQty"></NumberInput>
-    <BaseSelect :select-options="selectOptions" select-name="type-options" label="type" v-model="groupItemType"/>
+    <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="groupItemType"/>
 
     <div class="flex gap-2">
       <ActionButton type="submit" :disabled="isSubmitting"></ActionButton>
