@@ -5,6 +5,8 @@ import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 import type {IGroupItemRow} from "~/interfaces/groupItem/i-groupItemRow";
 import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import type {IGroupItemForm} from "~/interfaces/groupItem/i-groupItemForm";
 
 export const useAssignmentsStore = defineStore('assignments', {
     state: () => ({
@@ -28,6 +30,11 @@ export const useAssignmentsStore = defineStore('assignments', {
                 }
 
                 return handledQty;
+            }
+        },
+        getRemainingQtyByGroupItem() {
+            return (groupItem: IMapGroupItem) => {
+                return groupItem.totalQuantity - this.getHandledQtyByGroupItem(groupItem);
             }
         },
         getAssignmentsByGroupItem: (state) => {
@@ -65,7 +72,58 @@ export const useAssignmentsStore = defineStore('assignments', {
             } finally {
                 this.fetching = false;
             }
+        },
+        async submitAssignment(groupItem: IMapGroupItem, body: {
+            assignedQuantity: number,
+            groupItem: string
+        }){
 
-        }
+            const {$api} = useNuxtApp();
+            const url = apiEndpoints.assignments;
+
+            try{
+                const response = await $api<IAssignment>(url,{
+                    method: 'POST',
+                    body: body
+                });
+
+                this.assignments.set(response.id, response);
+                groupItem.assignments.push(response.id);
+
+            } catch (error: any) {
+                throw error;
+            }
+        },
+        async updateAssignment(
+            groupItem: IMapGroupItem,
+            assignmentId: number,
+            body: {
+            assignedQuantity: number,
+            groupItem: string
+            }
+        ){
+            const {$api} = useNuxtApp();
+            const url = `${apiEndpoints.assignments}/${assignmentId}`;
+
+            try {
+                const response = await $api<IAssignment>(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/merge-patch+json'
+                    },
+                    body: body
+                });
+
+                console.log(response);
+                this.assignments.set(response.id, response);
+
+                if(!groupItem.assignments.includes(assignmentId)){
+                    groupItem.assignments.push(assignmentId)
+                }
+
+            } catch (error: any) {
+                throw error;
+            }
+        },
     }
 })

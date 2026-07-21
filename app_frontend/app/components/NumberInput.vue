@@ -29,7 +29,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
+  <div class="flex flex-col gap-1 w-full">
     <label :for="$attrs.id as string">{{ label }}</label>
 
     <ul v-if="errors && errors.length > 0" >

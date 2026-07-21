@@ -3,9 +3,11 @@ import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails"
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import AssignmentForm from "~/components/AssignmentForm.vue";
 
 export default defineComponent({
   name: 'GroupItemTab',
+  components: {AssignmentForm},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
@@ -119,15 +121,25 @@ export default defineComponent({
             </div>
           </template>
           <template #body>
-            <div class="flex justify-end">
-              <div class="flex flex-row gap-2">
-                <EditButton @click="toggleEditGroupItemModal(groupItem)"></EditButton>
-                <DeleteButton @click="toggleDeleteGroupItemModal(groupItem)"></DeleteButton>
+
+            <div class="flex flex-col gap-1">
+              <div class="flex justify-end">
+                <div class="flex flex-row gap-2">
+                  <EditButton @click="toggleEditGroupItemModal(groupItem)" class="py-2"></EditButton>
+                  <DeleteButton @click="toggleDeleteGroupItemModal(groupItem)" class="py-2"></DeleteButton>
+                </div>
+              </div>
+
+              <AssignmentForm :group-item="groupItem"></AssignmentForm>
+
+              <div>
+                <p>Contributions :</p>
+                <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
+                  <AssignmentLabel :assignment="assignment"></AssignmentLabel>
+                </template>
               </div>
             </div>
-            <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
-              <AssignmentLabel :assignment="assignment"></AssignmentLabel>
-            </template>
+
           </template>
         </CollapsibleCard>
       </template>

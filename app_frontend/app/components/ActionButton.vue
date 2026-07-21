@@ -10,7 +10,6 @@ export default defineComponent({
     },
     label: {
       type: String,
-      default: 'Valider'
     },
     type: {
       type: String as PropType<"button" | "submit" | "reset">,
