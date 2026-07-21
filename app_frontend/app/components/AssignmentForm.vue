@@ -1,7 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
-import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 
 export default defineComponent({
   name: "AssignmentForm",
@@ -14,6 +13,7 @@ export default defineComponent({
   data() {
     return {
       assignedQty: 0,
+      isRemoval: false,
       isSubmitting: false,
       errors: {} as Record<string, string[]>,
     }
@@ -25,7 +25,8 @@ export default defineComponent({
 
       const body = {
         assignedQuantity: this.assignedQty,
-        groupItem: this.groupItem['@id']
+        groupItem: this.groupItem['@id'],
+        isRemoval: this.isRemoval
       };
 
       const userStore = useUserStore();
@@ -67,7 +68,8 @@ export default defineComponent({
           v-model="assignedQty"
           class="flex-1"
       />
-      <ActionButton type="submit" :disabled="isSubmitting" class="py-2"></ActionButton>
+      <ActionButton type="submit" :disabled="isSubmitting" label="Ajouter" icon="raphael:arrowup" @click="isRemoval = false"></ActionButton>
+      <ActionButton type="submit" :disabled="isSubmitting" label="Retirer" icon="raphael:arrowdown" color="var(--color-trouptrip-accent-500)" @click="isRemoval = true"></ActionButton>
     </form>
 </template>
 

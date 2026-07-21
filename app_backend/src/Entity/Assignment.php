@@ -16,7 +16,6 @@ use App\State\Processor\PostAssignmentProcessor;
 use App\State\Provider\AssignmentProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AssignmentAssert;
 
 #[ApiResource(
@@ -34,8 +33,8 @@ use App\Validator as AssignmentAssert;
         ),
         new Post(
             normalizationContext: ['groups' => 'assignment:collection'],
-            denormalizationContext: ['groups' => 'assignment:create'],
             securityPostDenormalize: "is_granted('ASSIGNMENT_CREATE', object)",
+            input: AssignmentInputDTO::class,
             processor: PostAssignmentProcessor::class
         ),
         new Patch(
@@ -61,7 +60,6 @@ class Assignment implements CreatedAtInterface
 
     #[ORM\Column]
     #[Groups(['assignment:create', 'assignment:collection'])]
-    #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
     private ?int $assignedQuantity = null;
 
     #[ORM\Column]

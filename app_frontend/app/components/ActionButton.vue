@@ -15,12 +15,16 @@ export default defineComponent({
       type: String as PropType<"button" | "submit" | "reset">,
       default: "button",
     },
+    color: {
+      type: String,
+      default: "var(--color-trouptrip-success-500)"
+    }
   }
 })
 </script>
 
 <template>
-  <BaseButton color="var(--color-trouptrip-success-500)" :type="type">
+  <BaseButton :color="color" :type="type">
     <Icon :name="icon" />
     <slot>{{label}}</slot>
   </BaseButton>

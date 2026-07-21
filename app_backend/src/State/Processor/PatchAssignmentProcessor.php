@@ -24,7 +24,12 @@ readonly class PatchAssignmentProcessor extends CustomProcessor
     {
         $assignment = $this->assignmentRepository->findOneBy(['id' => $uriVariables['id']]);
 
-        $newQty = $assignment->getAssignedQuantity() + $data->assignedQuantity;
+        if($data->isRemoval){
+            $newQty = $assignment->getAssignedQuantity() - $data->assignedQuantity;
+        }else{
+            $newQty = $assignment->getAssignedQuantity() + $data->assignedQuantity;
+        }
+
         $assignment->setAssignedQuantity($newQty);
 
         $this->entityManager->flush();
