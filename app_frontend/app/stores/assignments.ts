@@ -1,12 +1,8 @@
-import type {IGroupItemList} from "~/interfaces/groupItem/i-groupItemList";
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {IAssignmentList} from "~/interfaces/assignment/i-assignmentList";
 import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
-import type {IGroupItemRow} from "~/interfaces/groupItem/i-groupItemRow";
 import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
-import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
-import type {IGroupItemForm} from "~/interfaces/groupItem/i-groupItemForm";
 
 export const useAssignmentsStore = defineStore('assignments', {
     state: () => ({
@@ -114,7 +110,6 @@ export const useAssignmentsStore = defineStore('assignments', {
                     body: body
                 });
 
-                console.log(response);
                 this.assignments.set(response.id, response);
 
                 if(!groupItem.assignments.includes(assignmentId)){
