@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, type PropType} from 'vue'
 import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
+import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 
 export default defineComponent({
   name: "AssignmentLabel",
@@ -8,6 +9,15 @@ export default defineComponent({
     assignment: {
       type: Object as PropType<IDetailedAssignment>,
       required: true
+    },
+    groupItem: {
+      type: Object as PropType<IMapGroupItem>,
+      required: true
+    }
+  },
+  methods: {
+    deleteAssignment(){
+      useAssignmentsStore().deleteAssignment(this.assignment.id, this.groupItem)
     }
   }
 })
@@ -20,6 +30,7 @@ export default defineComponent({
       <span>{{assignment.assignedTo.lastname}}</span>
     </div>
       <span>x{{assignment.assignedQuantity}}</span>
+    <DeleteButton @click="deleteAssignment" v-if="assignment.assignedTo.id === useUserStore().user?.id"></DeleteButton>
   </div>
 </template>
 

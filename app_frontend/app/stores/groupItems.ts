@@ -2,7 +2,6 @@ import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {IGroupItemList} from "~/interfaces/groupItem/i-groupItemList";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
-import type {IGroupItemRow} from "~/interfaces/groupItem/i-groupItemRow";
 import type {IGroupItemForm} from "~/interfaces/groupItem/i-groupItemForm";
 
 export const useGroupItemsStore = defineStore('groupItems', {
@@ -105,7 +104,7 @@ export const useGroupItemsStore = defineStore('groupItems', {
 
                 this.groupItems.delete(groupItemId);
 
-                if(!trip.groupItemIds.includes(groupItemId)){
+                if(trip.groupItemIds.includes(groupItemId)){
                     const index = trip.groupItemIds.indexOf(groupItemId);
                     if(index){
                         trip.groupItemIds.splice(index, 1);
@@ -115,7 +114,6 @@ export const useGroupItemsStore = defineStore('groupItems', {
             } catch (error: any) {
                 throw error;
             }
-
         }
     }
 })

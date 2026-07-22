@@ -120,5 +120,27 @@ export const useAssignmentsStore = defineStore('assignments', {
                 throw error;
             }
         },
+        async deleteAssignment(assignmentId: number, groupItem: IMapGroupItem){
+            const {$api} = useNuxtApp();
+            const url = `${apiEndpoints.assignments}/${assignmentId}`;
+
+            try {
+                await $api(url, {
+                    method: 'DELETE'
+                });
+
+                this.assignments.delete(assignmentId);
+
+                if(groupItem.assignments.includes(assignmentId)){
+                    const index = groupItem.assignments.indexOf(assignmentId);
+                    if(index){
+                        groupItem.assignments.splice(index, 1);
+                    }
+                }
+
+            } catch (error: any) {
+                throw error;
+            }
+        }
     }
 })

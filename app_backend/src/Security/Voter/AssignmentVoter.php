@@ -5,7 +5,6 @@ namespace App\Security\Voter;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\ApiResource\AssignmentResource\AssignmentInputDTO;
 use App\Entity\Assignment;
-use App\Entity\GroupItem;
 use App\Repository\AssignmentRepository;
 use App\Repository\ParticipationRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -17,6 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class AssignmentVoter extends Voter
 {
     public const CREATE = 'ASSIGNMENT_CREATE';
+    public const DELETE = 'ASSIGNMENT_DELETE';
 
     public function __construct(
         private readonly ParticipationRepository $participationRepository,
@@ -28,7 +28,7 @@ final class AssignmentVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::CREATE])
+        return in_array($attribute, [self::CREATE, self::DELETE])
             && ($subject instanceof Assignment || $subject instanceof AssignmentInputDTO);
     }
 
@@ -61,6 +61,11 @@ final class AssignmentVoter extends Voter
                     return true;
                 }
                 break;
+
+            case self::DELETE:
+                if($user === $assignment->getAssignedTo()){
+                    return true;
+                }
         }
 
         return false;

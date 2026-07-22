@@ -44,7 +44,7 @@ use App\Validator as AssignmentAssert;
             processor: PatchAssignmentProcessor::class
         ),
         new Delete(
-            security: "is_granted('ASSIGNMENT_CREATE', object)"
+            security: "is_granted('ASSIGNMENT_DELETE', object)"
         )
     ]
 )]
