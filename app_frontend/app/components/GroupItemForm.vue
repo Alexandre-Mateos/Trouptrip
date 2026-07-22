@@ -74,13 +74,13 @@ export default defineComponent({
 
 <template>
   <BaseForm class="w-full" @submit="handleSubmit">
-    <BaseInput id="groupItem_name" label="Nom" v-model="groupItemName"/>
-    <NumberInput id="groupItem_totalQty" type="number" label="Quantité" min="1"
-                 v-model="groupItemTotalQty"></NumberInput>
-    <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="groupItemType"/>
+    <BaseInput id="groupItem_name" label="Nom" v-model="groupItemName" :errors="errors?.name"/>
+    <NumberInput id="groupItem_totalQty" type="number" label="Quantité"
+                 v-model="groupItemTotalQty" :errors="errors?.totalQuantity"></NumberInput>
+    <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="groupItemType" :errors="errors?.unit"/>
 
     <div class="flex gap-2">
-      <ActionButton type="submit" :disabled="isSubmitting"></ActionButton>
+      <ActionButton type="submit" :disabled="isSubmitting" label="Valider"></ActionButton>
       <CancelButton type="button" @click="$emit('done')"></CancelButton>
     </div>
   </BaseForm>

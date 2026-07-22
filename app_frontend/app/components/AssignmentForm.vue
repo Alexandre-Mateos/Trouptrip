@@ -60,13 +60,14 @@ export default defineComponent({
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="flex flex-col md:flex-row gap-1 items-center md:items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
+    <form @submit.prevent="handleSubmit" class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
       <NumberInput
           label="Tu ramènes quoi ?"
           min="0"
           :max="groupItem.totalQuantity"
           v-model="assignedQty"
           class="flex-1"
+          :errors="errors?.assignedQuantity"
       />
 
       <div class="flex gap-1">

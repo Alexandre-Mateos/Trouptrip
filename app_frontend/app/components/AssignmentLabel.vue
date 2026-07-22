@@ -37,7 +37,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-fit flex gap-2 text-xs label bg-trouptrip-secondary-300 border border-trouptrip-secondary-600 p-1 rounded-md font-bold">
+  <div class="w-fit flex gap-2 text-xs label bg-trouptrip-secondary-300 border border-trouptrip-secondary-600 p-1 rounded-md font-bold items-center">
     <div v-if="assignment.assignedTo.id === currentUser?.id">
       <span>Moi</span>
     </div>
