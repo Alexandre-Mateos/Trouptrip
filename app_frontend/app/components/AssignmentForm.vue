@@ -60,16 +60,19 @@ export default defineComponent({
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="flex gap-1 items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
+    <form @submit.prevent="handleSubmit" class="flex flex-col md:flex-row gap-1 items-center md:items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
       <NumberInput
           label="Tu ramènes quoi ?"
           min="0"
-          :max="useAssignmentsStore().getRemainingQtyByGroupItem(groupItem)"
+          :max="groupItem.totalQuantity"
           v-model="assignedQty"
           class="flex-1"
       />
-      <ActionButton type="submit" :disabled="isSubmitting" label="Ajouter" icon="raphael:arrowup" @click="isRemoval = false"></ActionButton>
-      <ActionButton type="submit" :disabled="isSubmitting" label="Retirer" icon="raphael:arrowdown" color="var(--color-trouptrip-accent-500)" @click="isRemoval = true"></ActionButton>
+
+      <div class="flex gap-1">
+        <ActionButton type="submit" :disabled="isSubmitting" label="Ajouter" icon="raphael:arrowup" @click="isRemoval = false"></ActionButton>
+        <ActionButton type="submit" :disabled="isSubmitting" label="Retirer" icon="raphael:arrowdown" color="var(--color-trouptrip-accent-500)" @click="isRemoval = true"></ActionButton>
+      </div>
     </form>
 </template>
 

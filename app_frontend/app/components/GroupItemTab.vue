@@ -134,7 +134,7 @@ export default defineComponent({
 
               <div>
                 <p>Contributions :</p>
-                <template v-for="assignment in assignments(groupItem)" :key="assignment.id">
+                <template v-for="assignment in assignments(groupItem)" :key="assignment.id" class="flex flex-wrap">
                   <AssignmentLabel :assignment="assignment" :groupItem="groupItem"></AssignmentLabel>
                 </template>
               </div>

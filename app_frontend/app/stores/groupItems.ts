@@ -104,11 +104,9 @@ export const useGroupItemsStore = defineStore('groupItems', {
 
                 this.groupItems.delete(groupItemId);
 
-                if(trip.groupItemIds.includes(groupItemId)){
-                    const index = trip.groupItemIds.indexOf(groupItemId);
-                    if(index){
-                        trip.groupItemIds.splice(index, 1);
-                    }
+                const index = trip.groupItemIds.indexOf(groupItemId);
+                if (index !== -1) {
+                    trip.groupItemIds.splice(index, 1);
                 }
 
             } catch (error: any) {

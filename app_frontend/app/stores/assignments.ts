@@ -112,8 +112,17 @@ export const useAssignmentsStore = defineStore('assignments', {
 
                 this.assignments.set(response.id, response);
 
-                if(!groupItem.assignments.includes(assignmentId)){
-                    groupItem.assignments.push(assignmentId)
+                const index = groupItem.assignments.indexOf(assignmentId);
+
+                if (response.assignedQuantity === 0) {
+                    this.assignments.delete(assignmentId);
+                    if (index !== -1) {
+                        groupItem.assignments.splice(index, 1);
+                    }
+                } else {
+                    if (index === -1) {
+                        groupItem.assignments.push(assignmentId);
+                    }
                 }
 
             } catch (error: any) {
@@ -131,9 +140,9 @@ export const useAssignmentsStore = defineStore('assignments', {
 
                 this.assignments.delete(assignmentId);
 
-                if(groupItem.assignments.includes(assignmentId)){
+                if (groupItem.assignments.includes(assignmentId)) {
                     const index = groupItem.assignments.indexOf(assignmentId);
-                    if(index){
+                    if (index !== -1) {
                         groupItem.assignments.splice(index, 1);
                     }
                 }
