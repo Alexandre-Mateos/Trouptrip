@@ -1,8 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 
 export default defineComponent({
-  name: "Input",
+  name: "NumberInput",
   inheritAttrs: false,
   props: {
     label: {
@@ -10,41 +11,40 @@ export default defineComponent({
       required: true
     },
     modelValue: {
-      type: String,
-      default: '',
+      type: [Number, Object] as PropType<number | null>,
       required: true
     },
     errors: {
-      type: Array<string>,
+      type: Array as PropType<string[]>,
       required: false
     }
   },
   methods: {
     emitValue(event: Event) {
       const target = event.target as HTMLInputElement
-      this.$emit('update:modelValue', target.value)
+      this.$emit('update:modelValue', Number(target.value))
     }
   }
 })
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
+  <div class="flex flex-col gap-1 w-full">
     <label :for="$attrs.id as string">{{ label }}</label>
 
     <ul v-if="errors && errors.length > 0" >
       <li v-for="(error, index) in errors" :key="index"
-      class="text-xs text-red-800"
+          class="text-xs text-red-800"
       >
         {{ error }}
       </li>
     </ul>
-
     <input
         v-bind="$attrs"
+        type="number"
         :value="modelValue"
         @input="emitValue($event)"
-        class="rounded-md px-2 py-1"
+        class="rounded-md px-2"
         :class="{'border-2 border-red-800': errors && errors.length > 0}"
     >
   </div>

@@ -1,12 +1,11 @@
 import {apiEndpoints} from "~/utils/apiEndpoints";
-import type {ITripList} from "~/interfaces/i-tripList";
+import type {ITripList} from "~/interfaces/trip/i-tripList";
 import 'temporal-polyfill/global';
-import type {ITripDetails} from "~/interfaces/i-tripDetails";
-import type {IMapTrip} from "~/interfaces/i-mapTrip";
-import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
+import type {ITripDetails} from "~/interfaces/trip/i-tripDetails";
+import type {IMapTrip} from "~/interfaces/trip/store/i-mapTrip";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {ITripForm} from "~/interfaces/i-tripForm";
 import type {IParticipantList} from "~/interfaces/i-participantList";
-import type {IParticipation} from "~/interfaces/i-participation";
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -46,7 +45,6 @@ export const useTripsStore = defineStore('trips', {
                 }
 
                 const currentUserId = useUserStore().user?.id;
-                const ownerId = trip.owner.id;
 
                 const participantList: IParticipantList[]  = [];
                 trip.participations.forEach((participation) => {
@@ -102,10 +100,31 @@ export const useTripsStore = defineStore('trips', {
             const apiUrl = apiEndpoints.trips + '/' + tripId;
             try {
                 const tripDetail = await $api<ITripDetails>(apiUrl);
+                const groupItemIds = tripDetail.groupItems?.map(item => item.id) ?? [];
+
+                // On stock le owner et les participants à un voyage directement dans le userStore. A faire: retirer de ce Payload  pour les récupérer via un endpoint dédié.
+                const userStore = useUserStore();
+                userStore.tripUsers.set(tripDetail.owner.id, tripDetail.owner);
+                tripDetail.participations.forEach((participation) => {
+                    userStore.tripUsers.set(
+                        participation.participant.id,
+                        participation.participant
+                    );
+                });
+
                 if (tripListView) {
-                    this.trips.set(tripId, {...tripListView, ...tripDetail, isDetail: true})
+                    this.trips.set(tripId, {
+                        ...tripListView,
+                        ...tripDetail,
+                        isDetail: true,
+                        groupItemIds: groupItemIds
+                    });
                 } else {
-                    this.trips.set(tripId, {...tripDetail, isDetail: true})
+                    this.trips.set(tripId, {
+                        ...tripDetail,
+                        isDetail: true,
+                        groupItemIds: groupItemIds
+                    });
                 }
 
             } catch (error: any) {
@@ -127,7 +146,13 @@ export const useTripsStore = defineStore('trips', {
                     }
                 });
 
-                this.trips.set(response.id, { ...response, isDetail: true });
+                const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+
+                this.trips.set(response.id, {
+                    ...response,
+                    isDetail: true,
+                    groupItemIds: groupItemIds
+                });
                 return response;
 
             } catch (error: any) {
@@ -152,7 +177,13 @@ export const useTripsStore = defineStore('trips', {
                     }
                 });
 
-                this.trips.set(response.id, { ...response, isDetail: true });
+                const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+
+                this.trips.set(response.id, {
+                    ...response,
+                    isDetail: true,
+                    groupItemIds: groupItemIds
+                });
                 return response;
 
             } catch (error: any) {

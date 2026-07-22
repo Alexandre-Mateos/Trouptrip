@@ -6,22 +6,25 @@ export default defineComponent({
   props: {
     icon: {
       type: String,
-      default: "qlementine-icons:success-16"
+      default: "tabler:circle-check"
     },
     label: {
       type: String,
-      default: 'Valider'
     },
     type: {
       type: String as PropType<"button" | "submit" | "reset">,
       default: "button",
     },
+    color: {
+      type: String,
+      default: "var(--color-trouptrip-success-500)"
+    }
   }
 })
 </script>
 
 <template>
-  <BaseButton color="var(--color-trouptrip-success-500)" :type="type">
+  <BaseButton :color="color" :type="type">
     <Icon :name="icon" />
     <slot>{{label}}</slot>
   </BaseButton>

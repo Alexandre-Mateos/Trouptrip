@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import type {IMapTripDetails} from "~/interfaces/i-mapTripDetails";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 
 export default defineComponent({
   name: "TripDetailTab",
@@ -73,8 +73,8 @@ export default defineComponent({
   </div>
   <div class="flex justify-end">
     <div v-if="isTripOwner" class="flex flex-row gap-2">
-      <EditButton @click="toggleEditTripModal"></EditButton>
-      <DeleteButton @click="toggleDeleteTripModal"></DeleteButton>
+      <EditButton @click="toggleEditTripModal" label="Modifier"></EditButton>
+      <DeleteButton @click="toggleDeleteTripModal" label="Supprimer"></DeleteButton>
     </div>
   </div>
 
@@ -91,7 +91,7 @@ export default defineComponent({
       <p>{{trip.title}}</p>
       <p>Etes vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
-        <DeleteButton @click="deleteTrip"></DeleteButton>
+        <DeleteButton @click="deleteTrip" label="Supprimer"></DeleteButton>
         <CancelButton @click="toggleDeleteTripModal"></CancelButton>
       </div>
     </div>

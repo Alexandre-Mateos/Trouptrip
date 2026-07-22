@@ -8,13 +8,14 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\AssignmentResource\AssignmentInputDTO;
 use App\Interface\CreatedAtInterface;
 use App\Repository\AssignmentRepository;
+use App\State\Processor\PatchAssignmentProcessor;
 use App\State\Processor\PostAssignmentProcessor;
 use App\State\Provider\AssignmentProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AssignmentAssert;
 
 #[ApiResource(
@@ -32,17 +33,18 @@ use App\Validator as AssignmentAssert;
         ),
         new Post(
             normalizationContext: ['groups' => 'assignment:collection'],
-            denormalizationContext: ['groups' => 'assignment:create'],
             securityPostDenormalize: "is_granted('ASSIGNMENT_CREATE', object)",
+            input: AssignmentInputDTO::class,
             processor: PostAssignmentProcessor::class
         ),
         new Patch(
             normalizationContext: ['groups' => 'assignment:collection'],
-            denormalizationContext: ['groups' => 'assignment:edit'],
-            security: "is_granted('ASSIGNMENT_CREATE', object)"
+            security: "is_granted('ASSIGNMENT_CREATE', object)",
+            input: AssignmentInputDTO::class,
+            processor: PatchAssignmentProcessor::class
         ),
         new Delete(
-            security: "is_granted('ASSIGNMENT_CREATE', object)"
+            security: "is_granted('ASSIGNMENT_DELETE', object)"
         )
     ]
 )]
@@ -57,8 +59,7 @@ class Assignment implements CreatedAtInterface
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['assignment:create', 'assignment:collection', 'assignment:edit'])]
-    #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
+    #[Groups(['assignment:create', 'assignment:collection'])]
     private ?int $assignedQuantity = null;
 
     #[ORM\Column]

@@ -2,7 +2,12 @@
 
 namespace App\Security\Voter;
 
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\ApiResource\AssignmentResource\AssignmentInputDTO;
+use App\Entity\Assignment;
+use App\Repository\AssignmentRepository;
 use App\Repository\ParticipationRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -11,35 +16,45 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class AssignmentVoter extends Voter
 {
     public const CREATE = 'ASSIGNMENT_CREATE';
+    public const DELETE = 'ASSIGNMENT_DELETE';
 
     public function __construct(
-        private ParticipationRepository $participationRepository,
-    )
-    {
+        private readonly ParticipationRepository $participationRepository,
+        private readonly RequestStack $requestStack,
+        private readonly AssignmentRepository $assignmentRepository,
+        private readonly IriConverterInterface $iriConverter
+    ) {
     }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::CREATE])
-            && $subject instanceof \App\Entity\Assignment;
+        return in_array($attribute, [self::CREATE, self::DELETE])
+            && ($subject instanceof Assignment || $subject instanceof AssignmentInputDTO);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
-
-        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             $vote?->addReason('The user must be logged in to access this resource.');
-
             return false;
         }
 
-        $trip = $subject->getGroupItem()->getTrip();
+        $request = $this->requestStack->getCurrentRequest();
+        $assignmentId = $request?->attributes->get('id');
 
-        // ... (check conditions and return true to grant permission) ...
+        if ($assignmentId) {
+            $assignment = $this->assignmentRepository->find($assignmentId);
+            $groupItem = $assignment?->getGroupItem();
+        } else {
+            $groupItem = $this->iriConverter->getResourceFromIri($subject->groupItem);
+        }
+
+        if (!$groupItem) {
+            return false;
+        }
+
+        $trip = $groupItem->getTrip();
         switch ($attribute) {
             case self::CREATE:
                 if ($user === $trip->getOwner() || $this->participationRepository->isUserAParticipantInTrip($user, $trip)) {
@@ -47,6 +62,10 @@ final class AssignmentVoter extends Voter
                 }
                 break;
 
+            case self::DELETE:
+                if($user === $assignment->getAssignedTo()){
+                    return true;
+                }
         }
 
         return false;

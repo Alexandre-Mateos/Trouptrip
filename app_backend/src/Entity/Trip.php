@@ -110,6 +110,7 @@ class Trip implements CreatedAtInterface
      * @var Collection<int, GroupItem>
      */
     #[ORM\OneToMany(targetEntity: GroupItem::class, mappedBy: 'trip')]
+    #[Groups(['trip:item'])]
     private Collection $groupItems;
 
     /**
