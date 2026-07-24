@@ -21,6 +21,7 @@ class AssignmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->leftJoin('a.groupItem', 'g')
             ->leftJoin('g.trip', 't')
+            ->addSelect('g', 't')
             ->where('t.id = :id')
             ->setParameter('id', $tripId)
             ->getQuery()

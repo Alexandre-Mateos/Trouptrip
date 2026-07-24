@@ -2,7 +2,12 @@
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "Collapsible"
+  name: "Collapsible",
+  props: {
+    label: {
+      type: String
+    }
+  }
 })
 </script>
 
@@ -11,7 +16,7 @@ export default defineComponent({
   >
     <UButton
         class="group bg-surface-primary-trouptrip hover:bg-trouptrip-accent-500 hover:text-white cursor-pointer"
-        label="Open"
+        :label="label"
         trailing-icon="i-lucide-chevron-down"
         :ui="{
         trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200'

@@ -5,5 +5,7 @@ export interface IDetailedAssignment extends IApiResource{
     id: number,
     assignedQuantity: number,
     IsPacked: boolean,
-    assignedTo: IParticipant
+    groupItem: {id: number},
+    assignedTo: IParticipant,
+    tripId: number
 }

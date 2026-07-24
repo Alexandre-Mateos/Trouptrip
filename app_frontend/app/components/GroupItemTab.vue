@@ -65,13 +65,20 @@ export default defineComponent({
   computed: {
     groupItems() {
       return useGroupItemsStore().getGroupItemListByTrip(this.trip)
+    },
+    assignedGroupItems() {
+      const currentUserId = useUserStore().user?.id;
+      if(!currentUserId){
+        return [];
+      }
+      return useAssignmentsStore().getAssignedGroupItemsByUserAndTrip(this.trip.id, currentUserId);
     }
   }
 })
 </script>
 
 <template>
-  <Collapsible>
+  <Collapsible label="La valise">
     <div class="p-2 flex flex-col gap-2">
 
       <div v-if="error" class="text-red-700 p-3 rounded mb-4">
@@ -145,6 +152,13 @@ export default defineComponent({
       </template>
     </div>
   </Collapsible>
+
+  <Collapsible label="Mon sac à dos">
+    <div v-for="assignedItem in assignedGroupItems" :key="assignedItem.id">
+      <p>{{assignedItem.name}}</p>
+    </div>
+  </Collapsible>
+
 
   <BaseModal :open="isCreateModalOpen">
     <GroupItemForm @done="toggleModal" :trip="trip"></GroupItemForm>

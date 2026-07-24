@@ -1,6 +1,6 @@
 export interface IGroupItemRow{
     id: number,
     name: string,
-    totalQuantity: 1,
+    totalQuantity: number,
     unit: string,
 }

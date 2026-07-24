@@ -3,11 +3,14 @@ import type {IAssignmentList} from "~/interfaces/assignment/i-assignmentList";
 import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
+import type {IAssignedItem} from "~/interfaces/i-assignedItem";
 
 export const useAssignmentsStore = defineStore('assignments', {
     state: () => ({
         assignments: new Map<number, IAssignment>,
-        fetching: false
+        fetching: false,
+        // map de type: <tripId, <userId, assignmentId[]>>
+        assignmentsByUsers: new Map<number, Map<number, number[]>>(),
     }),
     getters: {
         getHandledQtyByGroupItem: (state) => {
@@ -48,6 +51,32 @@ export const useAssignmentsStore = defineStore('assignments', {
                 });
                 return storedAssignments;
             }
+        },
+        getAssignedGroupItemsByUserAndTrip: (state) => {
+            return(tripId: number, userId: number) => {
+                const assignedItems: IAssignedItem[] = [];
+
+                const assignmentRefs = state.assignmentsByUsers.get(tripId)?.get(userId);
+
+                if(assignmentRefs){
+                    assignmentRefs.forEach((assignmentId) => {
+                        const assignment = state.assignments.get(assignmentId);
+                        if(assignment){
+                            const groupItem = useGroupItemsStore().groupItems.get(assignment.groupItem.id);
+
+                            if(groupItem){
+                                assignedItems.push({
+                                    id: groupItem.id,
+                                    name: groupItem.name,
+                                    unit: groupItem.unit,
+                                    assignedQuantity: assignment.assignedQuantity,
+                                });
+                            }
+                        }
+                    });
+                }
+                return assignedItems;
+            }
         }
     },
     actions: {
@@ -60,9 +89,24 @@ export const useAssignmentsStore = defineStore('assignments', {
 
             try {
                 const assignmentCollection = await $api<IAssignmentList>(apiEndpoints.assignmentCollection(tripId));
+                const assignmentIdByUserMap:Map<number, number[]> = new Map();
+
                 assignmentCollection.member.forEach((assignment) => {
-                    this.assignments.set(assignment.id, assignment)
+                    this.assignments.set(assignment.id, assignment);
+
+                    const userId = assignment.assignedTo.id;
+                    const assignmentIds = assignmentIdByUserMap.get(userId)
+                    if(assignmentIds){
+                        assignmentIds.push(assignment.id);
+                    }else{
+                        const assignmentIds = [];
+                        assignmentIds.push(assignment.id);
+                        assignmentIdByUserMap.set(userId, assignmentIds);
+                    }
                 });
+
+                this.assignmentsByUsers.set(tripId, assignmentIdByUserMap);
+
             } catch (error: any) {
                 throw error;
             } finally {
@@ -84,7 +128,26 @@ export const useAssignmentsStore = defineStore('assignments', {
                 });
 
                 this.assignments.set(response.id, response);
+                console.log(this.assignmentsByUsers);
+
+                const assignmentsByTripMap = this.assignmentsByUsers.get(response.tripId);
+                if(assignmentsByTripMap){
+                    const assignmentsByUser = assignmentsByTripMap.get(response.assignedTo.id);
+                    if(assignmentsByUser){
+                        assignmentsByUser.push(response.id);
+                    }else{
+                        const assignmentsByUser = [response.id];
+                        assignmentsByTripMap.set(response.assignedTo.id, assignmentsByUser)
+                    }
+                }else{
+                    const assignmentsByTripMap = new Map();
+                    const assignmentsByUser = [response.id];
+                    assignmentsByTripMap.set(response.assignedTo.id, assignmentsByUser)
+                    this.assignmentsByUsers.set(response.tripId, assignmentsByTripMap);
+                }
+
                 groupItem.assignments.push(response.id);
+                console.log(this.assignmentsByUsers);
 
             } catch (error: any) {
                 throw error;

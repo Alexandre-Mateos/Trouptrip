@@ -51,7 +51,7 @@ class GroupItem implements CreatedAtInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['groupItem:collection', 'trip:item'])]
+    #[Groups(['groupItem:collection', 'trip:item', 'assignment:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
