@@ -23,7 +23,8 @@ export default defineComponent({
       errors: {} as Record<string, string[]>,
       isSubmitting: false,
       selectOptions: [
-        {value: 'Unit', label: 'Unité'},
+        {value: 'piece', label: 'pièce'},
+        {value: 'ml', label: 'ml'},
         {value: 'g', label: 'g'},
         {value: 'kg', label: 'kg'},
         {value: 'cl', label: 'cl'},

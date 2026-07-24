@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Enum\GroupItemUnitEnum;
 use App\Interface\CreatedAtInterface;
 use App\Repository\GroupItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -70,10 +71,10 @@ class GroupItem implements CreatedAtInterface
     #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
     private ?int $totalQuantity = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
     #[Groups(['groupItem:collection', 'groupItem:create', 'groupItem:edit'])]
     #[Assert\NotBlank(message: "L'unité est requise (ex: g, kg, pièces...).")]
-    private ?string $unit = null;
+    private ?GroupItemUnitEnum $unit = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupItems')]
     #[ORM\JoinColumn(nullable: false)]
@@ -128,12 +129,12 @@ class GroupItem implements CreatedAtInterface
         return $this;
     }
 
-    public function getUnit(): ?string
+    public function getUnit(): ?GroupItemUnitEnum
     {
         return $this->unit;
     }
 
-    public function setUnit(string $unit): static
+    public function setUnit(GroupItemUnitEnum $unit): static
     {
         $this->unit = $unit;
 
