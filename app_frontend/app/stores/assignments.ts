@@ -69,6 +69,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                                     id: groupItem.id,
                                     name: groupItem.name,
                                     unit: groupItem.unit,
+                                    isPacked: assignment.isPacked,
                                     assignedQuantity: assignment.assignedQuantity,
                                 });
                             }
@@ -147,7 +148,6 @@ export const useAssignmentsStore = defineStore('assignments', {
                 }
 
                 groupItem.assignments.push(response.id);
-                console.log(this.assignmentsByUsers);
 
             } catch (error: any) {
                 throw error;

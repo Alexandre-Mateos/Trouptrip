@@ -4,7 +4,7 @@ import type {IApiResource} from "~/interfaces/i-apiResource";
 export interface IDetailedAssignment extends IApiResource{
     id: number,
     assignedQuantity: number,
-    IsPacked: boolean,
+    isPacked: boolean,
     groupItem: {id: number},
     assignedTo: IParticipant,
     tripId: number
