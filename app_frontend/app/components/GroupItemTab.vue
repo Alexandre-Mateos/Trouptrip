@@ -3,12 +3,9 @@ import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails"
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
-import AssignmentForm from "~/components/AssignmentForm.vue";
-import ItemCard from "~/components/ItemCard.vue";
 
 export default defineComponent({
   name: 'GroupItemTab',
-  components: {ItemCard, AssignmentForm},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
