@@ -68,7 +68,7 @@ class Assignment implements CreatedAtInterface
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['assignment:create'])]
+    #[Groups(['assignment:create', 'assignment:collection'])]
     private ?GroupItem $groupItem = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
@@ -157,5 +157,11 @@ class Assignment implements CreatedAtInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    #[Groups(['assignment:collection'])]
+    public function getTripId(): ?int
+    {
+        return $this->groupItem?->getTrip()?->getId();
     }
 }
