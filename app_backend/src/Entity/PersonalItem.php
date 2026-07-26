@@ -2,8 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Enum\GroupItemUnitEnum;
 use App\Repository\PersonalItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+#[ApiResource(
+    operations: [
+        new GetCollection()
+    ]
+)]
 
 #[ORM\Entity(repositoryClass: PersonalItemRepository::class)]
 class PersonalItem
@@ -36,8 +44,8 @@ class PersonalItem
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $unit = null;
+    #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
+    private ?GroupItemUnitEnum $unit = null;
 
     public function getId(): ?int
     {
@@ -128,12 +136,12 @@ class PersonalItem
         return $this;
     }
 
-    public function getUnit(): ?string
+    public function getUnit(): ?GroupItemUnitEnum
     {
         return $this->unit;
     }
 
-    public function setUnit(string $unit): static
+    public function setUnit(GroupItemUnitEnum $unit): static
     {
         $this->unit = $unit;
 

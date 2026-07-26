@@ -6,6 +6,7 @@ use App\Enum\GroupItemUnitEnum;
 use App\Enum\ParticipationStatusEnum;
 use App\Factory\GroupItemFactory;
 use App\Factory\ParticipationFactory;
+use App\Factory\PersonalItemFactory;
 use App\Factory\TripFactory;
 use App\Factory\UserFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
@@ -213,6 +214,30 @@ final class BasicStory extends Story
             ],
         ];
 
+        $personalItemData = [
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
+                'isPacked'  => false,
+                'name' => 'brosse à dents',
+                'quantity' => 1,
+                'unit'  => GroupItemUnitEnum::PIECE,
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
+                'isPacked'  => false,
+                'name' => 'Harry Potter',
+                'quantity' => 1,
+                'unit'  => GroupItemUnitEnum::PIECE,
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
+                'isPacked'  => false,
+                'name' => 'Lunettes de soleil',
+                'quantity' => 1,
+                'unit'  => GroupItemUnitEnum::PIECE,
+            ]
+        ];
+
         $participants = array_map( function($user){
             return UserFactory::createOne($user);
         } ,$paticipantsData);
@@ -247,6 +272,18 @@ final class BasicStory extends Story
                     'totalQuantity' => $groupItem['totalQuantity'],
                     'trip' => $associatedTrip,
                     'unit' => $groupItem['unit'],
+                ]);
+            }
+
+            foreach ($personalItemData as $personalItem) {
+                PersonalItemFactory::createOne([
+                    'createdAt' => new $personalItem['createdAt'],
+                    'isPacked'  => $personalItem['isPacked'],
+                    'name' => $personalItem['name'],
+                    'owner' => $userAlexandre,
+                    'quantity' => $personalItem['quantity'],
+                    'trip' => $associatedTrip,
+                    'unit' => $personalItem['unit'],
                 ]);
             }
         }
