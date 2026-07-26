@@ -117,13 +117,15 @@ export const useTripsStore = defineStore('trips', {
                         ...tripListView,
                         ...tripDetail,
                         isDetail: true,
-                        groupItemIds: groupItemIds
+                        groupItemIds: groupItemIds,
+                        personalItemIds: []
                     });
                 } else {
                     this.trips.set(tripId, {
                         ...tripDetail,
                         isDetail: true,
-                        groupItemIds: groupItemIds
+                        groupItemIds: groupItemIds,
+                        personalItemIds: []
                     });
                 }
 
@@ -151,7 +153,8 @@ export const useTripsStore = defineStore('trips', {
                 this.trips.set(response.id, {
                     ...response,
                     isDetail: true,
-                    groupItemIds: groupItemIds
+                    groupItemIds: groupItemIds,
+                    personalItemIds: []
                 });
                 return response;
 
@@ -182,7 +185,8 @@ export const useTripsStore = defineStore('trips', {
                 this.trips.set(response.id, {
                     ...response,
                     isDetail: true,
-                    groupItemIds: groupItemIds
+                    groupItemIds: groupItemIds,
+                    personalItemIds: []
                 });
                 return response;
 

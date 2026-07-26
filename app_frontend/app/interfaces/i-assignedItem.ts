@@ -3,5 +3,5 @@ export interface IAssignedItem{
     name: string,
     unit: string,
     isPacked: boolean,
-    assignedQuantity: number,
+    quantity: number,
 }

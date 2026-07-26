@@ -70,7 +70,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                                     name: groupItem.name,
                                     unit: groupItem.unit,
                                     isPacked: assignment.isPacked,
-                                    assignedQuantity: assignment.assignedQuantity,
+                                    quantity: assignment.assignedQuantity,
                                 });
                             }
                         }

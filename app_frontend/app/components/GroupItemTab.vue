@@ -70,6 +70,9 @@ export default defineComponent({
         return [];
       }
       return useAssignmentsStore().getAssignedGroupItemsByUserAndTrip(this.trip.id, currentUserId);
+    },
+    personalItems() {
+      return usePersonalItemsStore().getPersonalItemsByTripId(this.trip.id);
     }
   }
 })
@@ -155,8 +158,10 @@ export default defineComponent({
 
     <Collapsible label="Mon sac à dos">
       <div class="p-2 flex flex-col gap-2">
-        <ItemCard :item="assignedItem" :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
-                  :key="assignedItem.id"></ItemCard>
+        <ItemCard :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
+                  :key="assignedItem.id" :item="assignedItem" ></ItemCard>
+
+        <ItemCard v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem"></ItemCard>
       </div>
     </Collapsible>
   </div>

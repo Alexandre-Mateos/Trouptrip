@@ -4,6 +4,7 @@ import {useTripsStore} from "~/stores/trips";
 import {useGroupItemsStore} from "~/stores/groupItems";
 import {useAssignmentsStore} from "~/stores/assignments";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import {usePersonalItemsStore} from "~/stores/personalItems";
 
 export default defineComponent({
   name: "[id]",
@@ -23,7 +24,8 @@ export default defineComponent({
     try {
       await useTripsStore().fetchTrip(id);
       await useGroupItemsStore().fetchGroupItems(id);
-      await useAssignmentsStore().fetchAssignments(id)
+      await useAssignmentsStore().fetchAssignments(id);
+      await usePersonalItemsStore().fetchPersonalItems(id);
     } catch {
       this.hasError = true;
     }
