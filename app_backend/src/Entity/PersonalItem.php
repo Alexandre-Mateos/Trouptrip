@@ -4,30 +4,46 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Enum\GroupItemUnitEnum;
 use App\Repository\PersonalItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 #[ApiResource(
     operations: [
-        new GetCollection()
+        new GetCollection(
+            uriTemplate: '/trips/{tripId}/personal_items',
+            uriVariables: [
+                'tripId' => new Link(
+                    toProperty: 'trip',
+                    fromClass: Trip::class
+                )
+            ],
+            normalizationContext: ['groups' => ['personal_item:collection']],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+        ),
     ]
 )]
-
 #[ORM\Entity(repositoryClass: PersonalItemRepository::class)]
 class PersonalItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['personal_item:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['personal_item:collection'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['personal_item:collection'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['personal_item:collection'])]
     private ?bool $isPacked = null;
 
     #[ORM\ManyToOne]
@@ -36,6 +52,7 @@ class PersonalItem
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['personal_item:collection'])]
     private ?Trip $trip = null;
 
     #[ORM\Column]
@@ -45,6 +62,7 @@ class PersonalItem
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
+    #[Groups(['personal_item:collection'])]
     private ?GroupItemUnitEnum $unit = null;
 
     public function getId(): ?int
