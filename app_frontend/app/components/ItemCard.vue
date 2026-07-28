@@ -46,6 +46,9 @@ export default defineComponent({
       </div>
     </div>
     <p class="text-xs text-trouptrip-neutral-500" v-if="isFromGroupItem">Pour le groupe</p>
+    <slot>
+
+    </slot>
   </UCard>
 </template>
 
