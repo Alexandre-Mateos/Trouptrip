@@ -3,6 +3,7 @@ import type {IPersonalItemList} from "~/interfaces/personalItem/i-personalItemLi
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {IAssignment} from "~/interfaces/assignment/i-assignment";
 import {apiEndpoints} from "~/utils/apiEndpoints";
+import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 
 export const usePersonalItemsStore = defineStore('personalItem', {
     state: () => ({
@@ -111,6 +112,31 @@ export const usePersonalItemsStore = defineStore('personalItem', {
                 });
 
                 this.personalItems.set(response.id, response);
+            } catch (error: any) {
+                throw error;
+            }
+        },
+        async deletePersonalItem(
+            trip: IMapTripDetails,
+            personalItemId: number
+        ){
+            const {$api} = useNuxtApp();
+            const url = `${apiEndpoints.personalItems}/${personalItemId}`;
+
+            try {
+                await $api(url, {
+                    method: 'DELETE'
+                });
+
+                this.personalItems.delete(personalItemId);
+
+                if (trip.personalItemIds.includes(personalItemId)) {
+                    const index = trip.personalItemIds.indexOf(personalItemId);
+                    if (index !== -1) {
+                        trip.personalItemIds.splice(index, 1);
+                    }
+                }
+
             } catch (error: any) {
                 throw error;
             }

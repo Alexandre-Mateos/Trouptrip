@@ -20,9 +20,11 @@ export default defineComponent({
       isDeleteGroupItemModalOpen: false,
       isCreatePersonalItemModalOpen: false,
       isEditPersonalItemModalOpen: false,
+      isDeletePersonalItemModalOpen: false,
       activeGroupItem: {} as IMapGroupItem,
       activePersonalItem: {} as IPersonalItem,
-      error: ''
+      groupItemError: '',
+      personalItemError: ''
     }
   },
   methods: {
@@ -52,12 +54,12 @@ export default defineComponent({
       this.isDeleteGroupItemModalOpen = !this.isDeleteGroupItemModalOpen;
     },
     async deleteGroupItem(groupItem: IMapGroupItem) {
-      this.error = '';
+      this.groupItemError = '';
       try {
         await useGroupItemsStore().deleteGroupItem(this.trip, groupItem.id);
 
       } catch (error: any) {
-        this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
+        this.groupItemError = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
 
       this.toggleDeleteGroupItemModal(groupItem);
@@ -71,7 +73,26 @@ export default defineComponent({
       }
 
       this.isEditPersonalItemModalOpen = !this.isEditPersonalItemModalOpen;
-    }
+    },
+    toggleDeletePersonalItemModal(personalItem: IPersonalItem) {
+
+      if (!this.isDeletePersonalItemModalOpen) {
+        this.activePersonalItem = personalItem;
+      }
+
+      this.isDeletePersonalItemModalOpen = !this.isDeletePersonalItemModalOpen;
+    },
+    async deletePersonalItem(personalItem: IPersonalItem) {
+      this.personalItemError = '';
+      try {
+        await usePersonalItemsStore().deletePersonalItem(this.trip, personalItem.id);
+
+      } catch (error: any) {
+        this.personalItemError = "Une erreur est survenue. Veuillez réessayer plus tard.";
+      }
+
+      this.toggleDeletePersonalItemModal(personalItem);
+    },
   },
   computed: {
     groupItems() {
@@ -97,9 +118,13 @@ export default defineComponent({
     <Collapsible label="La valise">
       <div class="p-2 flex flex-col gap-2">
 
-        <div v-if="error" class="text-red-700 p-3 rounded mb-4">
-          {{ error }}
+        <div v-if="groupItemError" class="text-red-700 p-3 rounded mb-4">
+          {{ groupItemError }}
         </div>
+        <div v-if="personalItemError" class="text-red-700 p-3 rounded mb-4">
+          {{ personalItemError }}
+        </div>
+
 
         <ActionButton type="submit" @click="toggleCreateGroupItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
 
@@ -178,6 +203,7 @@ export default defineComponent({
 
         <ItemCard v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem">
           <EditButton @click="toggleEditPersonalItemModal(personalItem)" class="py-2"></EditButton>
+          <DeleteButton @click="toggleDeletePersonalItemModal(personalItem)" class="py-2"></DeleteButton>
         </ItemCard>
       </div>
     </Collapsible>
@@ -198,7 +224,7 @@ export default defineComponent({
       <p>Etes vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton @click="deleteGroupItem(activeGroupItem)" label="Supprimer"></DeleteButton>
-        <CancelButton @click="toggleDeleteGroupItemModal"></CancelButton>
+        <CancelButton @click="toggleDeleteGroupItemModal(activeGroupItem)"></CancelButton>
       </div>
     </div>
   </BaseModal>
@@ -209,6 +235,18 @@ export default defineComponent({
 
   <BaseModal :open="isEditPersonalItemModalOpen">
     <PersonalItemForm @done="toggleEditPersonalItemModal" :trip="trip" :personal-item-to-edit="activePersonalItem" ></PersonalItemForm>
+  </BaseModal>
+
+  <BaseModal :open="isDeletePersonalItemModalOpen">
+    <div>
+      <p>Vous Etes sur le point de supprimer l'item suivant :</p>
+      <p>{{ activePersonalItem.name }}</p>
+      <p>Etes vous sûr de vouloir continuer ?</p>
+      <div class="flex flex-row justify-center gap-2">
+        <DeleteButton @click="deletePersonalItem(activePersonalItem)" label="Supprimer"></DeleteButton>
+        <CancelButton @click="toggleDeletePersonalItemModal(activePersonalItem)"></CancelButton>
+      </div>
+    </div>
   </BaseModal>
 
 </template>

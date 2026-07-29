@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
@@ -37,6 +38,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['groups' => 'personal_item:collection'],
             denormalizationContext: ['groups' => 'personal_item:update'],
             security:  "is_granted('PERSONAL_ITEM_EDIT', object) ",
+        ),
+        new Delete(
+            security: "is_granted('ROLE_USER') and object.getOwner() === user"
         )
     ]
 )]
