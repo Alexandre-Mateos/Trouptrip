@@ -1,12 +1,13 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IAssignedItem} from "~/interfaces/i-assignedItem";
+import type {IPersonalItem} from "~/interfaces/personalItem/I-presonalItem";
 
 export default defineComponent({
   name: "ItemCard",
   props: {
     item: {
-      type: Object as PropType<IAssignedItem>,
+      type: Object as PropType<IAssignedItem|IPersonalItem>,
       required: true
     },
     isFromGroupItem: {
@@ -40,11 +41,14 @@ export default defineComponent({
       </div>
 
       <div class="flex items-center gap-1">
-        <p>{{ item.assignedQuantity }}</p>
+        <p>{{ item.quantity }}</p>
         <p class="text-xs">{{ item.unit }}</p>
       </div>
     </div>
     <p class="text-xs text-trouptrip-neutral-500" v-if="isFromGroupItem">Pour le groupe</p>
+    <slot>
+
+    </slot>
   </UCard>
 </template>
 

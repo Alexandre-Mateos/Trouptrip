@@ -2,24 +2,67 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Enum\GroupItemUnitEnum;
+use App\Interface\CreatedAtInterface;
 use App\Repository\PersonalItemRepository;
+use App\State\Processor\PersonalItemProcessor;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/trips/{tripId}/personal_items',
+            uriVariables: [
+                'tripId' => new Link(
+                    toProperty: 'trip',
+                    fromClass: Trip::class
+                )
+            ],
+            normalizationContext: ['groups' => ['personal_item:collection']],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'personal_item:collection'],
+            denormalizationContext: ['groups' => 'personal_item:create'],
+            securityPostDenormalize: "is_granted('PERSONAL_ITEM_CREATE', object)",
+            processor: PersonalItemProcessor::class
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'personal_item:collection'],
+            denormalizationContext: ['groups' => 'personal_item:update'],
+            security:  "is_granted('PERSONAL_ITEM_EDIT', object) ",
+        ),
+        new Delete(
+            security: "is_granted('ROLE_USER') and object.getOwner() === user"
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: PersonalItemRepository::class)]
-class PersonalItem
+class PersonalItem implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['personal_item:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['personal_item:collection'])]
     private ?bool $isPacked = null;
 
     #[ORM\ManyToOne]
@@ -28,6 +71,7 @@ class PersonalItem
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['personal_item:collection', 'personal_item:create'])]
     private ?Trip $trip = null;
 
     #[ORM\Column]
@@ -36,8 +80,9 @@ class PersonalItem
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $unit = null;
+    #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
+    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
+    private ?GroupItemUnitEnum $unit = null;
 
     public function getId(): ?int
     {
@@ -128,12 +173,12 @@ class PersonalItem
         return $this;
     }
 
-    public function getUnit(): ?string
+    public function getUnit(): ?GroupItemUnitEnum
     {
         return $this->unit;
     }
 
-    public function setUnit(string $unit): static
+    public function setUnit(GroupItemUnitEnum $unit): static
     {
         $this->unit = $unit;
 

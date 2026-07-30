@@ -2,13 +2,14 @@
 
 namespace App\Factory;
 
-use App\Entity\GroupItem;
+use App\Entity\PersonalItem;
+use App\Enum\GroupItemUnitEnum;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<GroupItem>
+ * @extends PersistentObjectFactory<PersonalItem>
  */
-final class GroupItemFactory extends PersistentObjectFactory
+final class PersonalItemFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -22,7 +23,7 @@ final class GroupItemFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return GroupItem::class;
+        return PersonalItem::class;
     }
 
     /**
@@ -35,10 +36,12 @@ final class GroupItemFactory extends PersistentObjectFactory
     {
         return [
             'createdAt' => new \DateTimeImmutable(),
+            'isPacked' => false,
             'name' => self::faker()->text(5),
-            'totalQuantity' => self::faker()->randomNumber(),
+            'owner' => UserFactory::new(),
+            'quantity' => self::faker()->randomNumber(),
             'trip' => TripFactory::new(),
-            'unit' => self::faker()->randomElement(['kg', 'g', 'piece', 'L', 'ml']),
+            'unit' => self::faker()->randomElement(GroupItemUnitEnum::cases()),
         ];
     }
 
@@ -49,7 +52,7 @@ final class GroupItemFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(GroupItem $groupItem): void {})
+            // ->afterInstantiate(function(PersonalItem $personalItem): void {})
         ;
     }
 }

@@ -70,7 +70,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                                     name: groupItem.name,
                                     unit: groupItem.unit,
                                     isPacked: assignment.isPacked,
-                                    assignedQuantity: assignment.assignedQuantity,
+                                    quantity: assignment.assignedQuantity,
                                 });
                             }
                         }
@@ -129,7 +129,6 @@ export const useAssignmentsStore = defineStore('assignments', {
                 });
 
                 this.assignments.set(response.id, response);
-                console.log(this.assignmentsByUsers);
 
                 const assignmentsByTripMap = this.assignmentsByUsers.get(response.tripId);
                 if(assignmentsByTripMap){

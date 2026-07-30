@@ -9,5 +9,7 @@ export const apiEndpoints = {
     groupItemCollection: (tripId: number) => `/trips/${tripId}/group_items`,
     groupItems: '/group_items',
     assignmentCollection: (tripId: number) => `/trips/${tripId}/assignments`,
-    assignments: '/assignments'
+    assignments: '/assignments',
+    personalItemCollection: (tripId: number) => `/trips/${tripId}/personal_items`,
+    personalItems: '/personal_items'
 } as const

@@ -3,6 +3,7 @@ import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails"
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import type {IPersonalItem} from "~/interfaces/personalItem/I-presonalItem";
 
 export default defineComponent({
   name: 'GroupItemTab',
@@ -14,12 +15,16 @@ export default defineComponent({
   },
   data() {
     return {
-      isCreateModalOpen: false,
-      isEditModalOpen: false,
-      isDeleteModalOpen: false,
-      isAlertModalOpen: false,
+      isCreateGroupItemModalOpen: false,
+      isEditGroupItemModalOpen: false,
+      isDeleteGroupItemModalOpen: false,
+      isCreatePersonalItemModalOpen: false,
+      isEditPersonalItemModalOpen: false,
+      isDeletePersonalItemModalOpen: false,
       activeGroupItem: {} as IMapGroupItem,
-      error: ''
+      activePersonalItem: {} as IPersonalItem,
+      groupItemError: '',
+      personalItemError: ''
     }
   },
   methods: {
@@ -29,36 +34,65 @@ export default defineComponent({
     assignments(groupItem: IMapGroupItem) {
       return useAssignmentsStore().getAssignmentsByGroupItem(groupItem)
     },
-    toggleModal() {
-      this.isCreateModalOpen = !this.isCreateModalOpen;
+    toggleCreateGroupItemModal() {
+      this.isCreateGroupItemModalOpen = !this.isCreateGroupItemModalOpen;
     },
     toggleEditGroupItemModal(groupItem: IMapGroupItem) {
 
-      if (!this.isEditModalOpen) {
+      if (!this.isEditGroupItemModalOpen) {
         this.activeGroupItem = groupItem;
       }
 
-      this.isEditModalOpen = !this.isEditModalOpen;
+      this.isEditGroupItemModalOpen = !this.isEditGroupItemModalOpen;
     },
     toggleDeleteGroupItemModal(groupItem: IMapGroupItem) {
 
-      if (!this.isDeleteModalOpen) {
+      if (!this.isDeleteGroupItemModalOpen) {
         this.activeGroupItem = groupItem;
       }
 
-      this.isDeleteModalOpen = !this.isDeleteModalOpen;
+      this.isDeleteGroupItemModalOpen = !this.isDeleteGroupItemModalOpen;
     },
     async deleteGroupItem(groupItem: IMapGroupItem) {
-      this.error = '';
+      this.groupItemError = '';
       try {
         await useGroupItemsStore().deleteGroupItem(this.trip, groupItem.id);
 
       } catch (error: any) {
-        this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
+        this.groupItemError = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
 
       this.toggleDeleteGroupItemModal(groupItem);
-    }
+    },
+    toggleCreatePersonalItemModal(){
+      this.isCreatePersonalItemModalOpen = !this.isCreatePersonalItemModalOpen;
+    },
+    toggleEditPersonalItemModal(personalItem: IPersonalItem){
+      if (!this.isEditPersonalItemModalOpen) {
+        this.activePersonalItem = personalItem;
+      }
+
+      this.isEditPersonalItemModalOpen = !this.isEditPersonalItemModalOpen;
+    },
+    toggleDeletePersonalItemModal(personalItem: IPersonalItem) {
+
+      if (!this.isDeletePersonalItemModalOpen) {
+        this.activePersonalItem = personalItem;
+      }
+
+      this.isDeletePersonalItemModalOpen = !this.isDeletePersonalItemModalOpen;
+    },
+    async deletePersonalItem(personalItem: IPersonalItem) {
+      this.personalItemError = '';
+      try {
+        await usePersonalItemsStore().deletePersonalItem(this.trip, personalItem.id);
+
+      } catch (error: any) {
+        this.personalItemError = "Une erreur est survenue. Veuillez réessayer plus tard.";
+      }
+
+      this.toggleDeletePersonalItemModal(personalItem);
+    },
   },
   computed: {
     groupItems() {
@@ -70,6 +104,9 @@ export default defineComponent({
         return [];
       }
       return useAssignmentsStore().getAssignedGroupItemsByUserAndTrip(this.trip.id, currentUserId);
+    },
+    personalItems() {
+      return usePersonalItemsStore().getPersonalItemsByTripId(this.trip.id);
     }
   }
 })
@@ -81,11 +118,15 @@ export default defineComponent({
     <Collapsible label="La valise">
       <div class="p-2 flex flex-col gap-2">
 
-        <div v-if="error" class="text-red-700 p-3 rounded mb-4">
-          {{ error }}
+        <div v-if="groupItemError" class="text-red-700 p-3 rounded mb-4">
+          {{ groupItemError }}
+        </div>
+        <div v-if="personalItemError" class="text-red-700 p-3 rounded mb-4">
+          {{ personalItemError }}
         </div>
 
-        <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
+
+        <ActionButton type="submit" @click="toggleCreateGroupItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
 
         <template v-for="groupItem in groupItems" :key="groupItem.id">
           <CollapsibleCard>
@@ -155,28 +196,55 @@ export default defineComponent({
 
     <Collapsible label="Mon sac à dos">
       <div class="p-2 flex flex-col gap-2">
-        <ItemCard :item="assignedItem" :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
-                  :key="assignedItem.id"></ItemCard>
+        <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
+
+        <ItemCard :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
+                  :key="assignedItem.id" :item="assignedItem" ></ItemCard>
+
+        <ItemCard v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem">
+          <EditButton @click="toggleEditPersonalItemModal(personalItem)" class="py-2"></EditButton>
+          <DeleteButton @click="toggleDeletePersonalItemModal(personalItem)" class="py-2"></DeleteButton>
+        </ItemCard>
       </div>
     </Collapsible>
   </div>
 
-  <BaseModal :open="isCreateModalOpen">
-    <GroupItemForm @done="toggleModal" :trip="trip"></GroupItemForm>
+  <BaseModal :open="isCreateGroupItemModalOpen">
+    <GroupItemForm @done="toggleCreateGroupItemModal" :trip="trip"></GroupItemForm>
   </BaseModal>
 
-  <BaseModal :open="isEditModalOpen">
+  <BaseModal :open="isEditGroupItemModalOpen">
     <GroupItemForm @done="toggleEditGroupItemModal" :trip="trip" :group-item-to-edit="activeGroupItem"></GroupItemForm>
   </BaseModal>
 
-  <BaseModal :open="isDeleteModalOpen">
+  <BaseModal :open="isDeleteGroupItemModalOpen">
     <div>
       <p>Vous Etes sur le point de supprimer l'item suivant :</p>
       <p>{{ activeGroupItem.name }}</p>
       <p>Etes vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton @click="deleteGroupItem(activeGroupItem)" label="Supprimer"></DeleteButton>
-        <CancelButton @click="toggleDeleteGroupItemModal"></CancelButton>
+        <CancelButton @click="toggleDeleteGroupItemModal(activeGroupItem)"></CancelButton>
+      </div>
+    </div>
+  </BaseModal>
+
+  <BaseModal :open="isCreatePersonalItemModalOpen">
+      <PersonalItemForm @done="toggleCreatePersonalItemModal" :trip="trip" ></PersonalItemForm>
+  </BaseModal>
+
+  <BaseModal :open="isEditPersonalItemModalOpen">
+    <PersonalItemForm @done="toggleEditPersonalItemModal" :trip="trip" :personal-item-to-edit="activePersonalItem" ></PersonalItemForm>
+  </BaseModal>
+
+  <BaseModal :open="isDeletePersonalItemModalOpen">
+    <div>
+      <p>Vous Etes sur le point de supprimer l'item suivant :</p>
+      <p>{{ activePersonalItem.name }}</p>
+      <p>Etes vous sûr de vouloir continuer ?</p>
+      <div class="flex flex-row justify-center gap-2">
+        <DeleteButton @click="deletePersonalItem(activePersonalItem)" label="Supprimer"></DeleteButton>
+        <CancelButton @click="toggleDeletePersonalItemModal(activePersonalItem)"></CancelButton>
       </div>
     </div>
   </BaseModal>
