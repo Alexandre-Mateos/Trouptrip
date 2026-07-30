@@ -115,7 +115,7 @@ export default defineComponent({
 <template>
 
   <div class="flex flex-col gap-2">
-    <Collapsible label="La valise">
+    <Collapsible label="La liste commune">
       <div class="p-2 flex flex-col gap-2">
 
         <div v-if="groupItemError" class="text-red-700 p-3 rounded mb-4">
