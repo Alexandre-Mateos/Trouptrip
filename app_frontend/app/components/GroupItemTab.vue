@@ -194,7 +194,7 @@ export default defineComponent({
       </div>
     </Collapsible>
 
-    <Collapsible label="Mon sac à dos">
+    <Collapsible label="Mon sac à dos" default-open>
       <div class="p-2 flex flex-col gap-2">
         <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
 
