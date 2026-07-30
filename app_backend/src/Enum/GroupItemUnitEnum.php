@@ -11,14 +11,8 @@ enum GroupItemUnitEnum: string
     case LITER = 'L';
     case PIECE = 'piece';
 
-    public function label(): string
+    public static function values(): array
     {
-        return match($this) {
-            self::GRAM => 'Gramme (g)',
-            self::KILOGRAM => 'Kilogramme (kg)',
-            self::CENTILITER => 'Centilitre (cl)',
-            self::LITER => 'Litre (L)',
-            self::PIECE => 'Pièce',
-        };
+        return array_column(self::cases(), 'value');
     }
 }

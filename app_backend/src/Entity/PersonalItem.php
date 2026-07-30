@@ -8,9 +8,12 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\PersonalItemResource\PersonalItemInputDTO;
+use App\ApiResource\PersonalItemResource\PersonalItemUpdateDTO;
 use App\Enum\GroupItemUnitEnum;
 use App\Interface\CreatedAtInterface;
 use App\Repository\PersonalItemRepository;
+use App\State\Processor\PatchPersonalItemProcessor;
 use App\State\Processor\PersonalItemProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -30,14 +33,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Post(
             normalizationContext: ['groups' => 'personal_item:collection'],
-            denormalizationContext: ['groups' => 'personal_item:create'],
             securityPostDenormalize: "is_granted('PERSONAL_ITEM_CREATE', object)",
+            input:  PersonalItemInputDTO::class,
             processor: PersonalItemProcessor::class
         ),
         new Patch(
             normalizationContext: ['groups' => 'personal_item:collection'],
-            denormalizationContext: ['groups' => 'personal_item:update'],
-            security:  "is_granted('PERSONAL_ITEM_EDIT', object) ",
+            security: "is_granted('PERSONAL_ITEM_EDIT', object) ",
+            input: PersonalItemUpdateDTO::class,
+            processor: PatchPersonalItemProcessor::class
         ),
         new Delete(
             security: "is_granted('ROLE_USER') and object.getOwner() === user"
@@ -54,11 +58,11 @@ class PersonalItem implements CreatedAtInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
+    #[Groups(['personal_item:collection'])]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
+    #[Groups(['personal_item:collection'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
@@ -71,7 +75,7 @@ class PersonalItem implements CreatedAtInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['personal_item:collection', 'personal_item:create'])]
+    #[Groups(['personal_item:collection'])]
     private ?Trip $trip = null;
 
     #[ORM\Column]
@@ -81,7 +85,7 @@ class PersonalItem implements CreatedAtInterface
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
-    #[Groups(['personal_item:collection', 'personal_item:create', 'personal_item:update'])]
+    #[Groups(['personal_item:collection'])]
     private ?GroupItemUnitEnum $unit = null;
 
     public function getId(): ?int

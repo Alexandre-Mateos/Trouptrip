@@ -75,7 +75,7 @@ export default defineComponent({
 <template>
   <BaseForm class="w-full" @submit="handleSubmit">
     <BaseInput id="personalItem_name" label="Nom" v-model="personalItemName" :errors="errors?.name"/>
-    <NumberInput id="personalItem_totalQty" type="number" label="Quantité"
+    <NumberInput id="personalItem_qty" type="number" label="Quantité" min="1"
                  v-model="personalItemQty" :errors="errors?.quantity"></NumberInput>
     <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="personalItemType" :errors="errors?.unit"/>
 
