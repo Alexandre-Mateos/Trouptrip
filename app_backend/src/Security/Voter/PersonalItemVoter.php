@@ -2,7 +2,10 @@
 
 namespace App\Security\Voter;
 
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\ApiResource\PersonalItemResource\PersonalItemInputDTO;
 use App\Entity\PersonalItem;
+use App\Entity\Trip;
 use App\Repository\ParticipationRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -16,6 +19,7 @@ final class PersonalItemVoter extends Voter
 
     public function __construct(
         private ParticipationRepository $participationRepository,
+        private IriConverterInterface $iriConverter,
     )
     {
     }
@@ -25,7 +29,7 @@ final class PersonalItemVoter extends Voter
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::CREATE, self::EDIT])
-            && $subject instanceof PersonalItem;
+            && ($subject instanceof PersonalItem || $subject instanceof PersonalItemInputDTO);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -39,7 +43,14 @@ final class PersonalItemVoter extends Voter
             return false;
         }
 
-        $trip = $subject->getTrip();
+        $trip = null;
+        if ($subject instanceof PersonalItem) {
+            $trip = $subject->getTrip();
+        } elseif ($subject instanceof PersonalItemInputDTO) {
+            /** @var Trip $trip */
+            $trip = $this->iriConverter->getResourceFromIri($subject->trip);
+        }
+
         if (!$trip) {
             $vote?->addReason('The ressource must be associated to a trip');
             return false;

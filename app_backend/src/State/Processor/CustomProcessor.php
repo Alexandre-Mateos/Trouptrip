@@ -2,7 +2,6 @@
 
 namespace App\State\Processor;
 
-use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;

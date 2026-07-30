@@ -10,14 +10,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-readonly class PatchAssignmentProcessor extends CustomProcessor
+readonly class PatchAssignmentProcessor implements ProcessorInterface
 {
     public function __construct(
-        Security $security,
         private AssignmentRepository $assignmentRepository,
         private EntityManagerInterface $entityManager
     ) {
-        parent::__construct($security);
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Assignment
