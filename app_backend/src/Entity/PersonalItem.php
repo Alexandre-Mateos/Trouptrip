@@ -117,7 +117,7 @@ class PersonalItem implements CreatedAtInterface
         return $this;
     }
 
-    public function isPacked(): ?bool
+    public function getIsPacked(): ?bool
     {
         return $this->isPacked;
     }

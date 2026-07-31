@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\AssignmentResource\AssignmentInputDTO;
+use App\ApiResource\AssignmentResource\AssignmentUpdateDTO;
 use App\Interface\CreatedAtInterface;
 use App\Repository\AssignmentRepository;
 use App\State\Processor\PatchAssignmentProcessor;
@@ -40,7 +41,7 @@ use App\Validator as AssignmentAssert;
         new Patch(
             normalizationContext: ['groups' => 'assignment:collection'],
             security: "is_granted('ASSIGNMENT_CREATE', object)",
-            input: AssignmentInputDTO::class,
+            input: AssignmentUpdateDTO::class,
             processor: PatchAssignmentProcessor::class
         ),
         new Delete(
@@ -64,7 +65,7 @@ class Assignment implements CreatedAtInterface
 
     #[ORM\Column]
     #[Groups(['assignment:collection'])]
-    private ?bool $IsPacked = null;
+    private ?bool $isPacked = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -99,14 +100,14 @@ class Assignment implements CreatedAtInterface
         return $this;
     }
 
-    public function isPacked(): ?bool
+    public function getIsPacked(): ?bool
     {
-        return $this->IsPacked;
+        return $this->isPacked;
     }
 
-    public function setIsPacked(bool $IsPacked): static
+    public function setIsPacked(bool $isPacked): static
     {
-        $this->IsPacked = $IsPacked;
+        $this->isPacked = $isPacked;
 
         return $this;
     }

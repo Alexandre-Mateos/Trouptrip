@@ -35,6 +35,10 @@ readonly class PatchPersonalItemProcessor implements ProcessorInterface
             }
         }
 
+        if($data->isPacked !== null && $data->isPacked !== $personalItem->getIsPacked()){
+            $personalItem->setIsPacked($data->isPacked);
+        }
+
         $this->entityManager->flush();
 
         return $personalItem;

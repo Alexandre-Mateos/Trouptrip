@@ -24,7 +24,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                     }
                 })
 
-                if(handledQty > groupItem.totalQuantity){
+                if (handledQty > groupItem.totalQuantity) {
                     return groupItem.totalQuantity
                 }
 
@@ -44,7 +44,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                     if (undefined !== assignment) {
                         const user = useUserStore().tripUsers.get(assignment.assignedTo.id);
 
-                        if(undefined !== user){
+                        if (undefined !== user) {
                             storedAssignments.push({...assignment, assignedTo: user});
                         }
                     }
@@ -53,18 +53,17 @@ export const useAssignmentsStore = defineStore('assignments', {
             }
         },
         getAssignedGroupItemsByUserAndTrip: (state) => {
-            return(tripId: number, userId: number) => {
+            return (tripId: number, userId: number) => {
                 const assignedItems: IAssignedItem[] = [];
 
                 const assignmentRefs = state.assignmentsByUsers.get(tripId)?.get(userId);
 
-                if(assignmentRefs){
+                if (assignmentRefs) {
                     assignmentRefs.forEach((assignmentId) => {
                         const assignment = state.assignments.get(assignmentId);
-                        if(assignment){
+                        if (assignment) {
                             const groupItem = useGroupItemsStore().groupItems.get(assignment.groupItem.id);
-
-                            if(groupItem){
+                            if (groupItem) {
                                 assignedItems.push({
                                     id: groupItem.id,
                                     name: groupItem.name,
@@ -78,6 +77,18 @@ export const useAssignmentsStore = defineStore('assignments', {
                 }
                 return assignedItems;
             }
+        },
+        getAssignmentByGroupItemAndUser: (state) => {
+            return (groupItem: IMapGroupItem, userId: number): IAssignment | undefined => {
+                for (const assignmentId of groupItem.assignments) {
+                    const assignment = state.assignments.get(assignmentId);
+
+                    if (assignment && assignment.assignedTo.id === userId) {
+                        return assignment;
+                    }
+                }
+                return undefined;
+            }
         }
     },
     actions: {
@@ -90,16 +101,16 @@ export const useAssignmentsStore = defineStore('assignments', {
 
             try {
                 const assignmentCollection = await $api<IAssignmentList>(apiEndpoints.assignmentCollection(tripId));
-                const assignmentIdByUserMap:Map<number, number[]> = new Map();
+                const assignmentIdByUserMap: Map<number, number[]> = new Map();
 
                 assignmentCollection.member.forEach((assignment) => {
                     this.assignments.set(assignment.id, assignment);
 
                     const userId = assignment.assignedTo.id;
                     const assignmentIds = assignmentIdByUserMap.get(userId)
-                    if(assignmentIds){
+                    if (assignmentIds) {
                         assignmentIds.push(assignment.id);
-                    }else{
+                    } else {
                         const assignmentIds = [];
                         assignmentIds.push(assignment.id);
                         assignmentIdByUserMap.set(userId, assignmentIds);
@@ -117,13 +128,13 @@ export const useAssignmentsStore = defineStore('assignments', {
         async submitAssignment(groupItem: IMapGroupItem, body: {
             assignedQuantity: number,
             groupItem: string
-        }){
+        }) {
 
             const {$api} = useNuxtApp();
             const url = apiEndpoints.assignments;
 
-            try{
-                const response = await $api<IAssignment>(url,{
+            try {
+                const response = await $api<IAssignment>(url, {
                     method: 'POST',
                     body: body
                 });
@@ -131,15 +142,15 @@ export const useAssignmentsStore = defineStore('assignments', {
                 this.assignments.set(response.id, response);
 
                 const assignmentsByTripMap = this.assignmentsByUsers.get(response.tripId);
-                if(assignmentsByTripMap){
+                if (assignmentsByTripMap) {
                     const assignmentsByUser = assignmentsByTripMap.get(response.assignedTo.id);
-                    if(assignmentsByUser){
+                    if (assignmentsByUser) {
                         assignmentsByUser.push(response.id);
-                    }else{
+                    } else {
                         const assignmentsByUser = [response.id];
                         assignmentsByTripMap.set(response.assignedTo.id, assignmentsByUser)
                     }
-                }else{
+                } else {
                     const assignmentsByTripMap = new Map();
                     const assignmentsByUser = [response.id];
                     assignmentsByTripMap.set(response.assignedTo.id, assignmentsByUser)
@@ -156,13 +167,13 @@ export const useAssignmentsStore = defineStore('assignments', {
             groupItem: IMapGroupItem,
             assignmentId: number,
             body: {
-            assignedQuantity: number,
-            groupItem: string
+                assignedQuantity?: number,
+                groupItem?: string,
+                isPacked?: boolean
             }
-        ){
+        ) {
             const {$api} = useNuxtApp();
             const url = `${apiEndpoints.assignments}/${assignmentId}`;
-
             try {
                 const response = await $api<IAssignment>(url, {
                     method: 'PATCH',
@@ -191,7 +202,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                 throw error;
             }
         },
-        async deleteAssignment(assignmentId: number, groupItem: IMapGroupItem){
+        async deleteAssignment(assignmentId: number, groupItem: IMapGroupItem) {
             const {$api} = useNuxtApp();
             const url = `${apiEndpoints.assignments}/${assignmentId}`;
 

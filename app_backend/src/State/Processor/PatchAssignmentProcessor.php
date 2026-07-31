@@ -21,14 +21,18 @@ readonly class PatchAssignmentProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Assignment
     {
         $assignment = $this->assignmentRepository->findOneBy(['id' => $uriVariables['id']]);
-
-        if($data->isRemoval){
-            $newQty = $assignment->getAssignedQuantity() - $data->assignedQuantity;
-        }else{
-            $newQty = $assignment->getAssignedQuantity() + $data->assignedQuantity;
+        if(null !== $data->isRemoval && null !== $data->assignedQuantity){
+            if($data->isRemoval){
+                $newQty = $assignment->getAssignedQuantity() - $data->assignedQuantity;
+            }else{
+                $newQty = $assignment->getAssignedQuantity() + $data->assignedQuantity;
+            }
+            $assignment->setAssignedQuantity($newQty);
         }
 
-        $assignment->setAssignedQuantity($newQty);
+        if(null !== $data->isPacked && $data->isPacked !== $assignment->getIsPacked()){
+            $assignment->setIsPacked($data->isPacked);
+        }
 
         $this->entityManager->flush();
         return $assignment;

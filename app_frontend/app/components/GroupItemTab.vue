@@ -21,6 +21,7 @@ export default defineComponent({
       isCreatePersonalItemModalOpen: false,
       isEditPersonalItemModalOpen: false,
       isDeletePersonalItemModalOpen: false,
+      isCheckListModalOpen: false,
       activeGroupItem: {} as IMapGroupItem,
       activePersonalItem: {} as IPersonalItem,
       groupItemError: '',
@@ -93,6 +94,9 @@ export default defineComponent({
 
       this.toggleDeletePersonalItemModal(personalItem);
     },
+    toggleChecklistModal(){
+      return this.isCheckListModalOpen = !this.isCheckListModalOpen;
+    }
   },
   computed: {
     groupItems() {
@@ -196,7 +200,11 @@ export default defineComponent({
 
     <Collapsible label="Mon sac à dos" default-open>
       <div class="p-2 flex flex-col gap-2">
-        <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
+
+        <div class="flex gap-2">
+          <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
+          <ActionButton @click="toggleChecklistModal" icon="boxicons:check-square-filled" color="var(--color-trouptrip-secondary-500)">Checklist</ActionButton>
+        </div>
 
         <ItemCard :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
                   :key="assignedItem.id" :item="assignedItem" ></ItemCard>
@@ -247,6 +255,11 @@ export default defineComponent({
         <CancelButton @click="toggleDeletePersonalItemModal(activePersonalItem)"></CancelButton>
       </div>
     </div>
+  </BaseModal>
+
+  <BaseModal :open="isCheckListModalOpen">
+    <CheckboxItem v-for="assignedItem in assignedGroupItems" :key="assignedItem.id" :item="assignedItem" :is-from-assigned-group-item="true" :trip="trip"></CheckboxItem>
+    <CheckboxItem v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem"  :trip="trip"></CheckboxItem>
   </BaseModal>
 
 </template>
