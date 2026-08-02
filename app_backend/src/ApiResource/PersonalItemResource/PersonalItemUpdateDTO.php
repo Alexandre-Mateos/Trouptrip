@@ -18,11 +18,12 @@ final readonly class PersonalItemUpdateDTO
         #[Assert\Positive(message: "La quantité doit être supérieure à 0")]
         public ?int $quantity = null,
 
-        #[Assert\NotBlank(message: "L'unité est requise")]
         #[Assert\Choice(
             callback: [GroupItemUnitEnum::class, 'values'],
             message: "L'unité choisie n'est pas valide."
         )]
-        public ?string $unit = null
+        public ?string $unit = null,
+
+        public ?bool $isPacked = null
     ){}
 }
