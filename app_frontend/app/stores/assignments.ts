@@ -89,6 +89,24 @@ export const useAssignmentsStore = defineStore('assignments', {
                 }
                 return undefined;
             }
+        },
+        getAssignedGroupItemsTotalCountByUserAndTrip(){
+            return (tripId: number, userId: number) => {
+                const assignedGroupItems = this.getAssignedGroupItemsByUserAndTrip(tripId, userId);
+                return assignedGroupItems.length;
+            }
+        },
+        getIsPackedAssignedItemsCountByTripId(){
+            return (tripId: number, userId: number) => {
+                const assignedGroupItems = this.getAssignedGroupItemsByUserAndTrip(tripId, userId);
+                let count = 0;
+                assignedGroupItems.forEach((assignedItem) => {
+                    if(assignedItem.isPacked){
+                        count ++;
+                    }
+                });
+                return count;
+            }
         }
     },
     actions: {

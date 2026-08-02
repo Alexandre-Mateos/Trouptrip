@@ -99,18 +99,29 @@ export default defineComponent({
     }
   },
   computed: {
+    currentUserId(){
+      return useUserStore().user?.id;
+    },
     groupItems() {
       return useGroupItemsStore().getGroupItemListByTrip(this.trip)
     },
     assignedGroupItems() {
-      const currentUserId = useUserStore().user?.id;
-      if (!currentUserId) {
+      if (!this.currentUserId) {
         return [];
       }
-      return useAssignmentsStore().getAssignedGroupItemsByUserAndTrip(this.trip.id, currentUserId);
+      return useAssignmentsStore().getAssignedGroupItemsByUserAndTrip(this.trip.id, this.currentUserId);
     },
     personalItems() {
       return usePersonalItemsStore().getPersonalItemsByTripId(this.trip.id);
+    },
+    totalPersonalItemsCount(){
+      return usePersonalItemsStore().getPersonalItemTotalCountByTripId(this.trip.id);
+    },
+    totalAssignedGroupItemsCount(){
+      if(!this.currentUserId){
+        return 0;
+      }
+      return useAssignmentsStore().getAssignedGroupItemsTotalCountByUserAndTrip(this.trip.id, this.currentUserId)
     }
   }
 })
@@ -205,6 +216,7 @@ export default defineComponent({
           <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
           <ActionButton @click="toggleChecklistModal" icon="boxicons:check-square-filled" color="var(--color-trouptrip-secondary-500)">Checklist</ActionButton>
         </div>
+        <ChecklistProgressBar :trip-id="trip.id"></ChecklistProgressBar>
 
         <ItemCard :is-from-group-item="true" v-for="assignedItem in assignedGroupItems"
                   :key="assignedItem.id" :item="assignedItem" ></ItemCard>
@@ -258,8 +270,19 @@ export default defineComponent({
   </BaseModal>
 
   <BaseModal :open="isCheckListModalOpen">
-    <CheckboxItem v-for="assignedItem in assignedGroupItems" :key="assignedItem.id" :item="assignedItem" :is-from-assigned-group-item="true" :trip="trip"></CheckboxItem>
-    <CheckboxItem v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem"  :trip="trip"></CheckboxItem>
+    <div class="flex flex-col gap-2">
+      <h2 class="text-lg text-center">Checklist de départ</h2>
+      <ChecklistProgressBar :trip-id="trip.id"></ChecklistProgressBar>
+      <div v-if="totalAssignedGroupItemsCount > 0" class="border border-solid border-trouptrip-accent-500 rounded-md p-2">
+        <CheckboxItem v-for="assignedItem in assignedGroupItems" :key="assignedItem.id" :item="assignedItem"
+                      :is-from-assigned-group-item="true" :trip="trip"></CheckboxItem>
+      </div>
+      <div v-if="totalPersonalItemsCount > 0" class="border border-solid border-trouptrip-accent-500 rounded-md p-2">
+        <CheckboxItem v-for="personalItem in personalItems" :key="personalItem.id" :item="personalItem"
+                      :trip="trip"></CheckboxItem>
+      </div>
+      <BaseButton class="m-auto" @click="toggleChecklistModal">Fermer</BaseButton>
+    </div>
   </BaseModal>
 
 </template>

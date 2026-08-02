@@ -24,6 +24,29 @@ export const usePersonalItemsStore = defineStore('personalItem', {
 
                 return personalItemsByTrip;
             }
+        },
+        getPersonalItemTotalCountByTripId(){
+            return (tripId: number) => {
+                const personalItems = this.getPersonalItemsByTripId(tripId);
+                if(!personalItems || personalItems.length === 0){
+                    return 0;
+                }
+                return personalItems.length;
+            }
+        },
+        getIsPackedPersonalItemsCountByTripId(){
+            return (tripId: number) => {
+                const personalItems = this.getPersonalItemsByTripId(tripId);
+                let count = 0;
+                if(personalItems && personalItems.length > 0){
+                    personalItems.forEach((personalItem) => {
+                        if(personalItem.isPacked){
+                            count++;
+                        }
+                    })
+                }
+                return count;
+            }
         }
     },
     actions: {

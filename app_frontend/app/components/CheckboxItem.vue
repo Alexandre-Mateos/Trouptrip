@@ -56,9 +56,13 @@ export default defineComponent({
         :name="`item-${item.id}`"
         v-model="isPacked"
         @change="updateIsPacked"
+        class="h-4 w-4 cursor-pointer"
     />
-    <label :for="`item-${item.id}`">
-      {{ item.name }}: {{ item.quantity }} {{ item.unit }}
+    <label :for="`item-${item.id}`"
+           class="text-sm font-medium text-slate-700 cursor-pointer select-none transition-all"
+           :class="{ 'line-through': isPacked }"
+    >
+            {{ item.name }}: {{ item.quantity }} {{ item.unit }}
     </label>
   </div>
 </template>
