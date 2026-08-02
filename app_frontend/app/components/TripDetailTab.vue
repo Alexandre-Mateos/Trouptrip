@@ -47,7 +47,7 @@ export default defineComponent({
       return currentUserId === ownerId;
     },
     participant(){
-      return useTripsStore().getParticipantListByTripId(this.trip.id)
+      return useParticipationStore().getParticipantListByTripId(this.trip.id)
     }
   },
 })
@@ -64,7 +64,7 @@ export default defineComponent({
     <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
   </div>
 
-  <div v-if="trip.participations && trip.participations.length > 0" class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
+  <div v-if="trip.participationIds && trip.participationIds.length > 0" class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
     <p class="text-center">Participants du voyage </p>
       <UTable :data="participant" class="flex-1" />
   </div>
