@@ -12,5 +12,6 @@ export const apiEndpoints = {
     assignments: '/assignments',
     personalItemCollection: (tripId: number) => `/trips/${tripId}/personal_items`,
     personalItems: '/personal_items',
-    participationCollection: (tripId: number) => `/trips/${tripId}/participation`
+    participationCollection: (tripId: number) => `/trips/${tripId}/participation`,
+    participations: '/participations'
 } as const

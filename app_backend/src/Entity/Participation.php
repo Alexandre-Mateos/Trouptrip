@@ -2,18 +2,22 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\ParticipationResource\InviteUserDTO;
 use App\Enum\ParticipationStatusEnum;
+use App\Interface\CreatedAtInterface;
 use App\Repository\ParticipationRepository;
+use App\State\Processor\PostParticipationProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations:[
-        new GetCollection(uriTemplate: '/trips/{tripId}/participation',
+        new GetCollection(
+            uriTemplate: '/trips/{tripId}/participation',
             uriVariables: [
                 'tripId' => new Link(
                     toProperty: 'trip',
@@ -22,11 +26,17 @@ use Symfony\Component\Serializer\Attribute\Groups;
             ],
             normalizationContext:  ['groups' => 'participation:collection'],
             security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'participation:collection'],
+            securityPostDenormalize: "is_granted('PARTICIPATION_CREATE', object)",
+            input: InviteUserDTO::class,
+            processor: PostParticipationProcessor::class
         )
     ]
 )]
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
-class Participation
+class Participation implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

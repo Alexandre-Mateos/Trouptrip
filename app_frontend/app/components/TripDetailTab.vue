@@ -14,14 +14,15 @@ export default defineComponent({
     return {
       isEditTripModalOpen: false,
       isDeleteTripModalOpen: false,
-      error: ''
+      error: '',
+      isInviteUserModalOpen: false,
     }
   },
   methods: {
     toggleEditTripModal() {
       this.isEditTripModalOpen = !this.isEditTripModalOpen;
     },
-    toggleDeleteTripModal(){
+    toggleDeleteTripModal() {
       this.isDeleteTripModalOpen = !this.isDeleteTripModalOpen;
     },
     async deleteTrip() {
@@ -37,6 +38,9 @@ export default defineComponent({
         this.error = "Une erreur est survenue. Veuillez réessayer plus tard.";
       }
       this.toggleDeleteTripModal();
+    },
+    toggleInviteUserModal(){
+      this.isInviteUserModalOpen = !this.isInviteUserModalOpen;
     }
   },
   computed: {
@@ -46,8 +50,8 @@ export default defineComponent({
 
       return currentUserId === ownerId;
     },
-    participant(){
-      return useParticipationStore().getParticipantListByTripId(this.trip.id)
+    participant() {
+      return useParticipationStore().getParticipantListByTripId(this.trip.id);
     }
   },
 })
@@ -59,14 +63,17 @@ export default defineComponent({
   </div>
 
   <div class="flex flex-col gap-2">
-    <p class="text-lg text-center">{{ trip.title }}</p>
+    <h2 class="text-lg text-center">{{ trip.title }}</h2>
     <p v-if="trip.description">{{ trip.description }}</p>
     <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
   </div>
 
-  <div v-if="trip.participationIds && trip.participationIds.length > 0" class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
-    <p class="text-center">Participants du voyage </p>
-      <UTable :data="participant" class="flex-1" />
+  <div v-if="trip.participationIds && trip.participationIds.length > 0"
+       class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
+    <h3 class="text-center">Participants du voyage </h3>
+    <ActionButton type="submit" @click="toggleInviteUserModal" icon="fa6-solid:circle-plus">Inviter</ActionButton>
+
+    <UTable :data="participant" class="flex-1"/>
   </div>
   <div v-else>
     <p>Invitez quelques amis pour ce séjour</p>
@@ -88,13 +95,16 @@ export default defineComponent({
   <BaseModal :open="isDeleteTripModalOpen">
     <div>
       <p>Vous Etes sur le point de supprimer le voyage suivant :</p>
-      <p>{{trip.title}}</p>
+      <p>{{ trip.title }}</p>
       <p>Etes vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton @click="deleteTrip" label="Supprimer"></DeleteButton>
         <CancelButton @click="toggleDeleteTripModal"></CancelButton>
       </div>
     </div>
+  </BaseModal>
+  <BaseModal :open="isInviteUserModalOpen">
+    <InviteUserForm @done="toggleInviteUserModal" :trip="trip"/>
   </BaseModal>
 
 </template>

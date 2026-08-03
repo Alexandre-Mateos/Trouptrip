@@ -2,6 +2,8 @@ import type {IMapParticipation} from "~/interfaces/participation/i-mapParticipat
 import type {IParticipantList} from "~/interfaces/i-participantList";
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import type {IParticipationList} from "~/interfaces/participation/i-participationList";
+import type {IParticipation} from "~/interfaces/participation/i-participation";
+import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 
 export const useParticipationStore = defineStore('participation', {
     state: () => ({
@@ -76,6 +78,42 @@ export const useParticipationStore = defineStore('participation', {
                         participation.participant
                     );
                 });
+
+            } catch (error: any) {
+                throw error;
+            } finally {
+                this.fetching = false;
+            }
+        },
+        async inviteUser(trip: IMapTripDetails, payload: {
+            email: string
+        }){
+
+            if (this.fetching) {
+                return;
+            }
+            const {$api} = useNuxtApp();
+            const url = apiEndpoints.participations;
+
+            const body = {...payload, trip: trip["@id"]};
+
+            try{
+                const response = await $api<IParticipation>(url, {
+                    method: 'POST',
+                    body: body
+                });
+
+                this.participations.set(response.id, {
+                    "@id": response["@id"],
+                    "@type": response["@type"],
+                    id: response.id,
+                    status: response.status,
+                    participantId: response.participant.id
+                })
+
+                if(!trip.participationIds.includes(response.id)){
+                    trip.participationIds.push(response.id);
+                }
 
             } catch (error: any) {
                 throw error;
