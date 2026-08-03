@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Enum;
+
+enum SecurityEmailTypeEnum
+{
+    case REGISTRATION_STANDARD;
+    case REGISTRATION_USER_ALREADY_EXIST;
+    case LOGIN_UNVERIFIED_USER;
+    case RESET_PASSWORD_STANDARD;
+    case RESET_PASSWORD_UNVERIFIED_USER;
+}

@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Validator;
+
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\Entity\GroupItem;
+use App\Repository\AssignmentRepository;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+
+final class AssignedQuantityValidator extends ConstraintValidator
+{
+    public function __construct(
+        private readonly AssignmentRepository $assignmentRepository,
+        private readonly IriConverterInterface $iriConverter,
+        private readonly Security $security,
+        private readonly RequestStack $requestStack // 2. Injection ici
+    )
+    {
+    }
+
+    public function validate(mixed $value, Constraint $constraint): void
+    {
+        if (!$constraint instanceof AssignedQuantity) {
+            throw new UnexpectedTypeException($constraint, AssignedQuantity::class);
+        }
+
+        if (null === $value || '' === $value) {
+            return;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+        $assignmentId = $request?->attributes->get('id');
+
+        if ($assignmentId) {
+            $assignment = $this->assignmentRepository->find($assignmentId);
+            $groupItem = $assignment?->getGroupItem();
+        } else {
+            /** @var GroupItem $groupItem */
+            $groupItem = $this->iriConverter->getResourceFromIri($value->groupItem);
+        }
+
+        if (!$groupItem) {
+            return;
+        }
+
+        if($value->isRemoval){
+            $user = $this->security->getUser();
+            $alreadyAssignedQuantityByUser = $this->assignmentRepository->getAssignedQuantityByUserIdAndGroupItemId($user->getId(), $groupItem->getId());
+
+            if(0 > $alreadyAssignedQuantityByUser - $value->assignedQuantity){
+                $this->context->buildViolation($constraint->wrongRemovalQuantity)
+                    ->atPath('assignedQuantity')
+                    ->setParameter('{{ alreadyAssignedQuantity }}', $alreadyAssignedQuantityByUser)
+                    ->addViolation()
+                ;
+            }
+        }
+
+        if(!$value->isRemoval){
+            $maxQuantity = $groupItem->getTotalQuantity();
+            $alreadyAssignedQuantity = $this->assignmentRepository->getAssignedQuantityByGroupItemId($groupItem->getId());
+
+            $remainingQuantity = $maxQuantity - $alreadyAssignedQuantity;
+            $currentAssignedQuantity = $value->assignedQuantity;
+
+            if($remainingQuantity < $currentAssignedQuantity){
+                $this->context->buildViolation($constraint->wrongAddQuantity)
+                    ->atPath('assignedQuantity')
+                    ->setParameter('{{ available }}', $remainingQuantity)
+                    ->addViolation()
+                ;
+            }
+
+        }
+    }
+}

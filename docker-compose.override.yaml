@@ -17,7 +17,7 @@ services:
 
   db:
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -30,6 +30,8 @@ services:
       - db
 
   node-front:
+    build:
+      target: node-base
     tty: true
     ports:
       - "3000:3000"
@@ -37,3 +39,9 @@ services:
     volumes:
       - ./app_frontend/:/var/www/front
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+  mailpit:
+    image: axllent/mailpit:v1.29.7
+    ports:
+      - "8025:8025"
+      - "1025:1025"

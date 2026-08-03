@@ -9,3 +9,12 @@ front:
 
 logs-front:
 	docker compose logs node-front -f
+
+send-mails:
+	docker compose exec -it php php bin/console messenger:consume async
+
+cache-clear:
+	docker compose exec -it php php bin/console cache:clear
+
+fixtures:
+	docker compose exec -it php php bin/console doctrine:fixtures:load
