@@ -9,6 +9,9 @@ services:
       APP_ENV: prod
       APP_DEBUG: 0
       SKIP_DOTENV: 1
+    networks:
+      - default
+      - db_network
 
   nginx-service:
     restart: always
@@ -16,8 +19,6 @@ services:
       - default
       - web
 
-  db:
-    restart: always
 
   node-front:
     build:
@@ -31,4 +32,6 @@ services:
 
 networks:
   web:
+    external: true
+  db_network:
     external: true
