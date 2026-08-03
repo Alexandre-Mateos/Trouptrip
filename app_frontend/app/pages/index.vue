@@ -7,8 +7,9 @@ export default defineComponent({
 </script>
 
 <template>
-<h1>Bienvenue sur Trouptrip</h1>
+  <h1>Bienvenue sur Trouptrip</h1>
   <p>L'application pour organiser vos voyages en groupe.</p>
+  <p>Attention, ceci est une version en cours de développement</p>
 </template>
 
 <style scoped>
