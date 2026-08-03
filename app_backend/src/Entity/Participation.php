@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
                 )
             ],
             normalizationContext:  ['groups' => 'participation:collection'],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
         )
     ]
 )]
