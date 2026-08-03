@@ -4,13 +4,25 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Enum\ParticipationStatusEnum;
 use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
-    operations:[]
+    operations:[
+        new GetCollection(uriTemplate: '/trips/{tripId}/participation',
+            uriVariables: [
+                'tripId' => new Link(
+                    toProperty: 'trip',
+                    fromClass: Trip::class
+                )
+            ],
+            normalizationContext:  ['groups' => 'participation:collection'],
+        )
+    ]
 )]
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 class Participation
@@ -18,11 +30,11 @@ class Participation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:item'])]
+    #[Groups(['trip:item', 'participation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, enumType: ParticipationStatusEnum::class)]
-    #[Groups(['trip:item'])]
+    #[Groups(['participation:collection'])]
     private ?ParticipationStatusEnum $status = null;
 
     #[ORM\Column]
@@ -33,11 +45,12 @@ class Participation
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['participation:collection'])]
     private ?Trip $trip = null;
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['trip:item'])]
+    #[Groups(['participation:collection'])]
     private ?User $participant = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentParticipations')]

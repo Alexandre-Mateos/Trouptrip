@@ -75,33 +75,12 @@ export const useTripsStore = defineStore('trips', {
             try {
                 const tripDetail = await $api<ITripDetails>(apiUrl);
                 const groupItemIds = tripDetail.groupItems?.map(item => item.id) ?? [];
-
                 const participationIds = tripDetail.participations?.map(participation => participation.id) ?? [];
 
                 // On stock le owner et les participants à un voyage directement dans le userStore. A faire: retirer de ce Payload  pour les récupérer via un endpoint dédié.
-                // On stock également les participations
                 const userStore = useUserStore();
-                const participationStore = useParticipationStore();
 
                 userStore.tripUsers.set(tripDetail.owner.id, tripDetail.owner);
-                tripDetail.participations.forEach((participation) => {
-
-                    participationStore.participations.set(
-                        participation.id,
-                        {
-                            "@id": participation["@id"],
-                            "@type": participation["@type"],
-                            id: participation.id,
-                            status: participation.status,
-                            participantId: participation.participant.id
-                        }
-                    )
-
-                    userStore.tripUsers.set(
-                        participation.participant.id,
-                        participation.participant
-                    );
-                });
 
                 if (tripListView) {
                     this.trips.set(tripId, {

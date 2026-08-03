@@ -1,11 +1,13 @@
 import type {IMapParticipation} from "~/interfaces/participation/i-mapParticipation";
 import type {IParticipantList} from "~/interfaces/i-participantList";
+import {apiEndpoints} from "~/utils/apiEndpoints";
+import type {IParticipationList} from "~/interfaces/participation/i-participationList";
 
 export const useParticipationStore = defineStore('participation', {
     state: () => ({
         // Map<participationId, IMapParticipation>
         participations: new Map<number, IMapParticipation>(),
-        loading: false
+        fetching: false,
     }),
     getters: {
         getParticipantListByTripId: (state) => {
@@ -41,6 +43,45 @@ export const useParticipationStore = defineStore('participation', {
 
                 return participantList;
             };
+        }
+    },
+    actions: {
+        async fetchParticipations(tripId: number){
+            if (this.fetching) {
+                return;
+            }
+            const {$api} = useNuxtApp();
+            this.fetching = true;
+
+            try {
+                const participationCollection = await $api<IParticipationList>(apiEndpoints.participationCollection(tripId));
+
+                const userStore = useUserStore();
+
+                participationCollection.member.forEach((participation) => {
+
+                    this.participations.set(
+                        participation.id,
+                        {
+                            "@id": participation["@id"],
+                            "@type": participation["@type"],
+                            id: participation.id,
+                            status: participation.status,
+                            participantId: participation.participant.id
+                        }
+                    )
+
+                    userStore.tripUsers.set(
+                        participation.participant.id,
+                        participation.participant
+                    );
+                });
+
+            } catch (error: any) {
+                throw error;
+            } finally {
+                this.fetching = false;
+            }
         }
     }
 });
