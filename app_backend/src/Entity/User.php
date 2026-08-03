@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\UserResource\OutputRegisterUserDTO;
 use App\ApiResource\UserResource\OutputUserDTO;
 use App\ApiResource\UserResource\OutputUserMeDTO;
 use App\ApiResource\UserResource\RegisterUserDTO;
@@ -23,7 +24,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new Post(
             input: RegisterUserDTO::class,
-            output: OutputUserDTO::class,
+            output: OutputRegisterUserDTO::class,
             processor: RegisterUserProcessor::class
         ),
         new Get(

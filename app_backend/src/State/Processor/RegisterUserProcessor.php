@@ -4,7 +4,7 @@ namespace App\State\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\ApiResource\UserResource\OutputUserDTO;
+use App\ApiResource\UserResource\OutputRegisterUserDTO;
 use App\Entity\User;
 use App\Enum\SecurityEmailTypeEnum;
 use App\Enum\UserTokenTypeEnum;
@@ -26,13 +26,13 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): OutputUserDTO
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): OutputRegisterUserDTO
     {
         if($existingUser = $this->userRepository->findOneBy(['email' => $data->email])) {
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::RESET_PASSWORD, $existingUser);
             $this->mailService->sendEmail(SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST, $existingUser, $rawToken);
 
-            return new OutputUserDTO(
+            return new OutputRegisterUserDTO(
                 $data->email,
                 $data->firstname,
                 $data->lastname
@@ -56,7 +56,7 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
 
             $this->em->commit();
 
-            return new OutputUserDTO(
+            return new OutputRegisterUserDTO(
                 $user->getEmail(),
                 $user->getFirstname(),
                 $user->getLastname()
