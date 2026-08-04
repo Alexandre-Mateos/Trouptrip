@@ -23,7 +23,6 @@ jobs:
           envs: BRANCH
 
           script: |
-            # Choix du dossier selon la branche
             if [ "$BRANCH" = "main" ]; then
               TARGET_DIR="/opt/apps/trouptrip/prod"
             else
@@ -33,22 +32,17 @@ jobs:
             echo "Deploy de la branche $BRANCH"
             echo "Dossier cible : $TARGET_DIR"
 
-            # Se placer dans le projet
             cd "$TARGET_DIR"
 
-            # Récupérer les derniers changements
             git fetch origin "$BRANCH"
             git reset --hard "origin/$BRANCH"
             git clean -fd
             
-#            Reconstruire l'image et relancer les conteneurs
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
             
-#            Commandes Symfony
             docker compose exec -T php php bin/console cache:clear --env=prod
             docker compose exec -T php php bin/console doctrine:database:create --if-not-exists
             docker compose exec -T php php bin/console d:m:m --no-interaction
             docker compose exec -T php php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
-            # Nettoyage des images inutilisées
             docker image prune -f
