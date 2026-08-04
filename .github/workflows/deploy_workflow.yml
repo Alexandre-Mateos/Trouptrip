@@ -1,8 +1,8 @@
-name: Deploy Staging
+name: Deploy
 
 on:
   push:
-    branches: [ "staging" ]
+    branches: [ "staging", "main" ]
 
 jobs:
   deploy:
@@ -10,27 +10,32 @@ jobs:
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          BRANCH: ${{ github.ref_name }}
+          # Si la branche est main -> dossier prod, sinon -> dossier preprod
+          TARGET_DIR: ${{ github.ref_name == 'main' && '/opt/apps/trouptrip/prod' || '/opt/apps/trouptrip/preprod' }}
         with:
           host: ${{ secrets.VPS_IP }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: BRANCH, TARGET_DIR
           script: |
-            # 1. Aller dans le dossier du projet
-            cd /opt/apps/trouptrip/preprod
+#            Se rendre dans le bon dossier du projet (prod ou preprod)
+            cd $TARGET_DIR
             
-            # 2. Récupérer les derniers changements
-            git fetch origin staging
-            git reset --hard origin/staging
+#            Récupérer les derniers changements
+            git fetch origin $BRANCH
+            git reset --hard origin/$BRANCH
             git clean -fd
             
-            # 3. Re-construire l'image localement et relancer le conteneur
+#            Reconstruire l'image et relancer les conteneurs
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
             
+#            Commandes Symfony
             docker compose exec -T php php bin/console cache:clear --env=prod
-            
             docker compose exec -T php php bin/console doctrine:database:create --if-not-exists
             docker compose exec -T php php bin/console d:m:m --no-interaction
             docker compose exec -T php php bin/console lexik:jwt:generate-keypair --skip-if-exists
             
-            # 4. Nettoyage des images inutilisées
+#            Nettoyage des images inutilisées
             docker image prune -f
