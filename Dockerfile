@@ -39,7 +39,6 @@ RUN php bin/console assets:install
 RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/html
 USER ${USER_ID}:${GROUP_ID}
 
-RUN php bin/console cache:clear --env=prod --no-warmup
 
 CMD ["php-fpm", "-F"]
 
