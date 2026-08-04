@@ -45,7 +45,7 @@ services:
       - ./app_frontend/:/var/www/front
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     environment:
-       NUXT_PUBLIC_API_URL : ${NUXT_PUBLIC_API_URL}
+       NUXT_PUBLIC_API_BASE_URL : ${NUXT_PUBLIC_API_BASE_URL}
        HOST : 0.0.0.0
        PORT : 3000
 
