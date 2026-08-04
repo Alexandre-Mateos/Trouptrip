@@ -12,8 +12,8 @@ jobs:
         uses: actions/checkout@v4
 
 #      Démarrer les services db et php
-      - name: Run postgre and php
-        run: docker compose up -d --build php db
+      - name: Start Docker services with .env.test
+        run: docker compose --env-file app_backend/.env.test up -d php db
 
       - name: Debug Docker Compose Configuration
         run: docker compose config
