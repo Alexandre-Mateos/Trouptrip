@@ -28,7 +28,7 @@ services:
       - default
       - web
     environment:
-      - NUXT_PUBLIC_API_BASE_URL=https://trouptrip.com/api
+      NUXT_PUBLIC_API_URL : ${NUXT_PUBLIC_API_URL}
 
 networks:
   web:
