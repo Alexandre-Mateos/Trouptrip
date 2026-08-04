@@ -1,0 +1,34 @@
+name: Test
+on:
+  pull_request:
+    branches: [ "staging", "main", "dev" ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+#      Récupérer le code source
+      - name: Checkout
+        uses: actions/checkout@v4
+
+#      Démarrer les services db et php
+      - name: Run postgre and php
+        run: docker compose up -d --build php db
+
+#      Installation des dépendances Composer dans le conteneur PHP
+      - name: Install Composer dependencies
+        run: docker compose exec -T php composer install --prefer-dist --no-progress
+
+#      Préparation de la base de données de test
+      - name: Prepare test_database
+        run: |
+              docker compose exec -T php php bin/console doctrine:database:create --if-not-exists --env=test
+              docker compose exec -T php php bin/console doctrine:schema:update --force --env=test
+
+#      Execution des fixtures
+      - name: Load fixtures
+        run: docker compose exec -T php php bin/console doctrine:fixtures:load --no-interaction --env=test
+
+#      Exécution des tests PHPUnit
+      - name: Run tests
+        run: docker compose exec -T php bin/phpunit
