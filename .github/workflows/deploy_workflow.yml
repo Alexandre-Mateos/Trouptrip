@@ -13,7 +13,7 @@ jobs:
         env:
           BRANCH: ${{ github.ref_name }}
           # Si la branche est main -> dossier prod, sinon -> dossier preprod
-          TARGET_DIR: ${{ github.ref_name == 'main' && '/opt/apps/trouptrip/prod' || '/opt/apps/trouptrip/preprod' }}
+          TARGET_DIR: "${{ github.ref_name == 'main' && '/opt/apps/trouptrip/prod' || '/opt/apps/trouptrip/preprod' }}"
         with:
           host: ${{ secrets.VPS_IP }}
           username: ${{ secrets.VPS_USER }}
