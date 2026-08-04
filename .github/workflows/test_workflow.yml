@@ -15,6 +15,9 @@ jobs:
       - name: Run postgre and php
         run: docker compose up -d --build php db
 
+      - name: Debug Docker Compose Configuration
+        run: docker compose config
+
 #      Installation des dépendances Composer dans le conteneur PHP
       - name: Install Composer dependencies
         run: docker compose exec -T -e APP_ENV=test php composer install --prefer-dist --no-progress
