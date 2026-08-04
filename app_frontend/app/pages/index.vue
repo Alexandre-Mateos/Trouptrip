@@ -10,7 +10,6 @@ export default defineComponent({
   <h1>Bienvenue sur Trouptrip</h1>
   <p>L'application pour organiser vos voyages en groupe.</p>
   <p>Attention, ceci est une version en cours de développement</p>
-  <p>Updates incoming</p>
 </template>
 
 <style scoped>
