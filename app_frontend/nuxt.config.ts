@@ -8,10 +8,9 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-        // Dev : Nuxt utilisera cette URL par défaut
-        // Prod : Nuxt utilisera la variable d'environnement injectée par Docker
+        // Nuxt utilisera la variable d'environnement injectée par Docker
         public: {
-            apiBaseUrl: 'http://localhost:8000/api'
+            apiBaseUrl: ''
         }
     },
 
