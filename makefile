@@ -18,3 +18,9 @@ cache-clear:
 
 fixtures:
 	docker compose exec -it php php bin/console doctrine:fixtures:load
+
+fixtures-test:
+	docker compose exec -T php php bin/console doctrine:database:drop --force --env=test --if-exists
+	docker compose exec -T php php bin/console doctrine:database:create --env=test
+	docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction --env=test
+	docker compose exec -T php php bin/console doctrine:fixtures:load --no-interaction --env=test
