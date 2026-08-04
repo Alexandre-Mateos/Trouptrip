@@ -17,7 +17,7 @@ jobs:
 
 #      Installation des dépendances Composer dans le conteneur PHP
       - name: Install Composer dependencies
-        run: docker compose exec -T php composer install --prefer-dist --no-progress
+        run: docker compose exec -T -e APP_ENV=test php composer install --prefer-dist --no-progress
 
 #      Préparation de la base de données de test
       - name: Prepare test_database
