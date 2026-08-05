@@ -2,27 +2,50 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\ParticipationResource\InviteUserDTO;
 use App\Enum\ParticipationStatusEnum;
+use App\Interface\CreatedAtInterface;
 use App\Repository\ParticipationRepository;
+use App\State\Processor\PostParticipationProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
-    operations:[]
+    operations:[
+        new GetCollection(
+            uriTemplate: '/trips/{tripId}/participation',
+            uriVariables: [
+                'tripId' => new Link(
+                    toProperty: 'trip',
+                    fromClass: Trip::class
+                )
+            ],
+            normalizationContext:  ['groups' => 'participation:collection'],
+            security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'participation:collection'],
+            securityPostDenormalize: "is_granted('PARTICIPATION_CREATE', object)",
+            input: InviteUserDTO::class,
+            processor: PostParticipationProcessor::class
+        )
+    ]
 )]
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
-class Participation
+class Participation implements CreatedAtInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:item'])]
+    #[Groups(['trip:item', 'participation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, enumType: ParticipationStatusEnum::class)]
-    #[Groups(['trip:item'])]
+    #[Groups(['participation:collection'])]
     private ?ParticipationStatusEnum $status = null;
 
     #[ORM\Column]
@@ -33,11 +56,12 @@ class Participation
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['participation:collection'])]
     private ?Trip $trip = null;
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['trip:item'])]
+    #[Groups(['participation:collection'])]
     private ?User $participant = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentParticipations')]

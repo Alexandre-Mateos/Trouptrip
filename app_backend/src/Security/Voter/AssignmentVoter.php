@@ -2,11 +2,13 @@
 
 namespace App\Security\Voter;
 
+use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\ApiResource\AssignmentResource\AssignmentInputDTO;
 use App\Entity\Assignment;
 use App\Repository\AssignmentRepository;
 use App\Repository\ParticipationRepository;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -47,7 +49,11 @@ final class AssignmentVoter extends Voter
             $assignment = $this->assignmentRepository->find($assignmentId);
             $groupItem = $assignment?->getGroupItem();
         } else {
-            $groupItem = $this->iriConverter->getResourceFromIri($subject->groupItem);
+            try {
+                $groupItem = $this->iriConverter->getResourceFromIri($subject->groupItem);
+            } catch (ItemNotFoundException|InvalidArgumentException) {
+                return false;
+            }
         }
 
         if (!$groupItem) {

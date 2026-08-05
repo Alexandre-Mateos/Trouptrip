@@ -4,24 +4,21 @@ namespace App\Security\Voter;
 
 use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use ApiPlatform\Metadata\IriConverterInterface;
-use App\ApiResource\PersonalItemResource\PersonalItemInputDTO;
-use App\Entity\PersonalItem;
+use App\ApiResource\ParticipationResource\InviteUserDTO;
+use App\Entity\Participation;
 use App\Entity\Trip;
-use App\Repository\ParticipationRepository;
 use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class PersonalItemVoter extends Voter
+final class ParticipationVoter extends Voter
 {
-    public const CREATE = 'PERSONAL_ITEM_CREATE';
-    public const EDIT = 'PERSONAL_ITEM_EDIT';
+    public const CREATE = 'PARTICIPATION_CREATE';
 
     public function __construct(
-        private ParticipationRepository $participationRepository,
-        private IriConverterInterface $iriConverter,
+        private readonly IriConverterInterface $iriConverter
     )
     {
     }
@@ -30,8 +27,8 @@ final class PersonalItemVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::CREATE, self::EDIT])
-            && ($subject instanceof PersonalItem || $subject instanceof PersonalItemInputDTO);
+        return in_array($attribute, [self::CREATE])
+            && ($subject instanceof Participation || $subject instanceof InviteUserDTO);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -45,35 +42,26 @@ final class PersonalItemVoter extends Voter
             return false;
         }
 
-        $trip = null;
-        if ($subject instanceof PersonalItem) {
+        if($subject instanceof Participation){
             $trip = $subject->getTrip();
-        } elseif ($subject instanceof PersonalItemInputDTO) {
+        }else{
             try {
-                /** @var Trip $trip */
                 $trip = $this->iriConverter->getResourceFromIri($subject->trip);
             } catch (ItemNotFoundException|InvalidArgumentException) {
                 return false;
             }
         }
 
-        if (!$trip) {
+        if(!$trip instanceof Trip){
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::CREATE:
-                if ($user === $trip->getOwner() || $this->participationRepository->isUserAParticipantInTrip($user, $trip)) {
+                if ($user === $trip->getOwner()) {
                     return true;
                 }
                 break;
-            case self::EDIT:
-                if (($user === $trip->getOwner() || $this->participationRepository->isUserAParticipantInTrip($user, $trip)) && $user === $subject->getOwner()) {
-                    return true;
-                }
-                break;
-
         }
 
         return false;

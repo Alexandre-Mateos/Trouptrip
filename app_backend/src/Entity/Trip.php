@@ -56,7 +56,7 @@ class Trip implements CreatedAtInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'personal_item:collection'])]
+    #[Groups(['trip:collection', 'trip:item', 'personal_item:collection', 'participation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
+import {useParticipationStore} from "~/stores/participation";
 import {useGroupItemsStore} from "~/stores/groupItems";
 import {useAssignmentsStore} from "~/stores/assignments";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
@@ -23,6 +24,7 @@ export default defineComponent({
 
     try {
       await useTripsStore().fetchTrip(id);
+      await useParticipationStore().fetchParticipations(id);
       await useGroupItemsStore().fetchGroupItems(id);
       await useAssignmentsStore().fetchAssignments(id);
       await usePersonalItemsStore().fetchPersonalItems(id);
