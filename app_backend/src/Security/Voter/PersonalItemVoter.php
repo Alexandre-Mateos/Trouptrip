@@ -2,11 +2,13 @@
 
 namespace App\Security\Voter;
 
+use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\ApiResource\PersonalItemResource\PersonalItemInputDTO;
 use App\Entity\PersonalItem;
 use App\Entity\Trip;
 use App\Repository\ParticipationRepository;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -47,12 +49,15 @@ final class PersonalItemVoter extends Voter
         if ($subject instanceof PersonalItem) {
             $trip = $subject->getTrip();
         } elseif ($subject instanceof PersonalItemInputDTO) {
-            /** @var Trip $trip */
-            $trip = $this->iriConverter->getResourceFromIri($subject->trip);
+            try {
+                /** @var Trip $trip */
+                $trip = $this->iriConverter->getResourceFromIri($subject->trip);
+            } catch (ItemNotFoundException|InvalidArgumentException) {
+                return false;
+            }
         }
 
         if (!$trip) {
-            $vote?->addReason('The ressource must be associated to a trip');
             return false;
         }
 

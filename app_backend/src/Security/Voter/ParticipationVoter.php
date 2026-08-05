@@ -2,10 +2,12 @@
 
 namespace App\Security\Voter;
 
+use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\ApiResource\ParticipationResource\InviteUserDTO;
 use App\Entity\Participation;
 use App\Entity\Trip;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -43,7 +45,11 @@ final class ParticipationVoter extends Voter
         if($subject instanceof Participation){
             $trip = $subject->getTrip();
         }else{
-            $trip = $this->iriConverter->getResourceFromIri($subject->trip);
+            try {
+                $trip = $this->iriConverter->getResourceFromIri($subject->trip);
+            } catch (ItemNotFoundException|InvalidArgumentException) {
+                return false;
+            }
         }
 
         if(!$trip instanceof Trip){

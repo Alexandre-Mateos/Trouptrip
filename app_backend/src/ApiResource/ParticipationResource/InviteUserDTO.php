@@ -3,7 +3,10 @@
 namespace App\ApiResource\ParticipationResource;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AppAssert;
 
+#[AppAssert\ExistingUser]
+#[AppAssert\UniqueParticipation]
 readonly class InviteUserDTO
 {
     public function __construct(
