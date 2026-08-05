@@ -49,7 +49,7 @@ security:
         - { path: ^/api/forgot_password, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, methods: [ POST ], roles: PUBLIC_ACCESS }
         - { path: ^/api/,       roles: IS_AUTHENTICATED_FULLY }
-
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 when@test:
     security:
         password_hashers:

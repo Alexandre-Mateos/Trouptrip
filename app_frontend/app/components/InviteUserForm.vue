@@ -27,6 +27,7 @@ export default defineComponent({
         this.$emit('done');
       } catch (errors) {
         this.errors = useApiErrors().formatErrors(errors);
+        console.log(this.errors);
       } finally {
         this.isSubmitting = false;
       }
@@ -37,7 +38,7 @@ export default defineComponent({
 
 <template>
   <BaseForm>
-    <BaseInput id="trip_invitation" label="Email de l'utilisateur à inviter" v-model="invitationEmail"/>
+    <BaseInput id="trip_invitation" label="Email de l'utilisateur à inviter" v-model="invitationEmail" :errors="errors.email"/>
     <div class="flex gap-2">
       <ActionButton type="submit" @click="handleSubmit" :disabled="isSubmitting" label="Envoyer"></ActionButton>
       <CancelButton type="button" @click="$emit('done')"></CancelButton>
