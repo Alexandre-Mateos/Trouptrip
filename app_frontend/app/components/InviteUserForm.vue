@@ -38,6 +38,7 @@ export default defineComponent({
 
 <template>
   <BaseForm>
+    <p>Note : Troutrip étant encore en phase de développement, vous ne pouvez inviter que des membres déjà inscrits sur la plateforme.</p>
     <BaseInput id="trip_invitation" label="Email de l'utilisateur à inviter" v-model="invitationEmail" :errors="errors.email"/>
     <div class="flex gap-2">
       <ActionButton type="submit" @click="handleSubmit" :disabled="isSubmitting" label="Envoyer"></ActionButton>
