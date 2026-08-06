@@ -9,4 +9,10 @@ enum ParticipationStatusEnum: string
     case DECLINED = 'DECLINED';
     case LEFT = 'LEFT';
     case CANCELLED = 'CANCELLED';
+    case EXCLUDED = 'EXCLUDED';
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

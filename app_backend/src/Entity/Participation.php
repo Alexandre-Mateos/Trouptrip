@@ -5,11 +5,14 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\ParticipationResource\InviteUserDTO;
+use App\ApiResource\ParticipationResource\UpdateParticipationStatusDTO;
 use App\Enum\ParticipationStatusEnum;
 use App\Interface\CreatedAtInterface;
 use App\Repository\ParticipationRepository;
+use App\State\Processor\PatchParticipationProcessor;
 use App\State\Processor\PostParticipationProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -32,6 +35,12 @@ use Symfony\Component\Serializer\Attribute\Groups;
             securityPostDenormalize: "is_granted('PARTICIPATION_CREATE', object)",
             input: InviteUserDTO::class,
             processor: PostParticipationProcessor::class
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'participation:collection'],
+            securityPostDenormalize: "is_granted('PARTICIPATION_EXCLUDE', object)",
+            input: UpdateParticipationStatusDTO::class,
+            processor: PatchParticipationProcessor::class
         )
     ]
 )]
@@ -45,7 +54,7 @@ class Participation implements CreatedAtInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 50, enumType: ParticipationStatusEnum::class)]
-    #[Groups(['participation:collection'])]
+    #[Groups(['participation:collection', 'participation:edit'])]
     private ?ParticipationStatusEnum $status = null;
 
     #[ORM\Column]

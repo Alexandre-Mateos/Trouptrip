@@ -6,14 +6,18 @@ export default defineComponent({
   props: {
     label: {
       type: String
-    }
+    },
+    icon: {
+      type: String,
+      default: "material-symbols:delete-outline"
+    },
   }
 })
 </script>
 
 <template>
   <BaseButton color="var(--color-trouptrip-error-600)">
-    <Icon name="material-symbols:delete-outline" />
+    <Icon :name="icon" />
     <slot>{{ label }}</slot>
   </BaseButton>
 </template>

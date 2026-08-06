@@ -1,9 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import BorderTitleCard from "~/components/BorderTitleCard.vue";
+import {participationStatus} from "~/utils/participationStatus";
 
 export default defineComponent({
   name: "TripDetailTab",
+  components: {BorderTitleCard},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
@@ -39,7 +42,7 @@ export default defineComponent({
       }
       this.toggleDeleteTripModal();
     },
-    toggleInviteUserModal(){
+    toggleInviteUserModal() {
       this.isInviteUserModalOpen = !this.isInviteUserModalOpen;
     }
   },
@@ -50,8 +53,22 @@ export default defineComponent({
 
       return currentUserId === ownerId;
     },
-    participant() {
-      return useParticipationStore().getParticipantListByTripId(this.trip.id);
+    participants() {
+      return useParticipationStore().getParticipantsGroupedByStatusByTripId(this.trip.id);
+    },
+    acceptedParticipants() {
+      return this.participants.ACCEPTED ?? [];
+    },
+    otherSections() {
+      return [
+        { key: participationStatus.pending, title: 'En attente de confirmation' },
+        { key: participationStatus.excluded, title: 'Exclus' },
+        { key: participationStatus.left, title: 'Ont quitté le voyage' },
+        { key: participationStatus.declined, title: 'Refusés' },
+      ].map(section => ({
+        ...section,
+        list: this.participants[section.key] ?? []
+      })).filter(section => section.list.length > 0);
     }
   },
 })
@@ -62,27 +79,63 @@ export default defineComponent({
     {{ error }}
   </div>
 
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-3">
+
+  <div class="flex flex-col gap-1">
     <h2 class="text-lg text-center">{{ trip.title }}</h2>
     <p v-if="trip.description">{{ trip.description }}</p>
     <p>Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
   </div>
 
-  <div v-if="trip.participationIds && trip.participationIds.length > 0"
-       class="rounded-md p-4 inset-shadow-sm border border-trouptrip-accent-200">
-    <h3 class="text-center">Participants du voyage </h3>
+  <div v-if="isTripOwner" class="p-4 bg-surface-primary-trouptrip border border-trouptrip-accent-200 rounded-md flex flex-col gap-1">
+    <p class="font-semibold">Vous êtes l'organisateur de ce séjour</p>
+    <p class="text-sm">
+      Vous pouvez inviter des participants ou gérer l'accès à ce séjour.
+    </p>
     <ActionButton type="submit" @click="toggleInviteUserModal" icon="fa6-solid:circle-plus">Inviter</ActionButton>
+  </div>
 
-    <UTable :data="participant" class="flex-1"/>
+  <div v-else class="text-sm text-gray-600 mb-4">
+    <span class="font-medium">Organisé par :</span> {{ trip?.owner?.firstname }} {{ trip?.owner?.lastname }}
   </div>
-  <div v-else>
-    <p>Invitez quelques amis pour ce séjour</p>
-  </div>
+
+  <BorderTitleCard title="Participants confirmés">
+    <template v-if="acceptedParticipants.length > 0">
+      <ParticipantCard
+          v-for="participant in acceptedParticipants"
+          :key="participant.participationId"
+          :participant="participant"
+          :trip="trip"
+      />
+    </template>
+
+    <p v-else>
+      Invitez quelques amis en cliquant sur le bouton juste au-dessus
+    </p>
+  </BorderTitleCard>
+
+  <Collapsible v-if="otherSections.length > 0" label="Autre">
+    <BorderTitleCard
+        v-for="section in otherSections"
+        :key="section.key"
+        :title="section.title"
+    >
+      <ParticipantCard
+          v-for="participant in section.list"
+          :key="participant.participationId"
+          :participant="participant"
+          :trip="trip"
+      />
+    </BorderTitleCard>
+  </Collapsible>
+
   <div class="flex justify-end">
     <div v-if="isTripOwner" class="flex flex-row gap-2">
       <EditButton @click="toggleEditTripModal" label="Modifier"></EditButton>
       <DeleteButton @click="toggleDeleteTripModal" label="Supprimer"></DeleteButton>
     </div>
+  </div>
+
   </div>
 
   <BaseModal :open="isEditTripModalOpen">
