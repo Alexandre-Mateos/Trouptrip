@@ -1,14 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
-import BorderTitleCard from "~/components/BorderTitleCard.vue";
 import {participationStatus} from "~/utils/participationStatus";
 import type {IParticipantList} from "~/interfaces/i-participantList";
 import type {IMapParticipation} from "~/interfaces/participation/i-mapParticipation";
 
 export default defineComponent({
   name: "TripDetailTab",
-  components: {BorderTitleCard},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
