@@ -9,9 +9,9 @@ readonly class OutputUserDTO
     public function __construct(
         #[Groups(['trip:item', 'assignment:collection', 'participation:collection'])]
         public int $id,
-        #[Groups(['trip:item', 'participation:collection', 'invitation:collection'])]
+        #[Groups(['trip:item', 'participation:collection'])]
         public string $firstname,
-        #[Groups(['trip:item', 'participation:collection', 'invitation:collection'])]
+        #[Groups(['trip:item', 'participation:collection'])]
         public string $lastname
     )
     {
