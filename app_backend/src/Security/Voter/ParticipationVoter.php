@@ -85,6 +85,10 @@ final class ParticipationVoter extends Voter
                     return in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true);
                 }
 
+                //Le participant souhaite rejoindre un séjour: Uniquement si il n'est pas le propriétaire, et si il est déjà PENDING
+                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::ACCEPTED->value) {
+                    return $currentStatus === ParticipationStatusEnum::PENDING;
+                }
             }
         }
         // tous les autres cas ne sont refusés par défaut
