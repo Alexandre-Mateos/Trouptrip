@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new Patch(
             normalizationContext: ['groups' => 'participation:collection'],
-            securityPostDenormalize: "is_granted('PARTICIPATION_EXCLUDE', object)",
+            securityPostDenormalize: "is_granted('PARTICIPATION_EDIT', object)",
             input: UpdateParticipationStatusDTO::class,
             processor: PatchParticipationProcessor::class
         )

@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ParticipationVoter extends Voter
 {
     public const CREATE = 'PARTICIPATION_CREATE';
-    public const EXCLUDE = 'PARTICIPATION_EXCLUDE';
+    public const EDIT = 'PARTICIPATION_EDIT';
 
     public function __construct(
         private readonly IriConverterInterface $iriConverter,
@@ -34,56 +34,60 @@ final class ParticipationVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::CREATE, self::EXCLUDE])
+        return in_array($attribute, [self::CREATE, self::EDIT])
             && ($subject instanceof InviteUserDTO || $subject instanceof UpdateParticipationStatusDTO);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        $user = $token->getUser();
+        $currentUser = $token->getUser();
 
-        if (!$user instanceof UserInterface) {
+        if (!$currentUser instanceof UserInterface) {
             $vote?->addReason('The user must be logged in to access this resource.');
-
             return false;
         }
 
+        // Cas 1: Création de la participation = invitation. Uniquement pour l'organisateur
         if ($subject instanceof InviteUserDTO) {
             try {
                 $trip = $this->iriConverter->getResourceFromIri($subject->trip);
             } catch (ItemNotFoundException|InvalidArgumentException) {
                 return false;
             }
+
+            return $attribute === self::CREATE && isset($trip) && $currentUser === $trip->getOwner();
         }
 
+        // Cas 2: Mise à jour d'une participation parmi les status suivant: LEFT, EXCLUDED
         if ($subject instanceof UpdateParticipationStatusDTO) {
-            $id = $this->requestStack->getCurrentRequest()?->attributes->get('id');
-
-            if (!$id) {
+            $participationId = $this->requestStack->getCurrentRequest()?->attributes->get('id');
+            if (!$participationId) {
                 return false;
             }
 
-            $participation = $this->participationRepository->find($id);
-
+            $participation = $this->participationRepository->find($participationId);
             if (!$participation) {
                 return false;
             }
 
             $trip = $participation->getTrip();
-        }
 
-        switch ($attribute) {
-            case self::CREATE:
-                if (isset($trip) && $user === $trip->getOwner()) {
-                    return true;
-                }
-                break;
-            case self::EXCLUDE:
-                if (isset($trip, $participation) && $user === $trip->getOwner() && in_array($participation->getStatus(), [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true)) {
-                    return true;
-                }
-        }
+            $targetStatus = $subject->status;
+            $currentStatus = $participation->getStatus();
 
+            if ($attribute === self::EDIT) {
+                // Exclusion d'un participant: uniquement pour l'organisateur. Uniquement si le status est déjà ACCEPTED ou PENDING
+                if ($currentUser === $trip->getOwner() && $targetStatus === ParticipationStatusEnum::EXCLUDED->value) {
+                    return in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true);
+                }
+                // Le participant veut quitter le voyage: Uniquement si il n'est pas le propriétaire, et si il est déjà ACCEPTED ou PENDING
+                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::LEFT->value) {
+                    return in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true);
+                }
+
+            }
+        }
+        // tous les autres cas ne sont refusés par défaut
         return false;
     }
 }

@@ -1,12 +1,13 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import type {IParticipantList} from "~/interfaces/i-participantList";
-import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import { defineComponent, type PropType } from 'vue'
+import type { IParticipantList } from "~/interfaces/i-participantList";
+import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails";
+import { participationStatus } from "~/utils/participationStatus";
 
 export default defineComponent({
   name: "ParticipantCard",
   props: {
-    participant:{
+    participant: {
       type: Object as PropType<IParticipantList>,
       required: true
     },
@@ -15,11 +16,11 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    async excludeParticipant(){
-      try{
-        await useParticipationStore().excludeParticipant(this.participant.participationId);
-      } catch(e){}
+  emits: ['exclude'],
+  computed: {
+    canBeExcluded(): boolean {
+      const isOwner = useUserStore().user?.id === this.trip.owner.id;
+      return isOwner && (participationStatus.accepted === this.participant.status || participationStatus.pending === this.participant.status);
     }
   }
 })
@@ -27,16 +28,13 @@ export default defineComponent({
 
 <template>
   <div class="flex flex-row justify-between">
-    <div class="flex felx-row gap-2">
+    <div class="flex flex-row gap-2">
       <p>{{ participant.firstname }}</p>
       <p>{{ participant.lastname }}</p>
     </div>
-    <div v-if="useUserStore().user?.id === trip.owner.id">
-      <DeleteButton icon="mdi:ban" @click="excludeParticipant"></DeleteButton>
+
+    <div v-if="canBeExcluded">
+      <DeleteButton icon="mdi:ban" @click="$emit('exclude')" />
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

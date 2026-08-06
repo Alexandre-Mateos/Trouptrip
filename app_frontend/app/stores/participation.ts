@@ -58,6 +58,27 @@ export const useParticipationStore = defineStore('participation', {
                 });
                 return groupedParticipant;
             };
+        },
+        getParticipationByTripAndUser: (state) => {
+            return (tripId: number): IMapParticipation | undefined => {
+                const trip = useTripsStore().getTripById(tripId);
+
+                if (!trip?.isDetail || !trip.participationIds) {
+                    return undefined;
+                }
+
+                const currentUserId = useUserStore().user?.id;
+                if (!currentUserId) return undefined;
+
+                for (const participationId of trip.participationIds) {
+                    const participation = state.participations.get(participationId);
+
+                    if (participation && participation.participantId === currentUserId) {
+                        return participation;
+                    }
+                }
+                return undefined;
+            };
         }
     },
     actions: {
@@ -165,6 +186,11 @@ export const useParticipationStore = defineStore('participation', {
         async excludeParticipant(participationId: number) {
             await this.updateParticipationStatus(participationId, {
                 status: participationStatus.excluded
+            });
+        },
+        async exitTrip(participationId: number) {
+            await this.updateParticipationStatus(participationId, {
+                status: participationStatus.left
             });
         }
     }

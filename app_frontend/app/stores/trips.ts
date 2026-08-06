@@ -183,6 +183,9 @@ export const useTripsStore = defineStore('trips', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        removeTripFromState(tripId: number) {
+            this.trips.delete(tripId);
         }
     }
 })
