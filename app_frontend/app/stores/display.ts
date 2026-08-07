@@ -1,13 +1,14 @@
 export const useDisplayStore = defineStore('header', {
     state: () => ({
-        TrouptripHome: {to: '/', label: 'Accueil'},
-        Login: {to: '/login', label: 'Se connecter'},
-        Register: {to: '/register', label: 'Créer un compte'},
-        UserHome: {to: '/home', label: 'Mon espace'},
-        Trips: {to: '/trips', label: 'Mes séjours'},
+        TrouptripHome: { to: '/', label: 'Accueil' },
+        Login: { to: '/login', label: 'Se connecter' },
+        Register: { to: '/register', label: 'Créer un compte' },
+        UserHome: { to: '/home', label: 'Mon espace' },
+        Trips: { to: '/trips', label: 'Mes séjours' },
+        Invitations: { to: '/invitations', label: 'Mes invitations' },
         isDesktop: null as boolean | null,
-        tripNavTab:[
-            {key: 'my-trip', label: 'Mon séjour'}
+        tripNavTab: [
+            { key: 'my-trip', label: 'Mon séjour' }
         ],
         activeTripNavTab: 'my-trip'
     }),
@@ -16,25 +17,30 @@ export const useDisplayStore = defineStore('header', {
             return (tabKey: string): boolean => {
                 return state.activeTripNavTab === tabKey;
             };
-        }
-    },
-    actions: {
-        constructHeader(){
+        },
+        headerNav(state) {
             const userStore = useUserStore();
             const tripsStore = useTripsStore();
 
-            if (userStore.user){
-                if(this.isDesktop && tripsStore.trips.size > 0){
-                    const tripId = tripsStore.getFirstTripId
-                    this.Trips.to = `/trips/${tripId}`;
+            if (userStore.user) {
+                let tripsItem = state.Trips;
+
+                if (state.isDesktop && tripsStore.trips.size > 0) {
+                    const tripId = tripsStore.getFirstTripId;
+                    tripsItem = {
+                        ...state.Trips,
+                        to: `/trips/${tripId}`
+                    };
                 }
 
-                return [this.UserHome, this.Trips];
+                return [state.UserHome, tripsItem, state.Invitations];
             }
 
-            return [this.TrouptripHome, this.Login, this.Register];
-        },
-        activateTripTab(activeTab: string){
+            return [state.TrouptripHome, state.Login, state.Register];
+        }
+    },
+    actions: {
+        activateTripTab(activeTab: string) {
             this.activeTripNavTab = activeTab;
         }
     }

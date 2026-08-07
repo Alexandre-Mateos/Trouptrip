@@ -33,12 +33,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function findIsExistingEmail(string $email): bool
+    public function isVerifiedUserEmail(string $email): bool
     {
         $count = $this->createQueryBuilder('u')
             ->select('COUNT(u.id)')
             ->where('u.email = :email')
+            ->andWhere('u.isVerified = :isVerified')
             ->setParameter('email', $email)
+            ->setParameter('isVerified', true)
             ->getQuery()
             ->getSingleScalarResult();
 

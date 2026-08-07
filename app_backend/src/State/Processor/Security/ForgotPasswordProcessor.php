@@ -4,7 +4,7 @@ namespace App\State\Processor\Security;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Enum\SecurityEmailTypeEnum;
+use App\Enum\EmailTypeEnum;
 use App\Enum\UserTokenTypeEnum;
 use App\Repository\UserRepository;
 use App\Service\MailService;
@@ -31,7 +31,7 @@ readonly class ForgotPasswordProcessor implements ProcessorInterface
         if (!$user->isVerified()) {
 
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::CHECK_EMAIL, $user);
-            $this->mailService->sendEmail(SecurityEmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, $user, $rawToken);
+            $this->mailService->sendSecurityEmail(EmailTypeEnum::RESET_PASSWORD_UNVERIFIED_USER, $user, $rawToken);
 
             return;
         }
@@ -40,7 +40,7 @@ readonly class ForgotPasswordProcessor implements ProcessorInterface
 
         try {
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::RESET_PASSWORD,$user);
-            $this->mailService->sendEmail(SecurityEmailTypeEnum::RESET_PASSWORD_STANDARD, $user, $rawToken);
+            $this->mailService->sendSecurityEmail(EmailTypeEnum::RESET_PASSWORD_STANDARD, $user, $rawToken);
 
             $this->em->commit();
 

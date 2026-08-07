@@ -56,11 +56,11 @@ class Trip implements CreatedAtInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'personal_item:collection'])]
+    #[Groups(['trip:collection', 'trip:item', 'personal_item:collection', 'participation:collection', 'invitation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create', 'invitation:collection'])]
     #[Assert\NotBlank(message: 'Merci d\'indiquer un titre')]
     private ?string $title = null;
 
@@ -69,12 +69,12 @@ class Trip implements CreatedAtInterface
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create', 'invitation:collection'])]
     #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column]
-    #[Groups(['trip:collection', 'trip:item', 'trip:create'])]
+    #[Groups(['trip:collection', 'trip:item', 'trip:create', 'invitation:collection'])]
     #[Assert\NotBlank(message: 'Merci d\'indiquer une date de début')]
     private ?\DateTimeImmutable $endDate = null;
 

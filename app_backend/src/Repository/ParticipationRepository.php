@@ -35,4 +35,19 @@ class ParticipationRepository extends ServiceEntityRepository
         return (int) $count > 0;
     }
 
+    public function isUserAlreadyInvited(User $user, Trip $trip): bool
+    {
+        $count = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.participant = :user')
+            ->andWhere('p.trip = :trip')
+            ->andWhere('p.status IN (:statuses)')
+            ->setParameter('user', $user)
+            ->setParameter('trip', $trip)
+            ->setParameter('statuses', [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING])
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $count > 0;
+    }
 }

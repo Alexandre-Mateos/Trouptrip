@@ -42,9 +42,12 @@ export default defineComponent({
     }
   },
   async mounted() {
+
+    const tripIdParam = Number(this.$route.params.id);
+
     try {
       await useTripsStore().fetchTrips();
-      if (useDisplayStore().isDesktop && this.getFirstTripId) {
+      if (this.displayStore.isDesktop && this.getFirstTripId && !tripIdParam) {
         navigateTo({name: 'trips-id', params: {id: this.getFirstTripId}});
       }
     } catch (error) {

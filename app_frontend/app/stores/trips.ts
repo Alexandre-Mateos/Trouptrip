@@ -5,7 +5,6 @@ import type {ITripDetails} from "~/interfaces/trip/i-tripDetails";
 import type {IMapTrip} from "~/interfaces/trip/store/i-mapTrip";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {ITripForm} from "~/interfaces/i-tripForm";
-import type {IParticipantList} from "~/interfaces/i-participantList";
 
 export const useTripsStore = defineStore('trips', {
     state: () => ({
@@ -37,30 +36,19 @@ export const useTripsStore = defineStore('trips', {
             const keys = Array.from(state.trips.keys());
             return keys[0];
         },
-        getParticipantListByTripId: (state) => {
-            return (tripId: number) => {
-                const trip = state.trips.get(tripId);
-                if (!trip || !trip.isDetail) {
-                    return [];
-                }
+        getUpcomingTrip: (state) => {
+            let nextTrip = null as IMapTrip|IMapTripDetails|null;
 
-                const currentUserId = useUserStore().user?.id;
-
-                const participantList: IParticipantList[]  = [];
-                trip.participations.forEach((participation) => {
-
-                    if(currentUserId !== participation.participant.id){
-                        participantList.push(
-                            {
-                                firstname: participation.participant.firstname,
-                                lastname: participation.participant.lastname,
-                                status: participation.status,
-                            }
-                        );
+            state.trips.forEach((trip) => {
+                if(nextTrip){
+                    if(trip.startDate < nextTrip?.startDate){
+                        nextTrip = trip;
                     }
-                });
-                return participantList;
-            }
+                }else{
+                    nextTrip = trip;
+                }
+            })
+            return nextTrip;
         }
     },
     actions: {
@@ -101,16 +89,12 @@ export const useTripsStore = defineStore('trips', {
             try {
                 const tripDetail = await $api<ITripDetails>(apiUrl);
                 const groupItemIds = tripDetail.groupItems?.map(item => item.id) ?? [];
+                const participationIds = tripDetail.participations?.map(participation => participation.id) ?? [];
 
                 // On stock le owner et les participants à un voyage directement dans le userStore. A faire: retirer de ce Payload  pour les récupérer via un endpoint dédié.
                 const userStore = useUserStore();
+
                 userStore.tripUsers.set(tripDetail.owner.id, tripDetail.owner);
-                tripDetail.participations.forEach((participation) => {
-                    userStore.tripUsers.set(
-                        participation.participant.id,
-                        participation.participant
-                    );
-                });
 
                 if (tripListView) {
                     this.trips.set(tripId, {
@@ -118,14 +102,16 @@ export const useTripsStore = defineStore('trips', {
                         ...tripDetail,
                         isDetail: true,
                         groupItemIds: groupItemIds,
-                        personalItemIds: []
+                        personalItemIds: [],
+                        participationIds: participationIds,
                     });
                 } else {
                     this.trips.set(tripId, {
                         ...tripDetail,
                         isDetail: true,
                         groupItemIds: groupItemIds,
-                        personalItemIds: []
+                        personalItemIds: [],
+                        participationIds: participationIds,
                     });
                 }
 
@@ -149,12 +135,14 @@ export const useTripsStore = defineStore('trips', {
                 });
 
                 const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+                const participationIds = response.participations?.map(participation => participation.id) ?? [];
 
                 this.trips.set(response.id, {
                     ...response,
                     isDetail: true,
                     groupItemIds: groupItemIds,
-                    personalItemIds: []
+                    personalItemIds: [],
+                    participationIds: participationIds,
                 });
                 return response;
 
@@ -181,12 +169,14 @@ export const useTripsStore = defineStore('trips', {
                 });
 
                 const groupItemIds = response.groupItems?.map((item: any) => item.id) ?? [];
+                const participationIds = response.participations?.map(participation => participation.id) ?? [];
 
                 this.trips.set(response.id, {
                     ...response,
                     isDetail: true,
                     groupItemIds: groupItemIds,
-                    personalItemIds: []
+                    personalItemIds: [],
+                    participationIds: participationIds,
                 });
                 return response;
 
@@ -207,6 +197,9 @@ export const useTripsStore = defineStore('trips', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        removeTripFromState(tripId: number) {
+            this.trips.delete(tripId);
         }
     }
 })

@@ -2,11 +2,12 @@
 
 namespace App\Enum;
 
-enum SecurityEmailTypeEnum
+enum EmailTypeEnum
 {
     case REGISTRATION_STANDARD;
     case REGISTRATION_USER_ALREADY_EXIST;
     case LOGIN_UNVERIFIED_USER;
     case RESET_PASSWORD_STANDARD;
     case RESET_PASSWORD_UNVERIFIED_USER;
+    case INVITE_USER_TO_TRIP;
 }
