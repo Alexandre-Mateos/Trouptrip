@@ -227,6 +227,11 @@ export const useParticipationStore = defineStore('participation', {
         },
         removeInvitation(participationId: number){
             this.invitations.delete(participationId);
+        },
+        clearStore(){
+            this.participations.clear();
+            this.invitations.clear();
+            this.fetching = false;
         }
     }
 });

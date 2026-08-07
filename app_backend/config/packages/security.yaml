@@ -30,6 +30,9 @@ security:
             pattern: ^/api
             stateless: true
             jwt: ~
+            logout:
+                path: /api/logout
+                target: /api/logout
 
         main:
             lazy: true

@@ -9,15 +9,9 @@ export const useDisplayStore = defineStore('header', {
         isDesktop: null as boolean | null,
         tripNavTab: [
             { key: 'my-trip', label: 'Mon séjour' }
-        ],
-        activeTripNavTab: 'my-trip'
+        ]
     }),
     getters: {
-        isActiveTab(state) {
-            return (tabKey: string): boolean => {
-                return state.activeTripNavTab === tabKey;
-            };
-        },
         headerNav(state) {
             const userStore = useUserStore();
             const tripsStore = useTripsStore();
@@ -37,11 +31,6 @@ export const useDisplayStore = defineStore('header', {
             }
 
             return [state.TrouptripHome, state.Login, state.Register];
-        }
-    },
-    actions: {
-        activateTripTab(activeTab: string) {
-            this.activeTripNavTab = activeTab;
         }
     }
 })

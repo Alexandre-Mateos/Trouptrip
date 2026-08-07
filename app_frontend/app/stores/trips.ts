@@ -200,6 +200,10 @@ export const useTripsStore = defineStore('trips', {
         },
         removeTripFromState(tripId: number) {
             this.trips.delete(tripId);
+        },
+        clearStore(){
+            this.trips.clear();
+            this.fetching = false;
         }
     }
 })
