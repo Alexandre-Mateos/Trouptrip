@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\ApiResource\UserResource\OutputRegisterUserDTO;
 use App\Entity\User;
-use App\Enum\SecurityEmailTypeEnum;
+use App\Enum\EmailTypeEnum;
 use App\Enum\UserTokenTypeEnum;
 use App\Repository\UserRepository;
 use App\Service\MailService;
@@ -30,7 +30,7 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
     {
         if($existingUser = $this->userRepository->findOneBy(['email' => $data->email])) {
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::RESET_PASSWORD, $existingUser);
-            $this->mailService->sendEmail(SecurityEmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST, $existingUser, $rawToken);
+            $this->mailService->sendSecurityEmail(EmailTypeEnum::REGISTRATION_USER_ALREADY_EXIST, $existingUser, $rawToken);
 
             return new OutputRegisterUserDTO(
                 $data->email,
@@ -52,7 +52,7 @@ final readonly class RegisterUserProcessor implements ProcessorInterface
             $this->em->flush();
 
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::CHECK_EMAIL, $user);
-            $this->mailService->sendEmail(SecurityEmailTypeEnum::REGISTRATION_STANDARD, $user, $rawToken);
+            $this->mailService->sendSecurityEmail(EmailTypeEnum::REGISTRATION_STANDARD, $user, $rawToken);
 
             $this->em->commit();
 

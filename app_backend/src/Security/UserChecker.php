@@ -4,7 +4,7 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Entity\UserToken;
-use App\Enum\SecurityEmailTypeEnum;
+use App\Enum\EmailTypeEnum;
 use App\Enum\UserTokenTypeEnum;
 use App\Repository\UserTokenRepository;
 use App\Service\MailService;
@@ -38,7 +38,7 @@ readonly class UserChecker implements UserCheckerInterface
         if (!$user->isVerified()) {
 
             $rawToken = $this->userTokenService->generateUserToken(UserTokenTypeEnum::CHECK_EMAIL, $user);
-            $this->mailService->sendEmail(SecurityEmailTypeEnum::LOGIN_UNVERIFIED_USER, $user, $rawToken);
+            $this->mailService->sendSecurityEmail(EmailTypeEnum::LOGIN_UNVERIFIED_USER, $user, $rawToken);
 
             throw new CustomUserMessageAccountStatusException(
                 "Votre compte n'est pas encore vérifié. Un nouveau mail vient de vous être envoyé."
