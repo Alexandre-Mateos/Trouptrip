@@ -1,11 +1,9 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import InvitationCard from "~/components/InvitationCard.vue";
+import { defineComponent } from 'vue';
 import type { IInvitation } from "~/interfaces/participation/i-invitation";
 
 export default defineComponent({
   name: "invitations",
-  components: { InvitationCard },
   data() {
     return {
       error: '',
