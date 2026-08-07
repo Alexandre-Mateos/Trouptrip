@@ -8,3 +8,24 @@ lexik_jwt_authentication:
         check_path: /api/login_check
         username_path: email
         password_path: security.credentials.password
+
+#    Permet d'extraire le jwt depuis le cookie
+    token_extractors:
+        authorization_header:
+            enabled: true
+            prefix: Bearer
+            name: Authorization
+        cookie:
+            enabled: true
+            name: BEARER
+
+#    Permet de générer le cookie au moment du login de l'utilisateur
+    set_cookies:
+        BEARER:
+            lifetime: 3600
+            samesite: lax
+            secure: auto
+            httpOnly: true
+
+#    Empêche le renvois du cookie en json
+    remove_token_from_body_when_cookies_used: true
