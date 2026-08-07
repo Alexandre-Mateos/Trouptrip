@@ -12,7 +12,7 @@ use Symfony\Component\Mailer\MailerInterface;
 readonly class MailService
 {
     const string SECURITY_EMAIL_FROM = 'security@trouptrip.fr';
-    const string NOTIFICATION_EMAIL_FROM = 'info@troutrip.fr';
+    const string NOTIFICATION_EMAIL_FROM = 'info@trouptrip.fr';
     public function __construct(
         private MailerInterface $mailer,
         private ParameterBagInterface $parameterBag
