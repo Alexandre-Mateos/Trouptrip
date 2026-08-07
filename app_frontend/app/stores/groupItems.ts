@@ -112,6 +112,10 @@ export const useGroupItemsStore = defineStore('groupItems', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        clearStore(){
+            this.groupItems.clear();
+            this.fetching = false;
         }
     }
 })

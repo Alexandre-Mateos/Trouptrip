@@ -241,6 +241,11 @@ export const useAssignmentsStore = defineStore('assignments', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        clearStore(){
+            this.assignments.clear();
+            this.assignmentsByUsers.clear();
+            this.fetching = false;
         }
     }
 })

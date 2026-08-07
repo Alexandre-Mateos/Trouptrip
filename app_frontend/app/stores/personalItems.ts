@@ -160,6 +160,10 @@ export const usePersonalItemsStore = defineStore('personalItem', {
             } catch (error: any) {
                 throw error;
             }
+        },
+        clearStore(){
+            this.personalItems.clear();
+            this.fetching = false;
         }
     }
 })

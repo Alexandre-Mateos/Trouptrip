@@ -24,5 +24,20 @@ export const useUserStore = defineStore('user', {
                 this.userFetching = false;
             }
         },
+        async logout(){
+            const { $api } = useNuxtApp();
+            await $api(apiEndpoints.logout);
+
+            // Vider tous les stores pour éviter de conserver des infos utilisateur
+            this.user = null;
+            useTripsStore().clearStore();
+            usePersonalItemsStore().clearStore();
+            useParticipationStore().clearStore();
+            useGroupItemsStore().clearStore();
+            useAssignmentsStore().clearStore();
+
+            // redirection
+            await navigateTo('/login');
+        }
     }
 })
