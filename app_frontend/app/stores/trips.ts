@@ -35,6 +35,20 @@ export const useTripsStore = defineStore('trips', {
         getFirstTripId: (state) => {
             const keys = Array.from(state.trips.keys());
             return keys[0];
+        },
+        getUpcomingTrip: (state) => {
+            let nextTrip = null as IMapTrip|IMapTripDetails|null;
+
+            state.trips.forEach((trip) => {
+                if(nextTrip){
+                    if(trip.startDate < nextTrip?.startDate){
+                        nextTrip = trip;
+                    }
+                }else{
+                    nextTrip = trip;
+                }
+            })
+            return nextTrip;
         }
     },
     actions: {

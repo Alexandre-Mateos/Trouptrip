@@ -45,13 +45,6 @@ export default defineComponent({
     hasInvitations() {
       return this.participationStore.invitations.size > 0;
     }
-  },
-  async mounted() {
-    try {
-      await this.participationStore.fetchInvitations();
-    } catch (e) {
-      this.error = 'Impossible d\'afficher la liste des invitations pour le moment.';
-    }
   }
 })
 </script>
@@ -66,7 +59,7 @@ export default defineComponent({
     />
   </template>
 
-  <div v-else class="empty-state">
+  <div v-else>
     <p>Rien à l'horizon pour l'instant !</p>
     <p>Et si c'était vous qui preniez les devants en organisant la prochaine escapade ?</p>
   </div>
