@@ -15,6 +15,7 @@ export default defineComponent({
       error : ''
     }
   },
+    emits: ['decline'],
   methods:{
     async handleAccept() {
       console.log('click');
@@ -44,7 +45,7 @@ export default defineComponent({
       </div>
       <div class="flex flex-row gap-2 justify-center">
         <ActionButton icon="tabler:circle-check" @click="handleAccept">Rejoindre</ActionButton>
-        <DeleteButton icon="mdi:ban">Décliner</DeleteButton>
+        <DeleteButton icon="mdi:ban" @click="$emit('decline')">Décliner</DeleteButton>
       </div>
     </div>
 </template>
