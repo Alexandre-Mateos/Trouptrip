@@ -18,13 +18,19 @@ export default defineComponent({
     emits: ['decline'],
   methods:{
     async handleAccept() {
-      console.log('click');
       const participationStore = useParticipationStore();
       const tripStore = useTripsStore();
+      const invitationId = this.invitation.id;
+      const tripId = this.invitation.trip.id;
+
+
       try{
-        await participationStore.acceptInvitation(this.invitation.id);
-        participationStore.removeInvitation(this.invitation.id);
-        await tripStore.fetchTrip(this.invitation.trip.id);
+        await participationStore.acceptInvitation(invitationId);
+        participationStore.removeInvitation(invitationId);
+        await tripStore.fetchTrip(tripId);
+
+        await navigateTo({ name: 'trips-id', params: { id: tripId } });
+
       } catch(e){
         this.error = 'Impossible d\'accepter l\'invitation pour le moment';
       }

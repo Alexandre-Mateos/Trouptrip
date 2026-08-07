@@ -18,14 +18,11 @@ export const useDisplayStore = defineStore('header', {
                 return state.activeTripNavTab === tabKey;
             };
         },
-        // TRANSFORMÉ EN GETTER RÉACTIF 🚀
         headerNav(state) {
             const userStore = useUserStore();
             const tripsStore = useTripsStore();
 
             if (userStore.user) {
-                // Pour éviter de muter le state directement dans un getter,
-                // on crée une copie de l'objet Trips avec l'URL dynamique :
                 let tripsItem = state.Trips;
 
                 if (state.isDesktop && tripsStore.trips.size > 0) {
