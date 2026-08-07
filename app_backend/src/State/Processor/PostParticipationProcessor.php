@@ -7,8 +7,10 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Participation;
 use App\Entity\Trip;
+use App\Enum\EmailTypeEnum;
 use App\Enum\ParticipationStatusEnum;
 use App\Repository\UserRepository;
+use App\Service\MailService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -20,6 +22,7 @@ readonly class PostParticipationProcessor extends CustomProcessor
         private ProcessorInterface $persistProcessor,
         private IriConverterInterface $iriConverter,
         private UserRepository $userRepository,
+        private MailService $mailService,
     )
     {
         parent::__construct($security);
@@ -36,6 +39,8 @@ readonly class PostParticipationProcessor extends CustomProcessor
             ->setTrip($trip)
             ->setInvitedBy($currentUser)
             ->setStatus(ParticipationStatusEnum::PENDING);
+
+        $this->mailService->sendInvitationEmail(EmailTypeEnum::INVITE_USER_TO_TRIP, $invitedUser, $trip, $currentUser);
 
         return $this->persistProcessor->process($participation, $operation, $uriVariables, $context);
     }

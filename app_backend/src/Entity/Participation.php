@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
-    operations:[
+    operations: [
         new GetCollection(
             uriTemplate: '/trips/{tripId}/participation',
             uriVariables: [
@@ -27,8 +27,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
                     fromClass: Trip::class
                 )
             ],
-            normalizationContext:  ['groups' => 'participation:collection'],
+            normalizationContext: ['groups' => 'participation:collection'],
             security: "is_granted('TRIP_SUB_RESOURCES_READ', request.attributes.get('tripId'))",
+        ),
+        new GetCollection(
+            uriTemplate: '/me/invitations',
+            normalizationContext: ['groups' => 'invitation:collection'],
+            security: "is_granted('IS_AUTHENTICATED_FULLY')",
+            name: 'get_me_invitations'
         ),
         new Post(
             normalizationContext: ['groups' => 'participation:collection'],
@@ -50,7 +56,7 @@ class Participation implements CreatedAtInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['trip:item', 'participation:collection'])]
+    #[Groups(['trip:item', 'participation:collection', 'invitation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, enumType: ParticipationStatusEnum::class)]
@@ -65,7 +71,7 @@ class Participation implements CreatedAtInterface
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['participation:collection'])]
+    #[Groups(['participation:collection', 'invitation:collection'])]
     private ?Trip $trip = null;
 
     #[ORM\ManyToOne(inversedBy: 'participations')]
@@ -75,6 +81,7 @@ class Participation implements CreatedAtInterface
 
     #[ORM\ManyToOne(inversedBy: 'sentParticipations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['invitation:collection'])]
     private ?User $invitedBy = null;
 
     public function getId(): ?int

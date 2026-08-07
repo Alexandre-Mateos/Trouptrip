@@ -8,7 +8,7 @@ export default defineComponent({
   components: {LogoutButton},
   computed: {
     headerNav() {
-      return useDisplayStore().constructHeader();
+      return useDisplayStore().headerNav;
     },
     userStore(){
       return useUserStore();

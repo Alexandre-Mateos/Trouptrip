@@ -5,11 +5,14 @@ import type {IParticipationList} from "~/interfaces/participation/i-participatio
 import type {IParticipation} from "~/interfaces/participation/i-participation";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import {participationStatus} from "~/utils/participationStatus";
+import type {IInvitation} from "~/interfaces/participation/i-invitation";
+import type {IInvitationList} from "~/interfaces/participation/i-invitationList";
 
 export const useParticipationStore = defineStore('participation', {
     state: () => ({
         // Map<participationId, IMapParticipation>
         participations: new Map<number, IMapParticipation>(),
+        invitations: new Map<number, IInvitation>(),
         fetching: false,
     }),
     getters: {
@@ -34,7 +37,7 @@ export const useParticipationStore = defineStore('participation', {
 
                 trip.participationIds.forEach((participationId) => {
                     const participation = state.participations.get(participationId);
-                    if (!participation){
+                    if (!participation) {
                         return;
                     }
 
@@ -50,7 +53,7 @@ export const useParticipationStore = defineStore('participation', {
                             };
 
                             const targetGroup = groupedParticipant[participation.status];
-                            if(targetGroup){
+                            if (targetGroup) {
                                 targetGroup.push(participant);
                             }
                         }
@@ -79,10 +82,11 @@ export const useParticipationStore = defineStore('participation', {
                 }
                 return undefined;
             };
-        }
+        },
+        invitationList: (state) => Array.from(state.invitations.values()),
     },
     actions: {
-        async fetchParticipations(tripId: number){
+        async fetchParticipations(tripId: number) {
             if (this.fetching) {
                 return;
             }
@@ -121,7 +125,7 @@ export const useParticipationStore = defineStore('participation', {
         },
         async inviteUser(trip: IMapTripDetails, payload: {
             email: string
-        }){
+        }) {
 
             if (this.fetching) {
                 return;
@@ -133,7 +137,7 @@ export const useParticipationStore = defineStore('participation', {
 
             const body = {...payload, trip: trip["@id"]};
 
-            try{
+            try {
                 const response = await $api<IParticipation>(url, {
                     method: 'POST',
                     body: body
@@ -147,7 +151,7 @@ export const useParticipationStore = defineStore('participation', {
                     participantId: response.participant.id
                 });
 
-                if(!trip.participationIds.includes(response.id)){
+                if (!trip.participationIds.includes(response.id)) {
                     trip.participationIds.push(response.id);
                 }
             } finally {
@@ -161,13 +165,13 @@ export const useParticipationStore = defineStore('participation', {
             }
 
             this.fetching = true;
-            const { $api } = useNuxtApp();
+            const {$api} = useNuxtApp();
             const url = `${apiEndpoints.participations}/${participationId}`;
 
-            try{
+            try {
                 const response = await $api<IParticipation>(url, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/merge-patch+json' },
+                    headers: {'Content-Type': 'application/merge-patch+json'},
                     body
                 });
 
@@ -192,6 +196,37 @@ export const useParticipationStore = defineStore('participation', {
             await this.updateParticipationStatus(participationId, {
                 status: participationStatus.left
             });
+        },
+        async fetchInvitations() {
+
+            if (this.fetching) {
+                return;
+            }
+
+            this.fetching = true;
+            const {$api} = useNuxtApp();
+
+            try {
+                const invitationsCollection = await $api<IInvitationList>(apiEndpoints.invitations);
+                invitationsCollection.member.forEach((invitation) => {
+                    this.invitations.set(invitation.id, invitation);
+                });
+            } finally {
+                this.fetching = false;
+            }
+        },
+        async acceptInvitation(participationId: number){
+            await this.updateParticipationStatus(participationId, {
+                status: participationStatus.accepted
+            });
+        },
+        async declineInvitation(participationId: number){
+            await this.updateParticipationStatus(participationId, {
+                status: participationStatus.declined
+            });
+        },
+        removeInvitation(participationId: number){
+            this.invitations.delete(participationId);
         }
     }
 });

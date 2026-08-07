@@ -76,15 +76,25 @@ final class ParticipationVoter extends Voter
             $currentStatus = $participation->getStatus();
 
             if ($attribute === self::EDIT) {
-                // Exclusion d'un participant: uniquement pour l'organisateur. Uniquement si le status est déjà ACCEPTED ou PENDING
-                if ($currentUser === $trip->getOwner() && $targetStatus === ParticipationStatusEnum::EXCLUDED->value) {
-                    return in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true);
-                }
-                // Le participant veut quitter le voyage: Uniquement si il n'est pas le propriétaire, et si il est déjà ACCEPTED ou PENDING
-                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::LEFT->value) {
-                    return in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true);
+                // Exclusion d'un participant: uniquement pour l'organisateur (si ACCEPTED ou PENDING)
+                if ($currentUser === $trip->getOwner() && $targetStatus === ParticipationStatusEnum::EXCLUDED->value && in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true)) {
+                    return true;
                 }
 
+                // Le participant veut quitter le voyage (si ACCEPTED ou PENDING)
+                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::LEFT->value && in_array($currentStatus, [ParticipationStatusEnum::ACCEPTED, ParticipationStatusEnum::PENDING], true)) {
+                    return true;
+                }
+
+                // Le participant souhaite rejoindre un séjour (si PENDING)
+                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::ACCEPTED->value && $currentStatus === ParticipationStatusEnum::PENDING) {
+                    return true;
+                }
+
+                // Le participant souhaite refuser une invitation (si PENDING)
+                if ($currentUser === $participation->getParticipant() && $targetStatus === ParticipationStatusEnum::DECLINED->value && $currentStatus === ParticipationStatusEnum::PENDING) {
+                    return true;
+                }
             }
         }
         // tous les autres cas ne sont refusés par défaut
