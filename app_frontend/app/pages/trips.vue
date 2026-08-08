@@ -83,7 +83,12 @@ export default defineComponent({
         <NuxtLink
             v-for="trip in trips"
             :key="trip.id"
-            :to="{ name: 'trips-id', params: { id: trip.id } }"
+            :to="{
+            name: 'trips-id',
+            params: { id: trip.id },
+            query: { focus: 'true' }
+            }"
+            :aria-current="Number($route.params.id) === trip.id ? 'page' : undefined"
         >
           <TripCard :trip="trip" />
         </NuxtLink>
