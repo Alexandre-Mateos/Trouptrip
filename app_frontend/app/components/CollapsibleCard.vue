@@ -22,7 +22,13 @@ export default defineComponent({
     root: 'bg-white shadow-md transform border border-solid border-trouptrip-accent-500 ring-0'
   }"
   >
-    <div class="flex items-center justify-between cursor-pointer select-none" @click="toggleCard">
+    <button
+        class="flex w-full items-center justify-between text-left cursor-pointer"
+         type="button"
+         :aria-controls="$attrs.id as string"
+         :aria-expanded="isExpanded"
+         @click="toggleCard"
+    >
       <slot name="header"></slot>
 
       <Icon name="i-lucide-chevron-down"
@@ -31,13 +37,16 @@ export default defineComponent({
               isExpanded ? 'rotate-180' : ''
             ]"
       />
-    </div>
+    </button>
 
     <div
         :class="[
         'grid transition-[grid-template-rows] duration-300 ease-in-out',
         isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
       ]"
+        v-bind="$attrs"
+        :inert="!isExpanded"
+        :aria-hidden="!isExpanded"
     >
       <div class="overflow-hidden">
         <div class="pt-4">

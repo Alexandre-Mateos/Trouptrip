@@ -144,7 +144,7 @@ export default defineComponent({
         <ActionButton type="submit" @click="toggleCreateGroupItemModal" icon="fa6-solid:circle-plus">Ajouter un item</ActionButton>
 
         <template v-for="groupItem in groupItems" :key="groupItem.id">
-          <CollapsibleCard>
+          <CollapsibleCard :id="`card-body-${groupItem.id}`">
             <template #header>
               <div class="flex flex-1 justify-between items-center px-2">
                 <div class="flex gap-2 items-center">
