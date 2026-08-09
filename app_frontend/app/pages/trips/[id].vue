@@ -9,6 +9,7 @@ import {usePersonalItemsStore} from "~/stores/personalItems";
 
 export default defineComponent({
   name: "[id]",
+  emits: ['close'],
   data() {
     return {
       id: null as number | null,
@@ -17,14 +18,6 @@ export default defineComponent({
         {label: "Mon séjour", slot: "myTrip"},
         {label: "La valise", slot: "theSuitCase"}
       ]
-    }
-  },
-  methods: {
-    returnToActiveCard() {
-      const activeCard = document.querySelector('.cards-block a[aria-current="page"]') as HTMLElement;
-      if (activeCard) {
-        activeCard.focus();
-      }
     }
   },
   async mounted() {
@@ -57,7 +50,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div tabindex="-1" @keydown.esc="returnToActiveCard">
+  <div tabindex="-1" @keydown.esc="$emit('close')">
 
     <div v-if="hasError" class="p-4 text-center text-red-500">
       <p>Impossible de charger les détails de ce séjour.</p>

@@ -21,6 +21,15 @@ export default defineComponent({
   methods: {
     toggleModal(){
       this.isModalOpen = !this.isModalOpen;
+    },
+    focusCurrentCard() {
+      const currentTripId = this.$route.params.id;
+      if (!currentTripId) return;
+
+      const tripCard = document.getElementById(`trip-card-${currentTripId}`);
+      if (tripCard) {
+        tripCard.focus();
+      }
     }
   },
   computed: {
@@ -83,6 +92,7 @@ export default defineComponent({
         <NuxtLink
             v-for="trip in trips"
             :key="trip.id"
+            :id="`trip-card-${trip.id}`"
             :to="{
             name: 'trips-id',
             params: { id: trip.id },
@@ -98,7 +108,7 @@ export default defineComponent({
           class="page-block"
           :class="{ 'hidden-mobile': !isTripViewVisible }"
       >
-        <NuxtPage />
+        <NuxtPage @close="focusCurrentCard"/>
       </div>
     </div>
   </div>
