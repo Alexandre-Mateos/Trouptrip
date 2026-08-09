@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen main-theme">
-    <Header class="mb-4"></Header>
+    <Header class="mb-4" id="main-header" tabindex="-1"></Header>
     <main class="container mx-auto px-4 md:px-6 lg:px-8">
-      <slot />
+      <slot/>
     </main>
   </div>
 </template>
@@ -13,3 +13,5 @@
   color: var(--color-trouptrip-title);
 }
 </style>
+<script setup lang="ts">
+</script>

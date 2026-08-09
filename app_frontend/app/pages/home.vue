@@ -64,6 +64,14 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col gap-3">
+
+    <a
+        href="#main-header"
+        class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-3 focus:bg-white focus:text-black focus:rounded focus:shadow-lg"
+    >
+      Aller au menu principal
+    </a>
+
     <p v-if="userStore.user" class="text-2xl text-center">Bonjour {{ userStore.user.firstname }}</p>
 
     <p v-if="error" class="error-message">{{ error }}</p>

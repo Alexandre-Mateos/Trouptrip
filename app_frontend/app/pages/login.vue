@@ -17,7 +17,7 @@ export default defineComponent({
       try {
         this.errorMessage = "";
 
-        const response = await this.$api(
+        await this.$api(
             apiEndpoints.login,
             {
               method: 'POST',
