@@ -32,7 +32,6 @@ security:
             jwt: ~
             logout:
                 path: /api/logout
-                target: /api/logout
 
         main:
             lazy: true
