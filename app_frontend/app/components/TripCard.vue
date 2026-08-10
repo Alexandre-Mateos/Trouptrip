@@ -19,7 +19,7 @@ export default defineComponent({
     body: 'divide-none'
   }"
   >
-    <h2 class="text-trouptrip-title text-base">{{ trip.title }}</h2>
+    <p class="text-trouptrip-title text-base">{{ trip.title }}</p>
     <p class="text-trouptrip-neutral-500 text-sm">Du {{ getFormatedDate(trip.startDate) }} au {{ getFormatedDate(trip.endDate) }}</p>
   </UCard>
 </template>

@@ -64,6 +64,7 @@ export default defineComponent({
               body: 'divide-none'
             }"
       >
+        <h3 class="text-2xl text-center mb-4">{{trip.title}}</h3>
         <UTabs
             :items="tabs"
             :ui="{

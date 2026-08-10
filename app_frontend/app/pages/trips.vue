@@ -137,7 +137,6 @@ export default defineComponent({
                   query: { focus: 'true' }
                 }"
                   :aria-current="Number($route.params.id) === trip.id ? 'page' : undefined"
-                  class="block focus:outline-none focus:ring-2 focus:ring-trouptrip-accent-500 rounded-md"
               >
                 <TripCard :trip="trip"/>
               </NuxtLink>

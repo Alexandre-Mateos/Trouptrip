@@ -27,14 +27,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex flex-row justify-between">
+  <div class="flex flex-row justify-between items-center">
     <div class="flex flex-row gap-2">
       <p>{{ participant.firstname }}</p>
       <p>{{ participant.lastname }}</p>
     </div>
 
     <div v-if="canBeExcluded">
-      <DeleteButton icon="mdi:ban" @click="$emit('exclude')" />
+      <DeleteButton
+          icon="mdi:ban"
+          @click="$emit('exclude')"
+          :aria-label="`Exclure ${participant.firstname} ${participant.lastname}`"
+      />
     </div>
   </div>
 </template>
