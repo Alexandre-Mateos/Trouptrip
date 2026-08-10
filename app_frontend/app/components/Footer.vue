@@ -14,7 +14,7 @@ export default defineComponent({
 <template>
   <UFooter
       :ui="{
-        root: 'bg-surface-primary-trouptrip border-none',
+        root: 'bg-surface-primary-trouptrip border-none mt-4',
         container: 'bg-surface-primary-trouptrip text-trouptrip-title w-72 max-w-xs',
       }"
   >
