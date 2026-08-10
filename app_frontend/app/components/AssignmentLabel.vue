@@ -46,7 +46,7 @@ export default defineComponent({
       <span>{{assignment.assignedTo.lastname}}</span>
     </div>
       <span>x{{assignment.assignedQuantity}}</span>
-    <DeleteButton @click="toggleDeleteModal" v-if="assignment.assignedTo.id === currentUser?.id"></DeleteButton>
+    <DeleteButton @click="toggleDeleteModal" v-if="assignment.assignedTo.id === currentUser?.id" :aria-label="`Supprimer l'assignation ${assignment.assignedQuantity} ${groupItem.unit} pour ${groupItem.name}`"></DeleteButton>
   </div>
 
   <BaseModal :open="isDeleteModalOpen">

@@ -60,23 +60,42 @@ export default defineComponent({
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
-      <NumberInput
-          label="Tu ramènes quoi ?"
-          min="0"
-          :max="groupItem.totalQuantity"
-          v-model="assignedQty"
-          class="flex-1"
-          :errors="errors?.assignedQuantity"
-      />
+  <form
+      @submit.prevent="handleSubmit"
+      class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-surface-primary-trouptrip p-1 rounded-md inset-shadow-sm"
+      :aria-label="`Formulaire de contribution pour ${groupItem.name}`"
+  >
+    <NumberInput
+        label="Tu ramènes quoi ?"
+        min="0"
+        :max="groupItem.totalQuantity"
+        v-model="assignedQty"
+        class="flex-1"
+        :errors="errors?.assignedQuantity"
+        :id="`${groupItem.id}-${groupItem.name}`"
+    />
 
-      <div class="flex gap-1">
-        <ActionButton type="submit" :disabled="isSubmitting" label="Ajouter" icon="raphael:arrowup" @click="isRemoval = false"></ActionButton>
-        <ActionButton type="submit" :disabled="isSubmitting" label="Retirer" icon="raphael:arrowdown" color="var(--color-trouptrip-accent-500)" @click="isRemoval = true"></ActionButton>
-      </div>
-    </form>
+    <div class="flex gap-1" role="group" aria-label="Actions de gestion des quantités">
+      <ActionButton
+          type="submit"
+          :disabled="isSubmitting"
+          label="Ajouter"
+          icon="raphael:arrowup"
+          @click="isRemoval = false"
+          :aria-label="`Ajouter ${assignedQty} ${groupItem.unit || ''} à ${groupItem.name}`"
+      />
+      <ActionButton
+          type="submit"
+          :disabled="isSubmitting"
+          label="Retirer"
+          icon="raphael:arrowdown"
+          color="var(--color-trouptrip-accent-500)"
+          @click="isRemoval = true"
+          :aria-label="`Retirer ${assignedQty} ${groupItem.unit || ''} de ${groupItem.name}`"
+      />
+    </div>
+  </form>
 </template>
 
 <style scoped>
-
 </style>
