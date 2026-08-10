@@ -58,7 +58,7 @@ export default defineComponent({
     <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"></BaseInput>
     <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"></BaseInput>
     <ActionButton type="submit">Valider</ActionButton>
-    <div v-if="errorMessage" class="text-center text-red-800">
+    <div v-if="errorMessage" role="alert" class="text-center text-red-800">
       {{ errorMessage }}
     </div>
     <nav>
