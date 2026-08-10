@@ -12,7 +12,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <UFooter>
+  <UFooter
+      :ui="{
+        root: 'bg-surface-primary-trouptrip border-none',
+        container: 'bg-surface-primary-trouptrip text-trouptrip-title w-72 max-w-xs',
+      }"
+  >
     <template #left>
       <p class="text-muted text-sm">Copyright © 2026</p>
     </template>

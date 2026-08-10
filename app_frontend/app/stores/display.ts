@@ -4,7 +4,7 @@ export const useDisplayStore = defineStore('header', {
         Login: { to: '/login', label: 'Se connecter' },
         Register: { to: '/register', label: 'Créer un compte' },
         LegalNotice: {to:'/legal-notice', label: 'Mentions légales'},
-        PrivacyPolicy: {to:'/provacy-politique', label: 'Politique de confidentialité & CGU'},
+        PrivacyPolicy: {to:'/privacy-policy', label: 'Politique de confidentialité & CGU'},
         UserHome: { to: '/home', label: 'Mon espace' },
         Trips: { to: '/trips', label: 'Mes séjours' },
         Invitations: { to: '/invitations', label: 'Mes invitations' },
