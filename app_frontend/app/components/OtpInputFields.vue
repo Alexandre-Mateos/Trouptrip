@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: "OtpInputFields",
@@ -50,14 +50,14 @@ export default defineComponent({
     },
     focusFirstInput() {
       const inputs = this.$refs.inputs as HTMLInputElement[];
-      const firstInput = inputs[0] as HTMLInputElement;
+      const firstInput = inputs?.[0] as HTMLInputElement;
       if (firstInput) {
         firstInput.focus();
       }
     },
     focusNextInput(index: number) {
       const inputs = this.$refs.inputs as HTMLInputElement[];
-      if (this.fieldValues[index] !== '' && (index + 1) <= this.length) {
+      if (this.fieldValues[index] !== '' && (index + 1) < this.length) {
         const nextInput = inputs[index + 1];
         if (nextInput) {
           nextInput.focus();
@@ -74,7 +74,7 @@ export default defineComponent({
       }
     }
   },
-  mounted(): any {
+  mounted() {
     this.focusFirstInput();
   }
 })
@@ -82,21 +82,29 @@ export default defineComponent({
 
 <template>
   <div class="flex flex-col gap-1">
-    <label>Code</label>
-    <div class="flex flex-row justify-between">
+    <label id="otp-label" class="font-medium">Code de vérification</label>
+
+    <div
+        class="flex flex-row justify-between gap-2"
+        role="group"
+        aria-labelledby="otp-label"
+    >
       <input
           v-for="(digit, index) in length"
           :key="index"
+          :id="`otp-input-${index}`"
           type="text"
           inputmode="numeric"
           pattern="[0-9]*"
           maxlength="1"
+          autocomplete="one-time-code"
+          :aria-label="`Chiffre ${index + 1} du code de vérification`"
           ref="inputs"
           v-model="fieldValues[index]"
           @input="handleInput(index)"
           @keyup.delete="handleDelete(index)"
           @paste="handlePaste($event)"
-          class="rounded-md w-12 text-center"
+          class="rounded-md w-12 h-12 text-center text-lg font-bold border border-trouptrip-accent-200"
       />
     </div>
   </div>
@@ -104,6 +112,6 @@ export default defineComponent({
 
 <style scoped>
 input {
-  background-color: var(--color-bg);
+  background-color: var(--color-surface-secondary-trouptrip, #f9fafb);
 }
 </style>
