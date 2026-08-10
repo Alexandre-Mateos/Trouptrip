@@ -31,17 +31,14 @@ export default defineComponent({
       }"
   >
     <template #title>
-      <div class="flex flex-row items-center gap-2">
-      <NuxtLink to="/">
+      <NuxtLink to="/" class="flex flex-row items-center gap-2">
         <img
             src="/trouptrip_logo_no_background.png"
-            alt="logo de Trouptrip"
-            title="retour à l'accueil"
+            alt=""
             class="h-10 w-auto"
         />
+        <span class="trouptrip font-bold text-lg">Trouptrip</span>
       </NuxtLink>
-      <p class="trouptrip">Trouptrip</p>
-      </div>
     </template>
 
     <UNavigationMenu

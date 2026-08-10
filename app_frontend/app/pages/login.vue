@@ -1,10 +1,20 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {apiEndpoints} from "~/utils/apiEndpoints";
-import type {IRegisterUser} from "~/interfaces/i-registerUser";
 
 export default defineComponent({
   name: "login",
+  setup() {
+    useHead({
+      title: 'Se connecter',
+      meta: [
+        {
+          name: 'description',
+          content: 'Accédez à votre compte TroupTrip pour retrouver vos séjours et invitations.'
+        }
+      ]
+    })
+  },
   data(){
     return{
       email: "",
