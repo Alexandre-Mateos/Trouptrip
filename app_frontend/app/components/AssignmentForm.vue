@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "AssignmentForm",
+  components: {ActionButton},
   props: {
     groupItem: {
       type: Object as PropType<IMapGroupItem>,
@@ -79,20 +81,18 @@ export default defineComponent({
       <ActionButton
           type="submit"
           :disabled="isSubmitting"
-          label="Ajouter"
           icon="raphael:arrowup"
           @click="isRemoval = false"
           :aria-label="`Ajouter ${assignedQty} ${groupItem.unit || ''} à ${groupItem.name}`"
-      />
+      >Ajouter</ActionButton>
       <ActionButton
           type="submit"
           :disabled="isSubmitting"
-          label="Retirer"
           icon="raphael:arrowdown"
           color="var(--color-trouptrip-accent-500)"
           @click="isRemoval = true"
           :aria-label="`Retirer ${assignedQty} ${groupItem.unit || ''} de ${groupItem.name}`"
-      />
+      >Retirer</ActionButton>
     </div>
   </form>
 </template>

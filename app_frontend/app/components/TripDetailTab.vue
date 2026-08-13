@@ -4,9 +4,15 @@ import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails";
 import { participationStatus } from "~/utils/participationStatus";
 import type { IParticipantList } from "~/interfaces/i-participantList";
 import type { IMapParticipation } from "~/interfaces/participation/i-mapParticipation";
+import ActionButton from "~/components/button/ActionButton.vue";
+import DeleteButton from "~/components/button/DeleteButton.vue";
+import SecondaryButton from "~/components/button/SecondaryButton.vue";
+import EditButton from "~/components/button/EditButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: "TripDetailTab",
+  components: {CancelButton, EditButton, SecondaryButton, DeleteButton, ActionButton},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
@@ -144,7 +150,6 @@ export default defineComponent({
           Vous pouvez inviter des participants ou gérer l'accès à ce séjour.
         </p>
         <ActionButton
-            type="submit"
             @click="toggleInviteUserModal"
             icon="fa6-solid:circle-plus"
         >
@@ -207,14 +212,12 @@ export default defineComponent({
       <div class="flex flex-row gap-2">
         <EditButton
             @click="toggleEditTripModal"
-            label="Modifier"
             :aria-label="`Modifier les informations du séjour ${trip.title}`"
-        />
+        >Modifier</EditButton>
         <DeleteButton
             @click="toggleDeleteTripModal"
-            label="Supprimer"
             :aria-label="`Supprimer définitivement le séjour ${trip.title}`"
-        />
+        >Supprimer</DeleteButton>
       </div>
     </div>
 
@@ -237,13 +240,12 @@ export default defineComponent({
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton
             @click="deleteTrip"
-            label="Supprimer"
             aria-label="Confirmer la suppression du séjour"
-        />
+        >Supprimer</DeleteButton>
         <CancelButton
             @click="toggleDeleteTripModal"
             aria-label="Annuler la suppression et fermer la fenêtre"
-        />
+        >Annuler</CancelButton>
       </div>
     </div>
   </BaseModal>
@@ -259,14 +261,13 @@ export default defineComponent({
 
       <div class="flex flex-row justify-center gap-2">
         <DeleteButton
-            label="Exclure"
             @click="excludeParticipant"
             :aria-label="`Confirmer l'exclusion de ${participantToExclude.firstname} ${participantToExclude.lastname}`"
-        />
+        >Exclure</DeleteButton>
         <CancelButton
             @click="toggleExcludeParticipantModal"
             aria-label="Annuler l'exclusion et fermer la fenêtre"
-        />
+        >Annuler</CancelButton>
       </div>
     </div>
   </BaseModal>
@@ -286,9 +287,10 @@ export default defineComponent({
           Quitter
         </DeleteButton>
         <CancelButton
+            icon="tabler:arrow-back"
             @click="toggleExitTripModal"
             aria-label="Annuler et rester dans le séjour"
-        />
+        >Annuler</CancelButton>
       </div>
     </div>
   </BaseModal>

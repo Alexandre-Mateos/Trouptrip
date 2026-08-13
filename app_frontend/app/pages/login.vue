@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {apiEndpoints} from "~/utils/apiEndpoints";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "login",
+  components: {ActionButton},
   setup() {
     useHead({
       title: 'Se connecter',

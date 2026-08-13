@@ -2,9 +2,11 @@
 import {defineComponent} from 'vue'
 import type {IRegisterUser} from "~/interfaces/i-registerUser";
 import {apiEndpoints} from "~/utils/apiEndpoints";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "register",
+  components: {ActionButton},
   setup() {
     useHead({
       title: 'Créer un compte',

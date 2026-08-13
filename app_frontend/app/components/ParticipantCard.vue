@@ -3,9 +3,11 @@ import { defineComponent, type PropType } from 'vue'
 import type { IParticipantList } from "~/interfaces/i-participantList";
 import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails";
 import { participationStatus } from "~/utils/participationStatus";
+import DeleteButton from "~/components/button/DeleteButton.vue";
 
 export default defineComponent({
   name: "ParticipantCard",
+  components: {DeleteButton},
   props: {
     participant: {
       type: Object as PropType<IParticipantList>,

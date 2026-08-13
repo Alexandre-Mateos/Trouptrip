@@ -4,9 +4,15 @@ import type {PropType} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails"
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
 import type {IPersonalItem} from "~/interfaces/personalItem/I-presonalItem";
+import SecondaryButton from "~/components/button/SecondaryButton.vue";
+import DeleteButton from "~/components/button/DeleteButton.vue";
+import EditButton from "~/components/button/EditButton.vue";
+import ActionButton from "~/components/button/ActionButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: 'GroupItemTab',
+  components: {CancelButton, ActionButton, EditButton, DeleteButton, SecondaryButton},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
@@ -226,13 +232,12 @@ export default defineComponent({
           <ActionButton type="submit" @click="toggleCreatePersonalItemModal" icon="fa6-solid:circle-plus">
             Ajouter un item
           </ActionButton>
-          <ActionButton
+          <SecondaryButton
               @click="toggleChecklistModal"
               icon="boxicons:check-square-filled"
-              color="var(--color-trouptrip-secondary-500)"
           >
             Checklist
-          </ActionButton>
+          </SecondaryButton>
         </div>
 
         <ChecklistProgressBar :trip-id="trip.id"></ChecklistProgressBar>
@@ -274,8 +279,8 @@ export default defineComponent({
       <p class="text-lg font-bold text-center">{{ activeGroupItem.name }}</p>
       <p class="text-sm text-gray-600">Êtes-vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
-        <DeleteButton @click="deleteGroupItem(activeGroupItem)" label="Supprimer" />
-        <CancelButton @click="toggleDeleteGroupItemModal(activeGroupItem)"/>
+        <DeleteButton @click="deleteGroupItem(activeGroupItem)">Supprimer</DeleteButton>
+        <CancelButton @click="toggleDeleteGroupItemModal(activeGroupItem)">Annuler</CancelButton>
       </div>
     </div>
   </BaseModal>
@@ -294,8 +299,8 @@ export default defineComponent({
       <p class="text-lg font-bold text-center">{{ activePersonalItem.name }}</p>
       <p class="text-sm text-gray-600">Êtes-vous sûr de vouloir continuer ?</p>
       <div class="flex flex-row justify-center gap-2">
-        <DeleteButton @click="deletePersonalItem(activePersonalItem)" label="Supprimer"/>
-        <CancelButton @click="toggleDeletePersonalItemModal(activePersonalItem)"/>
+        <DeleteButton @click="deletePersonalItem(activePersonalItem)">Supprimer</DeleteButton>
+        <CancelButton @click="toggleDeletePersonalItemModal(activePersonalItem)">Annuler</CancelButton>
       </div>
     </div>
   </BaseModal>
@@ -324,7 +329,7 @@ export default defineComponent({
         ></CheckboxItem>
       </div>
 
-      <BaseButton class="m-auto" @click="toggleChecklistModal">Fermer</BaseButton>
+      <SecondaryButton class="m-auto" @click="toggleChecklistModal">Fermer</SecondaryButton>
     </section>
   </BaseModal>
 

@@ -2,9 +2,12 @@
 import {defineComponent, type PropType} from 'vue'
 import type {IDetailedAssignment} from "~/interfaces/assignment/i-detailedAssignment";
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import DeleteButton from "~/components/button/DeleteButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: "AssignmentLabel",
+  components: {CancelButton, DeleteButton},
   data() {
     return {
       isDeleteModalOpen: false,
@@ -55,8 +58,8 @@ export default defineComponent({
     <p>Êtes vous sûr de vouloir continuer ?</p>
 
     <div class="flex gap-1">
-      <DeleteButton @click="deleteAssignment" label="Supprimer"></DeleteButton>
-      <CancelButton @click="toggleDeleteModal"></CancelButton>
+      <DeleteButton @click="deleteAssignment">Supprimer</DeleteButton>
+      <CancelButton @click="toggleDeleteModal">Annuler</CancelButton>
     </div>
   </BaseModal>
 

@@ -1,9 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useTripsStore } from "~/stores/trips";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "trip",
+  components: {ActionButton},
   setup() {
     useHead({
       title: "Mes séjours",
@@ -87,7 +89,7 @@ export default defineComponent({
         <p class="text-gray-600 text-sm mt-1">Retrouvez tous vos voyages programmés et en cours.</p>
       </div>
 
-      <ActionButton type="submit" @click="toggleModal" icon="fa6-solid:circle-plus">
+      <ActionButton @click="toggleModal" icon="fa6-solid:circle-plus">
         Créer un séjour
       </ActionButton>
     </header>
