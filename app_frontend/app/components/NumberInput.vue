@@ -44,15 +44,21 @@ export default defineComponent({
         type="number"
         :value="modelValue"
         @input="emitValue($event)"
-        class="rounded-md px-2"
-        :class="{'border-2 border-red-800': errors && errors.length > 0}"
+        class="
+            bg-white
+            border
+            border-trouptrip-neutral-300
+            rounded-md
+            px-2
+            py-1
+            focus:border-trouptrip-accent-600
+            "
+        :class="{
+            'border-trouptrip-error-700': errors && errors.length > 0
+            }"
     >
   </div>
 </template>
 
 <style scoped>
-input{
-  background-color: var(--color-surface-secondary-trouptrip);
-  border: solid 1px var(--color-trouptrip-accent-200);
-}
 </style>

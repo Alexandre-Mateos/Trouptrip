@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     const userStore = useUserStore();
-    const publicRoutes = ['/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/'];
+    const publicRoutes = ['/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/', '/privacy-policy', '/legal-notice'];
 
     if (publicRoutes.includes(to.path)) {
         return;

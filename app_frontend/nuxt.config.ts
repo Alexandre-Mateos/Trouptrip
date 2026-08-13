@@ -45,4 +45,12 @@ export default defineNuxtConfig({
         }
     },
     css: ['~/assets/styles/main.css'],
+
+    app: {
+        head: {
+            htmlAttrs: {
+                lang: 'fr'
+            }
+        }
+    }
 })

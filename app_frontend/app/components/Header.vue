@@ -25,23 +25,20 @@ export default defineComponent({
         class: 'rounded-md text-trouptrip-title hover:bg-trouptrip-accent-500 hover:text-white'
       }"
       :ui="{
-        root: 'bg-surface-primary-trouptrip border-none shadow-md',
-        content: 'bg-surface-primary-trouptrip text-trouptrip-title w-72 max-w-xs',
+        root: 'bg-white border-b border-trouptrip-neutral-200 shadow-md',
+        content: 'text-trouptrip-title w-72 max-w-xs',
         header: 'border-b-0'
       }"
   >
     <template #title>
-      <div class="flex flex-row items-center gap-2">
-      <NuxtLink to="/">
+      <NuxtLink to="/" class="flex flex-row items-center gap-2">
         <img
             src="/trouptrip_logo_no_background.png"
-            alt="logo de Trouptrip"
-            title="retour à l'accueil"
+            alt=""
             class="h-10 w-auto"
         />
+        <span class="trouptrip font-bold text-lg">Trouptrip</span>
       </NuxtLink>
-      <p class="trouptrip">Trouptrip</p>
-      </div>
     </template>
 
     <UNavigationMenu

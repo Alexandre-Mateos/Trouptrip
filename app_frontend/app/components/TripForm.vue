@@ -2,8 +2,11 @@
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
+import ActionButton from "~/components/button/ActionButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
+  components: {CancelButton, ActionButton},
   props: {
     tripToEdit: {
       type: Object as PropType<IMapTripDetails | null>,
@@ -75,8 +78,8 @@ export default defineComponent({
     <BaseInput id="end_date" type="date" label="Date de fin" v-model="tripEndDate" :errors="errors?.endDate"/>
 
     <div class="flex gap-2">
-      <ActionButton type="submit" :disabled="isSubmitting" label="Valider"></ActionButton>
-      <CancelButton type="button" @click="$emit('done')"></CancelButton>
+      <ActionButton type="submit" :disabled="isSubmitting">Valider</ActionButton>
+      <CancelButton type="button" @click="$emit('done')">Annuler</CancelButton>
     </div>
   </BaseForm>
 </template>

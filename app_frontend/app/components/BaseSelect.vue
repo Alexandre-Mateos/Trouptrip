@@ -52,8 +52,18 @@ export default defineComponent({
             v-bind="$attrs"
             :value="modelValue"
             @input="emitValue($event)"
-            class="rounded-md px-2 py-1"
-            :class="{'border-2 border-red-800': errors && errors.length > 0}"
+            class="
+            bg-white
+            border
+            border-trouptrip-neutral-300
+            rounded-md
+            px-2
+            py-1
+            focus:border-trouptrip-accent-600
+            "
+            :class="{
+            'border-trouptrip-error-700': errors && errors.length > 0
+            }"
     >
       <option value="">--Veuillez choisir une option--</option>
       <option

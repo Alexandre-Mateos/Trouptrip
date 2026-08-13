@@ -3,13 +3,12 @@ export const useDisplayStore = defineStore('header', {
         TrouptripHome: { to: '/', label: 'Accueil' },
         Login: { to: '/login', label: 'Se connecter' },
         Register: { to: '/register', label: 'Créer un compte' },
+        LegalNotice: {to:'/legal-notice', label: 'Mentions légales'},
+        PrivacyPolicy: {to:'/privacy-policy', label: 'Politique de confidentialité & CGU'},
         UserHome: { to: '/home', label: 'Mon espace' },
         Trips: { to: '/trips', label: 'Mes séjours' },
         Invitations: { to: '/invitations', label: 'Mes invitations' },
         isDesktop: null as boolean | null,
-        tripNavTab: [
-            { key: 'my-trip', label: 'Mon séjour' }
-        ]
     }),
     getters: {
         headerNav(state) {
@@ -31,6 +30,9 @@ export const useDisplayStore = defineStore('header', {
             }
 
             return [state.TrouptripHome, state.Login, state.Register];
+        },
+        footerNav(state){
+            return [state.LegalNotice, state.PrivacyPolicy]
         }
     }
 })
