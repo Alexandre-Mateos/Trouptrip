@@ -1,8 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "VerifyEmail",
+  components: {ActionButton},
   setup() {
     useHead({
       title: "Vérification de l'email",
@@ -98,7 +100,7 @@ export default defineComponent({
 
         <OtpInputFields v-model="token" :length="6" />
 
-        <BaseButton type="submit" class="mt-2">Vérifier mon email</BaseButton>
+        <ActionButton type="submit" class="mt-2">Vérifier mon email</ActionButton>
       </BaseForm>
     </div>
 

@@ -9,10 +9,12 @@ use App\Validator as AssignmentAssert;
 readonly class AssignmentInputDTO
 {
     public function __construct(
-        #[Assert\NotNull(message: "Merci d'indiquer une quantité")]
-        #[Assert\NotEqualTo(value: 0, message: "La quantité à modifier ne peut pas être égale à 0.")]
-        public int $assignedQuantity,
+        #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
+        public int    $assignedQuantity,
+
+        #[Assert\NotBlank]
         public string $groupItem,
-        public bool $isRemoval
-    ){}
+    )
+    {
+    }
 }

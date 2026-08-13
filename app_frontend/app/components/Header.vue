@@ -26,7 +26,7 @@ export default defineComponent({
       }"
       :ui="{
         root: 'bg-white border-b border-trouptrip-neutral-200 shadow-md',
-        content: 'text-trouptrip-title w-72 max-w-xs',
+        content: 'text-trouptrip-title w-72 max-w-xs bg-white border-trouptrip-neutral-200 shadow-md',
         header: 'border-b-0'
       }"
   >
@@ -37,7 +37,7 @@ export default defineComponent({
             alt=""
             class="h-10 w-auto"
         />
-        <span class="trouptrip font-bold text-lg">Trouptrip</span>
+        <span class="text-trouptrip-title font-bold text-lg">Trouptrip</span>
       </NuxtLink>
     </template>
 
@@ -77,7 +77,4 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.trouptrip{
-  color: var(--color-trouptrip-title);
-}
 </style>

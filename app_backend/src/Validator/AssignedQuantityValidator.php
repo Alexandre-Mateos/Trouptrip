@@ -3,6 +3,8 @@
 namespace App\Validator;
 
 use ApiPlatform\Metadata\IriConverterInterface;
+use App\ApiResource\AssignmentResource\AssignmentInputDTO;
+use App\ApiResource\AssignmentResource\AssignmentUpdateDTO;
 use App\Entity\GroupItem;
 use App\Repository\AssignmentRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -17,9 +19,8 @@ final class AssignedQuantityValidator extends ConstraintValidator
         private readonly AssignmentRepository $assignmentRepository,
         private readonly IriConverterInterface $iriConverter,
         private readonly Security $security,
-        private readonly RequestStack $requestStack // 2. Injection ici
-    )
-    {
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function validate(mixed $value, Constraint $constraint): void
@@ -28,53 +29,100 @@ final class AssignedQuantityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, AssignedQuantity::class);
         }
 
-        if (null === $value || '' === $value) {
+        if ($value === null) {
             return;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-        $assignmentId = $request?->attributes->get('id');
 
-        if ($assignmentId) {
-            $assignment = $this->assignmentRepository->find($assignmentId);
-            $groupItem = $assignment?->getGroupItem();
-        } else {
+        if ($value instanceof AssignmentInputDTO) {
             /** @var GroupItem $groupItem */
             $groupItem = $this->iriConverter->getResourceFromIri($value->groupItem);
-        }
 
-        if (!$groupItem) {
+            $this->validateAddition(
+                $groupItem,
+                $value->assignedQuantity,
+                $constraint
+            );
+
             return;
         }
 
-        if($value->isRemoval){
-            $user = $this->security->getUser();
-            $alreadyAssignedQuantityByUser = $this->assignmentRepository->getAssignedQuantityByUserIdAndGroupItemId($user->getId(), $groupItem->getId());
+        if ($value instanceof AssignmentUpdateDTO) {
 
-            if(0 > $alreadyAssignedQuantityByUser - $value->assignedQuantity){
-                $this->context->buildViolation($constraint->wrongRemovalQuantity)
-                    ->atPath('assignedQuantity')
-                    ->setParameter('{{ alreadyAssignedQuantity }}', $alreadyAssignedQuantityByUser)
-                    ->addViolation()
-                ;
+
+            if ($value->assignedQuantity === null) {
+                return;
             }
+
+            $request = $this->requestStack->getCurrentRequest();
+            $assignmentId = $request?->attributes->get('id');
+
+            if (!$assignmentId) {
+                return;
+            }
+
+            $assignment = $this->assignmentRepository->findOneBy(['id' => $assignmentId]);
+
+            if (!$assignment) {
+                return;
+            }
+
+            $groupItem = $assignment->getGroupItem();
+
+            if ($value->isRemoval === true) {
+                $user = $this->security->getUser();
+
+                $alreadyAssignedQuantityByUser =
+                    $this->assignmentRepository
+                        ->getAssignedQuantityByUserIdAndGroupItemId(
+                            $user->getId(),
+                            $groupItem->getId()
+                        );
+
+                if (
+                    $alreadyAssignedQuantityByUser - $value->assignedQuantity < 0
+                ) {
+                    $this->context
+                        ->buildViolation($constraint->wrongRemovalQuantity)
+                        ->atPath('assignedQuantity')
+                        ->setParameter(
+                            '{{ alreadyAssignedQuantity }}',
+                            $alreadyAssignedQuantityByUser
+                        )
+                        ->addViolation();
+                }
+
+                return;
+            }
+
+            $this->validateAddition(
+                $groupItem,
+                $value->assignedQuantity,
+                $constraint
+            );
         }
+    }
 
-        if(!$value->isRemoval){
-            $maxQuantity = $groupItem->getTotalQuantity();
-            $alreadyAssignedQuantity = $this->assignmentRepository->getAssignedQuantityByGroupItemId($groupItem->getId());
+    private function validateAddition(
+        GroupItem $groupItem,
+        int $quantity,
+        AssignedQuantity $constraint
+    ): void {
+        $maxQuantity = $groupItem->getTotalQuantity();
 
-            $remainingQuantity = $maxQuantity - $alreadyAssignedQuantity;
-            $currentAssignedQuantity = $value->assignedQuantity;
+        $alreadyAssignedQuantity =
+            $this->assignmentRepository
+                ->getAssignedQuantityByGroupItemId($groupItem->getId());
 
-            if($remainingQuantity < $currentAssignedQuantity){
-                $this->context->buildViolation($constraint->wrongAddQuantity)
-                    ->atPath('assignedQuantity')
-                    ->setParameter('{{ available }}', $remainingQuantity)
-                    ->addViolation()
-                ;
-            }
+        $remainingQuantity =
+            $maxQuantity - $alreadyAssignedQuantity;
 
+        if ($remainingQuantity < $quantity) {
+            $this->context
+                ->buildViolation($constraint->wrongAddQuantity)
+                ->atPath('assignedQuantity')
+                ->setParameter('{{ available }}', $remainingQuantity)
+                ->addViolation();
         }
     }
 }

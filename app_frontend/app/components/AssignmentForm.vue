@@ -25,12 +25,6 @@ export default defineComponent({
       this.errors = {};
       this.isSubmitting = true;
 
-      const body = {
-        assignedQuantity: this.assignedQty,
-        groupItem: this.groupItem['@id'],
-        isRemoval: this.isRemoval
-      };
-
       const userStore = useUserStore();
       if (!userStore.user) {
         return;
@@ -42,13 +36,23 @@ export default defineComponent({
           const assignment = useAssignmentsStore().assignments.get(assignmentId);
 
           if (assignment && assignment.assignedTo.id === currentUserId) {
-            await useAssignmentsStore().updateAssignment(this.groupItem, assignment.id, body);
+
+            const bodyForUpdate = {
+              assignedQuantity: this.assignedQty,
+              isRemoval:this.isRemoval
+            };
+
+            await useAssignmentsStore().updateAssignment(this.groupItem, assignment.id, bodyForUpdate);
             this.assignedQty = 0;
             return;
           }
         }
 
-        await useAssignmentsStore().submitAssignment(this.groupItem, body);
+        const bodyForPost = {
+          assignedQuantity: this.assignedQty,
+          groupItem: this.groupItem['@id']
+        };
+        await useAssignmentsStore().submitAssignment(this.groupItem, bodyForPost);
         this.assignedQty = 0;
 
       } catch (errors) {

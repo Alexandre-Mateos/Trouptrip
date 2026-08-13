@@ -147,7 +147,6 @@ export const useAssignmentsStore = defineStore('assignments', {
             assignedQuantity: number,
             groupItem: string
         }) {
-
             const {$api} = useNuxtApp();
             const url = apiEndpoints.assignments;
 
@@ -186,7 +185,7 @@ export const useAssignmentsStore = defineStore('assignments', {
             assignmentId: number,
             body: {
                 assignedQuantity?: number,
-                groupItem?: string,
+                isRemoval?: boolean,
                 isPacked?: boolean
             }
         ) {

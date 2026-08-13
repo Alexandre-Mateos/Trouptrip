@@ -50,6 +50,10 @@ use App\Validator as AssignmentAssert;
     ]
 )]
 #[ORM\Entity(repositoryClass: AssignmentRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'uniq_assignment_group_item_user',
+    fields: ['groupItem', 'assignedTo']
+)]
 #[AssignmentAssert\AssignedQuantity]
 class Assignment implements CreatedAtInterface
 {

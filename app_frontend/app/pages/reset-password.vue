@@ -1,8 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "reset-password",
+  components: {ActionButton},
   setup() {
     useHead({
       title: 'Réinitialisation de votre mot de passe',
@@ -84,7 +86,7 @@ export default defineComponent({
         <BaseInput id="password" type="password" name="password" autocomplete="new-password" v-model="password" label="Nouveau mot de passe :" />
         <BaseInput id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" v-model="passwordConfirmation" label="Confirmer le nouveau mot de passe :" />
 
-        <BaseButton type="submit" class="mt-2">Valider</BaseButton>
+        <ActionButton type="submit" class="mt-2">Valider</ActionButton>
       </BaseForm>
     </div>
 

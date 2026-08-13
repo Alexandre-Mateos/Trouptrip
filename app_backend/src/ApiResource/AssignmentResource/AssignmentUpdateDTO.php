@@ -9,9 +9,19 @@ use App\Validator as AssignmentAssert;
 readonly class AssignmentUpdateDTO
 {
     public function __construct(
-        #[Assert\NotEqualTo(value: 0, message: "La quantité à modifier ne peut pas être égale à 0.")]
+        #[Assert\Positive(message: "La quantité doit être supérieure à 0.")]
         public ?int $assignedQuantity = null,
+
+        #[Assert\When(
+            expression: 'this.assignedQuantity !== null',
+            constraints: [
+                new Assert\NotNull(
+                    message: 'Merci d’indiquer s’il s’agit d’un ajout ou d’un retrait.'
+                )
+            ]
+        )]
         public ?bool $isRemoval = null,
+
         public ?bool $isPacked = null,
-    ){}
+    ) {}
 }

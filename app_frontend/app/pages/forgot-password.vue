@@ -1,8 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "forgot-password",
+  components: {ActionButton},
   setup() {
     useHead({
       title: "Mot de passe oublié",
@@ -90,7 +92,7 @@ export default defineComponent({
             required
         />
 
-        <BaseButton type="submit" class="mt-2">Envoyer</BaseButton>
+        <ActionButton type="submit" class="mt-2">Envoyer</ActionButton>
       </BaseForm>
     </div>
 

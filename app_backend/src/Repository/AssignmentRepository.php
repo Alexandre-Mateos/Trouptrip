@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Assignment;
+use App\Entity\GroupItem;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -51,5 +53,19 @@ class AssignmentRepository extends ServiceEntityRepository
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function hasAssignmentForUserAndGroupItem(GroupItem $groupItem, User $user): bool
+    {
+        $count = $this->createQueryBuilder('a')
+            ->select('Count(a.id)')
+            ->where('a.groupItem = :groupItem')
+            ->andWhere('a.assignedTo = :user')
+            ->setParameter('groupItem', $groupItem)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
     }
 }
