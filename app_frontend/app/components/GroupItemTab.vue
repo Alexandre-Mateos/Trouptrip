@@ -183,7 +183,7 @@ export default defineComponent({
                   <span>
                     {{ handledQty(groupItem) }}
                   </span>
-                  <span class="text-trouptrip-neutral-400">
+                  <span>
                     /{{ groupItem.totalQuantity }}
                   </span>
                   <span class="text-xs">

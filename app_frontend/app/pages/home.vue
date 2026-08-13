@@ -93,7 +93,7 @@ onMounted(async () => {
     </p>
 
     <section
-        class="p-4 bg-surface-primary-trouptrip border border-trouptrip-accent-200 rounded-md flex flex-col gap-3"
+        class="p-4 bg-trouptrip-accent-100 border border-trouptrip-accent-200 rounded-md flex flex-col gap-3"
     >
       <h2 class="font-semibold text-center">Mon récapitulatif</h2>
 

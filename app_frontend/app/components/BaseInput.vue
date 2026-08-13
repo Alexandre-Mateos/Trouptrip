@@ -39,7 +39,6 @@ export default defineComponent({
         @input="emitValue($event)"
         class="
       bg-white
-      text-trouptrip-neutral-800
       border
       border-trouptrip-neutral-300
       rounded-md

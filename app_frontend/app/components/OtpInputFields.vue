@@ -104,14 +104,11 @@ export default defineComponent({
           @input="handleInput(index)"
           @keyup.delete="handleDelete(index)"
           @paste="handlePaste($event)"
-          class="rounded-md w-12 h-12 text-center text-lg font-bold border border-trouptrip-accent-200"
+          class="rounded-md bg-white w-12 h-12 text-center text-lg font-bold border border-trouptrip-neutral-300 focus:border-trouptrip-accent-600"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
-input {
-  background-color: var(--color-surface-secondary-trouptrip, #f9fafb);
-}
 </style>

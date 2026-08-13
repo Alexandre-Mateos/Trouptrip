@@ -19,7 +19,7 @@ export default defineComponent({
 <template>
   <UCard
       :ui="{
-    root: 'bg-white shadow-md transform border border-solid border-trouptrip-accent-500 ring-0'
+    root: 'bg-white transform border border-solid border-trouptrip-neutral-300 ring-0'
   }"
   >
     <button

@@ -82,7 +82,7 @@ export default defineComponent({
       />
     </section>
 
-    <section v-else class="p-6 bg-surface-primary-trouptrip border border-trouptrip-accent-200 rounded-md text-center space-y-2">
+    <section v-else class="p-6 bg-trouptrip-accent-100 border border-trouptrip-accent-200 rounded-md text-center space-y-2">
       <p class="font-medium text-lg">Rien à l'horizon pour l'instant !</p>
       <p class="text-sm text-gray-600">
         Et si c'était vous qui preniez les devants en organisant la prochaine escapade ?

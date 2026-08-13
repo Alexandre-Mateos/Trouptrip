@@ -64,7 +64,7 @@ export default defineComponent({
 <template>
   <form
       @submit.prevent="handleSubmit"
-      class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-surface-primary-trouptrip p-1 rounded-md inset-shadow-sm"
+      class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-trouptrip-accent-100 p-2 rounded-md inset-shadow-sm"
       :aria-label="`Formulaire de contribution pour ${groupItem.name}`"
   >
     <NumberInput
