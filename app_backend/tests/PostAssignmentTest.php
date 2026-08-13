@@ -42,6 +42,31 @@ class PostAssignmentTest extends AbstractApiTestCase
         $this->assertFalse($assignment->getIsPacked());
     }
 
+    public function testWithOwner(): void
+    {
+        $this->loginUser('duchamp@test.fr', 'password');
+
+        $groupItemRepository = $this->get(GroupItemRepository::class);
+        $assignmentRepository = $this->get(AssignmentRepository::class);
+        $security = $this->get(Security::class);
+
+        $user = $security->getUser();
+
+        $groupItem = $groupItemRepository->findOneBy(['name' => 'Oranges']);
+        $body = [
+            "assignedQuantity" => 3,
+            "groupItem" => "api/group_items/" . $groupItem->getId()
+        ];
+        $this->post($body);
+        $this->assertResponseIsSuccessful();
+
+        $assignment = $assignmentRepository->findOneBy(['groupItem' => $groupItem, 'assignedTo' => $user]);
+
+        $this->assertNotNull($assignment);
+        $this->assertSame($assignment->getAssignedQuantity(), 3);
+        $this->assertFalse($assignment->getIsPacked());
+    }
+
     #[TestWith(['lapioche@test.fr'], 'User with Participation at status ' . ParticipationStatusEnum::PENDING->value)]
     #[TestWith(['bertrand@test.fr'], 'User with Participation at status ' . ParticipationStatusEnum::DECLINED->value)]
     #[TestWith(['lachaise@test.fr'], 'User with Participation at status ' . ParticipationStatusEnum::LEFT->value)]
@@ -83,5 +108,19 @@ class PostAssignmentTest extends AbstractApiTestCase
         ];
         $this->post($body);
         $this->assertResponseStatusCodeSame($expectedCode);
+    }
+
+    public function testUserWithExistingAssignment(): void
+    {
+        $this->loginUser('duchamp@test.fr', 'password');
+        $groupItemRepository = $this->get(GroupItemRepository::class);
+
+        $groupItem = $groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
+        $body = [
+            "assignedQuantity" => 3,
+            "groupItem" => "api/group_items/" . $groupItem->getId()
+        ];
+        $this->post($body);
+        $this->assertResponseStatusCodeSame(409);
     }
 }

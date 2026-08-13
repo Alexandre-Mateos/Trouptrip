@@ -111,6 +111,14 @@ final class AssignmentTestStory extends Story
             'unit' => GroupItemUnitEnum::PIECE,
         ]);
 
+//        Création d'un GroupItem sans aucune assignations
+        GroupItemFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-08-01 13:00:00'),
+            'name' => 'Oranges',
+            'totalQuantity' => 10,
+            'trip' => $trip,
+            'unit' => GroupItemUnitEnum::PIECE,
+        ]);
 
         AssignmentFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-08-01 14:00:00'),
