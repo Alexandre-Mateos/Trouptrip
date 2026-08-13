@@ -60,7 +60,7 @@ export default defineComponent({
     <div v-else-if="trip" class="w-full">
       <UCard
           :ui="{
-              root: 'bg-white shadow-md border-none ring-0',
+              root: 'bg-white shadow-lg border-none ring-0',
               body: 'divide-none'
             }"
       >
@@ -68,11 +68,11 @@ export default defineComponent({
         <UTabs
             :items="tabs"
             :ui="{
-            list: 'bg-surface-primary-trouptrip p-1 rounded-md',
-            indicator: 'bg-trouptrip-accent-500 rounded-lg transition-all duration-300 ease-in-out',
-            trigger: 'data-[state=inactive]:text-trouptrip-title data-[state=active]:text-white',
-            label: 'text-base cursor-pointer'
-          }"
+      list: 'bg-surface-primary-trouptrip p-1 rounded-md',
+      indicator: 'bg-trouptrip-accent-500 rounded-lg transition-all duration-300 ease-in-out',
+      trigger: 'cursor-pointer data-[state=inactive]:text-trouptrip-title hover:data-[state=inactive]:not-disabled:text-trouptrip-title data-[state=active]:text-white',
+      label: 'text-base'
+    }"
         >
           <template #myTrip>
             <TripDetailTab :trip="trip"></TripDetailTab>

@@ -25,7 +25,7 @@ export default defineComponent({
         class: 'rounded-md text-trouptrip-title hover:bg-trouptrip-accent-500 hover:text-white'
       }"
       :ui="{
-        root: 'bg-trouptrip-accent-100 border-none shadow-md',
+        root: 'bg-white border-b border-trouptrip-neutral-200 shadow-md',
         content: 'text-trouptrip-title w-72 max-w-xs',
         header: 'border-b-0'
       }"

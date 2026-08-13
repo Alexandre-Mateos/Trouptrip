@@ -14,7 +14,7 @@ export default defineComponent({
 <template>
   <UFooter
       :ui="{
-      root: 'bg-trouptrip-accent-100 border-none mt-4',
+      root: 'bg-white mt-4 border-t border-trouptrip-neutral-200',
       container: 'flex justify-center items-center gap-6'
     }"
   >

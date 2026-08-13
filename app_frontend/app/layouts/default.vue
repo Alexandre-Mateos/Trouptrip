@@ -10,7 +10,7 @@
 
 <style scoped>
 .main-theme{
-  background-color: var(--color-trouptrip-neutral-100);
+  background-color: var(--color-trouptrip-neutral-50);
   color: var(--color-trouptrip-title);
 }
 </style>
