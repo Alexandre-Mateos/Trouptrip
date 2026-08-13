@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { IInvitation } from "~/interfaces/participation/i-invitation";
+import DeleteButton from "~/components/button/DeleteButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: "invitations",
+  components: {CancelButton, DeleteButton},
   setup() {
     useHead({
       title: 'Mes invitations',
@@ -93,8 +96,8 @@ export default defineComponent({
         <p>Êtes-vous sûr de vouloir continuer ?</p>
 
         <div class="flex flex-row justify-center gap-2 mt-4">
-          <DeleteButton icon="mdi:ban" label="Décliner" @click="declineInvitation" />
-          <CancelButton @click="toggleDeclineInvitationModal" />
+          <DeleteButton icon="mdi:ban" @click="declineInvitation" >Décliner</DeleteButton>
+          <CancelButton @click="toggleDeclineInvitationModal">Annuler</CancelButton>
         </div>
       </div>
     </BaseModal>

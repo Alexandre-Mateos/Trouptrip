@@ -37,8 +37,19 @@ export default defineComponent({
         v-bind="$attrs"
         :value="modelValue"
         @input="emitValue($event)"
-        class="rounded-md px-2 py-1"
-        :class="{'border-2 border-red-800': errors && errors.length > 0}"
+        class="
+      bg-white
+      text-trouptrip-neutral-800
+      border
+      border-trouptrip-neutral-300
+      rounded-md
+      px-2
+      py-1
+      focus:border-trouptrip-accent-600
+    "
+        :class="{
+      'border-trouptrip-error-700': errors && errors.length > 0
+    }"
         :aria-invalid="errors && errors.length > 0 ? 'true' : 'false'"
         :aria-describedby="errors && errors.length > 0 ? `${$attrs.id}-error` : undefined"
     >
@@ -61,8 +72,4 @@ export default defineComponent({
 </template>
 
 <style scoped>
-input {
-  background-color: var(--color-surface-secondary-trouptrip);
-  border: solid 1px var(--color-trouptrip-accent-200);
-}
 </style>

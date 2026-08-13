@@ -18,7 +18,7 @@ export default defineComponent({
 
 <style scoped>
 form{
-  background-color: var(--color-surface-primary-trouptrip);
+  background-color: var(--color-trouptrip-accent-100);
 }
 
 </style>

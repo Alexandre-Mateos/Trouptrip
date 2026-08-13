@@ -14,14 +14,21 @@ export default defineComponent({
 <template>
   <UFooter
       :ui="{
-        root: 'bg-surface-primary-trouptrip border-none mt-4',
-        container: 'bg-surface-primary-trouptrip text-trouptrip-title w-72 max-w-xs',
-      }"
+      root: 'bg-trouptrip-accent-100 border-none mt-4',
+      container: 'flex justify-center items-center gap-6'
+    }"
   >
-    <template #left>
-      <p class="text-muted text-sm">Copyright © 2026</p>
-    </template>
-    <UNavigationMenu :items="footerNav" variant="link" />
+    <p class="text-trouptrip-neutral-600 text-sm">
+      Copyright © 2026
+    </p>
+
+    <UNavigationMenu
+        :items="footerNav"
+        variant="link"
+        :ui="{
+        link: 'text-trouptrip-neutral-600 hover:text-trouptrip-neutral-800'
+      }"
+    />
   </UFooter>
 </template>
 

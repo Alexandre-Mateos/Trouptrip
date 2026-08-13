@@ -64,7 +64,7 @@ export default defineComponent({
       {{ errorMessage }}
     </div>
     <nav>
-      <NuxtLink :to="{path: '/forgot-password', query: {email: email}}">Mot de passe oublié</NuxtLink>
+      <NuxtLink :to="{path: '/forgot-password', query: {email: email}}" class="text-trouptrip-accent-700">Mot de passe oublié</NuxtLink>
     </nav>
   </BaseForm>
 </template>
