@@ -56,4 +56,15 @@ abstract class AbstractApiTestCase extends ApiTestCase
             'json' => $body,
         ]);
     }
+
+    protected function delete(int $id): void
+    {
+        $url = $this->defaultUrl . '/' . $id;
+
+        $this->client->request('DELETE', $url, [
+            'headers' => [
+                'Accept' => 'application/ld+json',
+            ],
+        ]);
+    }
 }
