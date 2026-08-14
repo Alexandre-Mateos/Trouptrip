@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Tests\assignment;
+namespace App\Tests\assignment\api;
 
+use App\Tests\assignment\AbstractAssignmentApiTestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 
-class PatchAssignmentTest extends AbstractAssignmentTestCase
+class PatchAssignmentApiTest extends AbstractAssignmentApiTestCase
 {
     #[TestWith([3, false, 200, 7], 'Addition: Qty inferior to the remaining')]
     #[TestWith([4, false, 200, 8], 'Addition: Qty same as remaining')]

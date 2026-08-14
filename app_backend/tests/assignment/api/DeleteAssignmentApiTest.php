@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Tests\assignment;
+namespace App\Tests\assignment\api;
 
-class DeleteAssignmentTest extends AbstractAssignmentTestCase
+use App\Tests\assignment\AbstractAssignmentApiTestCase;
+
+class DeleteAssignmentApiTest extends AbstractAssignmentApiTestCase
 {
     public function testOwnerCanDeleteOwnAssignment(): void
     {

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Tests\assignment;
+namespace App\Tests\assignment\api;
 
 use App\Entity\Trip;
-use App\Repository\TripRepository;
 use App\Enum\ParticipationStatusEnum;
+use App\Repository\TripRepository;
+use App\Tests\assignment\AbstractAssignmentApiTestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 
-class GetAssignmentCollectionTest extends AbstractAssignmentTestCase
+class GetAssignmentCollectionApiTest extends AbstractAssignmentApiTestCase
 {
     private Trip $trip;
 

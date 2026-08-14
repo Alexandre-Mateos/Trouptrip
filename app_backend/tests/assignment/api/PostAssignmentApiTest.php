@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Tests\assignment;
+namespace App\Tests\assignment\api;
 
 use App\Enum\ParticipationStatusEnum;
+use App\Tests\assignment\AbstractAssignmentApiTestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 
-class PostAssignmentTest extends AbstractAssignmentTestCase
+class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
 {
     public function testWithAcceptedParticipant(): void
     {

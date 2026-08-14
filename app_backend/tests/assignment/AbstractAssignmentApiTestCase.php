@@ -9,7 +9,7 @@ use App\Tests\AbstractApiTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class AbstractAssignmentTestCase extends AbstractApiTestCase
+class AbstractAssignmentApiTestCase extends AbstractApiTestCase
 {
     protected AssignmentRepository $assignmentRepository;
     protected GroupItemRepository $groupItemRepository;
