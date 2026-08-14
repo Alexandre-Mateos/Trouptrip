@@ -1,41 +1,34 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\assignment;
 
 use App\Enum\ParticipationStatusEnum;
-use App\Repository\AssignmentRepository;
-use App\Repository\GroupItemRepository;
 use PHPUnit\Framework\Attributes\TestWith;
-use Symfony\Bundle\SecurityBundle\Security;
 
-class PostAssignmentTest extends AbstractApiTestCase
+class PostAssignmentTest extends AbstractAssignmentTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->defaultUrl = self::$ASSIGNMENTS;
-    }
-
     public function testWithAcceptedParticipant(): void
     {
         $this->loginUser('poireau@test.fr', 'password');
 
-        $groupItemRepository = $this->get(GroupItemRepository::class);
-        $assignmentRepository = $this->get(AssignmentRepository::class);
-        $security = $this->get(Security::class);
+        $user = $this->security->getUser();
 
-        $user = $security->getUser();
+        $groupItem = $this->groupItemRepository->findOneBy([
+            'name' => 'Bouteilles d\'eau'
+        ]);
 
-
-        $groupItem = $groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
         $body = [
             "assignedQuantity" => 3,
             "groupItem" => "api/group_items/" . $groupItem->getId()
         ];
+
         $this->post($body);
         $this->assertResponseIsSuccessful();
 
-        $assignment = $assignmentRepository->findOneBy(['groupItem' => $groupItem, 'assignedTo' => $user]);
+        $assignment = $this->assignmentRepository->findOneBy([
+            'groupItem' => $groupItem,
+            'assignedTo' => $user
+        ]);
 
         $this->assertNotNull($assignment);
         $this->assertSame($assignment->getAssignedQuantity(), 3);
@@ -46,21 +39,24 @@ class PostAssignmentTest extends AbstractApiTestCase
     {
         $this->loginUser('duchamp@test.fr', 'password');
 
-        $groupItemRepository = $this->get(GroupItemRepository::class);
-        $assignmentRepository = $this->get(AssignmentRepository::class);
-        $security = $this->get(Security::class);
+        $user = $this->security->getUser();
 
-        $user = $security->getUser();
+        $groupItem = $this->groupItemRepository->findOneBy([
+            'name' => 'Oranges'
+        ]);
 
-        $groupItem = $groupItemRepository->findOneBy(['name' => 'Oranges']);
         $body = [
             "assignedQuantity" => 3,
             "groupItem" => "api/group_items/" . $groupItem->getId()
         ];
+
         $this->post($body);
         $this->assertResponseIsSuccessful();
 
-        $assignment = $assignmentRepository->findOneBy(['groupItem' => $groupItem, 'assignedTo' => $user]);
+        $assignment = $this->assignmentRepository->findOneBy([
+            'groupItem' => $groupItem,
+            'assignedTo' => $user
+        ]);
 
         $this->assertNotNull($assignment);
         $this->assertSame($assignment->getAssignedQuantity(), 3);
@@ -77,13 +73,15 @@ class PostAssignmentTest extends AbstractApiTestCase
     {
         $this->loginUser($email, 'password');
 
-        $groupItemRepository = $this->get(GroupItemRepository::class);
+        $groupItem = $this->groupItemRepository->findOneBy([
+            'name' => 'Bouteilles d\'eau'
+        ]);
 
-        $groupItem = $groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
         $body = [
             "assignedQuantity" => 3,
             "groupItem" => "api/group_items/" . $groupItem->getId()
         ];
+
         $this->post($body);
         $this->assertResponseStatusCodeSame(403);
     }
@@ -99,13 +97,16 @@ class PostAssignmentTest extends AbstractApiTestCase
     ): void
     {
         $this->loginUser('poireau@test.fr', 'password');
-        $groupItemRepository = $this->get(GroupItemRepository::class);
 
-        $groupItem = $groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
+        $groupItem = $this->groupItemRepository->findOneBy([
+            'name' => 'Bouteilles d\'eau'
+        ]);
+
         $body = [
             "assignedQuantity" => $quantityToAssigned,
             "groupItem" => "api/group_items/" . $groupItem->getId()
         ];
+
         $this->post($body);
         $this->assertResponseStatusCodeSame($expectedCode);
     }
@@ -113,13 +114,16 @@ class PostAssignmentTest extends AbstractApiTestCase
     public function testUserWithExistingAssignment(): void
     {
         $this->loginUser('duchamp@test.fr', 'password');
-        $groupItemRepository = $this->get(GroupItemRepository::class);
 
-        $groupItem = $groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
+        $groupItem = $this->groupItemRepository->findOneBy([
+            'name' => 'Bouteilles d\'eau'
+        ]);
+
         $body = [
             "assignedQuantity" => 3,
             "groupItem" => "api/group_items/" . $groupItem->getId()
         ];
+
         $this->post($body);
         $this->assertResponseStatusCodeSame(409);
     }
@@ -128,7 +132,7 @@ class PostAssignmentTest extends AbstractApiTestCase
     #[TestWith([null], 'Test with null')]
     public function testWithForbiddenGroupItemValue(
         ?string $groupItem
-    ):void
+    ): void
     {
         $this->loginUser('poireau@test.fr', 'password');
 
@@ -136,6 +140,7 @@ class PostAssignmentTest extends AbstractApiTestCase
             "assignedQuantity" => 3,
             "groupItem" => $groupItem,
         ];
+
         $this->post($body);
         $this->assertResponseStatusCodeSame(403);
     }

@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractApiTestCase extends ApiTestCase
 {
     static string $LOGIN_CHECK = '/api/login_check';
-    static string $ASSIGNMENTS = '/api/assignments';
     protected string $defaultUrl;
     protected function setUp(): void
     {
