@@ -109,34 +109,23 @@ class PatchAssignmentApiTest extends AbstractAssignmentApiTestCase
         $this->assertResponseStatusCodeSame(401);
 
         $this->entityManager->clear();
-
         $updatedAssignment = $this->assignmentRepository->find($assignmentId);
 
-        $this->assertSame(
-            4,
-            $updatedAssignment->getAssignedQuantity()
-        );
+        $this->assertSame(4, $updatedAssignment->getAssignedQuantity());
     }
 
     public function testUpdateOnForbiddenAssignment(): void
     {
         $this->loginUser('duchamp@test.fr', 'password');
 
-        $existingUser = $this->userRepository->findOneBy([
-            'email' => 'poireau@test.fr'
-        ]);
-
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Chaises'
-        ]);
-
+        $existingUser = $this->userRepository->findOneBy(['email' => 'poireau@test.fr']);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Chaises']);
         $existingAssignment = $this->assignmentRepository->findOneBy([
             'groupItem' => $groupItem,
             'assignedTo' => $existingUser
         ]);
 
         $assignmentId = $existingAssignment->getId();
-
         $body = [
             "assignedQuantity" => 3,
             "isRemoval" => false

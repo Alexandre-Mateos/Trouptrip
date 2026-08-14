@@ -11,12 +11,8 @@ class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
     public function testWithAcceptedParticipant(): void
     {
         $this->loginUser('poireau@test.fr', 'password');
-
         $user = $this->security->getUser();
-
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Bouteilles d\'eau'
-        ]);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
 
         $body = [
             "assignedQuantity" => 3,
@@ -39,12 +35,8 @@ class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
     public function testWithOwner(): void
     {
         $this->loginUser('duchamp@test.fr', 'password');
-
         $user = $this->security->getUser();
-
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Oranges'
-        ]);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Oranges']);
 
         $body = [
             "assignedQuantity" => 3,
@@ -73,10 +65,7 @@ class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
     ): void
     {
         $this->loginUser($email, 'password');
-
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Bouteilles d\'eau'
-        ]);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
 
         $body = [
             "assignedQuantity" => 3,
@@ -99,9 +88,7 @@ class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
     {
         $this->loginUser('poireau@test.fr', 'password');
 
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Bouteilles d\'eau'
-        ]);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
 
         $body = [
             "assignedQuantity" => $quantityToAssigned,
@@ -116,9 +103,7 @@ class PostAssignmentApiTest extends AbstractAssignmentApiTestCase
     {
         $this->loginUser('duchamp@test.fr', 'password');
 
-        $groupItem = $this->groupItemRepository->findOneBy([
-            'name' => 'Bouteilles d\'eau'
-        ]);
+        $groupItem = $this->groupItemRepository->findOneBy(['name' => 'Bouteilles d\'eau']);
 
         $body = [
             "assignedQuantity" => 3,
