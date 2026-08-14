@@ -25,10 +25,10 @@ class AbstractAssignmentTestCase extends AbstractApiTestCase
 
         $this->defaultUrl = self::$ASSIGNMENTS;
 
-        $this->assignmentRepository = $this->get(AssignmentRepository::class);
-        $this->groupItemRepository = $this->get(GroupItemRepository::class);
-        $this->userRepository = $this->get(UserRepository::class);
-        $this->entityManager = $this->get(EntityManagerInterface::class);
-        $this->security = $this->get(Security::class);
+        $this->assignmentRepository = $this->getEntity(AssignmentRepository::class);
+        $this->groupItemRepository = $this->getEntity(GroupItemRepository::class);
+        $this->userRepository = $this->getEntity(UserRepository::class);
+        $this->entityManager = $this->getEntity(EntityManagerInterface::class);
+        $this->security = $this->getEntity(Security::class);
     }
 }

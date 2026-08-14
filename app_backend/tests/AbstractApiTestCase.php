@@ -5,6 +5,7 @@ namespace App\Tests;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 abstract class AbstractApiTestCase extends ApiTestCase
 {
@@ -15,7 +16,7 @@ abstract class AbstractApiTestCase extends ApiTestCase
         $this->client = static::createClient();
     }
 
-    protected function get(string $class): ?object
+    protected function getEntity(string $class): ?object
     {
         return static::getContainer()->get($class);
     }
@@ -66,5 +67,25 @@ abstract class AbstractApiTestCase extends ApiTestCase
                 'Accept' => 'application/ld+json',
             ],
         ]);
+    }
+
+    protected function get(): ResponseInterface
+    {
+        return $this->client->request(
+            'GET',
+            $this->defaultUrl,
+            [
+                'headers' => [
+                    'Accept' => 'application/ld+json',
+                ],
+            ]
+        );
+    }
+
+    protected function getDataCollection(): array
+    {
+        $response = $this->get();
+
+        return $response->toArray()['member'];
     }
 }
