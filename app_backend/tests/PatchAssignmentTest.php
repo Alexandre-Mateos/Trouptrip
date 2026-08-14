@@ -22,7 +22,7 @@ class PatchAssignmentTest extends AbstractApiTestCase
     #[TestWith([4, false, 200, 8], 'Addition: Qty same as remaining')]
     #[TestWith([5, false, 422, 4], 'Addition: Qty superior to the remainin')]
     #[TestWith([3, true, 200, 1], 'Subtraction: Qty inferior to the already assigned qty')]
-    #[TestWith([4, true, 200, 0], 'Subtraction: Qty same as the already assigned qty')]
+    #[TestWith([4, true, 422, 4], 'Subtraction: Qty same as the already assigned qty')]
     #[TestWith([5, true, 422, 4], 'Subtraction: Qty superior to the already assigned qty')]
     public function testUpdateQuantityWithAcceptedParticipant(
         int $qty,

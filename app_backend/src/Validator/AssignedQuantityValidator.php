@@ -87,8 +87,9 @@ final class AssignedQuantityValidator extends ConstraintValidator
                             $groupItem->getId()
                         );
 
+
                 if (
-                    $alreadyAssignedQuantityByUser - $value->assignedQuantity < 0
+                    $alreadyAssignedQuantityByUser < $value->assignedQuantity
                 ) {
                     $this->context
                         ->buildViolation($constraint->wrongRemovalQuantity)
@@ -97,6 +98,12 @@ final class AssignedQuantityValidator extends ConstraintValidator
                             '{{ alreadyAssignedQuantity }}',
                             $alreadyAssignedQuantityByUser
                         )
+                        ->addViolation();
+
+                }elseif ($alreadyAssignedQuantityByUser === $value->assignedQuantity) {
+                    $this->context
+                        ->buildViolation($constraint->shouldRemove)
+                        ->atPath('assignedQuantity')
                         ->addViolation();
                 }
 

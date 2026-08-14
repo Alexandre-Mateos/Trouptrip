@@ -57,6 +57,7 @@ export default defineComponent({
 
       } catch (errors) {
         this.errors = useApiErrors().formatErrors(errors);
+        this.assignedQty = 0;
       } finally {
         this.isSubmitting = false;
       }
