@@ -57,7 +57,43 @@ final class AssignedQuantityValidator extends ConstraintValidator
 
         if ($value instanceof AssignmentUpdateDTO) {
 
+            // DTO vide
+            if (
+                $value->assignedQuantity === null
+                && $value->isRemoval === null
+                && $value->isPacked === null
+            ) {
+                $this->context
+                    ->buildViolation($constraint->emptyUpdate)
+                    ->addViolation();
+                return;
+            }
 
+            // DTO avec Quantité mais sans ajout ou retrait
+            if (
+                $value->assignedQuantity !== null
+                && $value->isRemoval === null
+            ) {
+                $this->context
+                    ->buildViolation($constraint->missingOperationType)
+                    ->atPath('isRemoval')
+                    ->addViolation();
+                return;
+            }
+
+            // DTO avec ajout/retrait mais sans quantité
+            if (
+                $value->assignedQuantity === null
+                && $value->isRemoval !== null
+            ) {
+                $this->context
+                    ->buildViolation($constraint->missingQuantity)
+                    ->atPath('assignedQuantity')
+                    ->addViolation();
+                return;
+            }
+
+            // Uniquement isPacked, on laise passer
             if ($value->assignedQuantity === null) {
                 return;
             }
