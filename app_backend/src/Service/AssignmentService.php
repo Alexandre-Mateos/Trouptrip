@@ -20,7 +20,7 @@ readonly class AssignmentService
     ): bool {
 
         $maxQuantity = $groupItem->getTotalQuantity();
-        $alreadyAssignedQuantity = $this->assignmentRepository->getAssignedQuantityByGroupItemId($groupItem->getId());
+        $alreadyAssignedQuantity = $this->assignmentRepository->getAssignedQuantityByGroupItem($groupItem);
 
         return $quantity <= $maxQuantity - $alreadyAssignedQuantity ;
     }
@@ -31,7 +31,7 @@ readonly class AssignmentService
         int $quantity,
     ): bool {
 
-        $alreadyAssignedQuantityByUser = $this->assignmentRepository->getAssignedQuantityByUserIdAndGroupItemId($user->getId(), $groupItem->getId());
+        $alreadyAssignedQuantityByUser = $this->assignmentRepository->getAssignedQuantityByUserAndGroupItem($user, $groupItem);
 
         return $quantity < $alreadyAssignedQuantityByUser;
     }
