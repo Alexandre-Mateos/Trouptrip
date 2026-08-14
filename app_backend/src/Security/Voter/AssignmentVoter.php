@@ -19,18 +19,20 @@ final class AssignmentVoter extends Voter
 {
     public const CREATE = 'ASSIGNMENT_CREATE';
     public const DELETE = 'ASSIGNMENT_DELETE';
+    public const EDIT = 'ASSIGNMENT_EDIT';
 
     public function __construct(
         private readonly ParticipationRepository $participationRepository,
-        private readonly RequestStack $requestStack,
-        private readonly AssignmentRepository $assignmentRepository,
-        private readonly IriConverterInterface $iriConverter
-    ) {
+        private readonly RequestStack            $requestStack,
+        private readonly AssignmentRepository    $assignmentRepository,
+        private readonly IriConverterInterface   $iriConverter
+    )
+    {
     }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::CREATE, self::DELETE])
+        return in_array($attribute, [self::CREATE, self::DELETE, self::EDIT])
             && ($subject instanceof Assignment || $subject instanceof AssignmentInputDTO);
     }
 
@@ -49,6 +51,11 @@ final class AssignmentVoter extends Voter
             $assignment = $this->assignmentRepository->find($assignmentId);
             $groupItem = $assignment?->getGroupItem();
         } else {
+
+            if (!$subject->groupItem) {
+                return false;
+            }
+
             try {
                 $groupItem = $this->iriConverter->getResourceFromIri($subject->groupItem);
             } catch (ItemNotFoundException|InvalidArgumentException) {
@@ -69,7 +76,8 @@ final class AssignmentVoter extends Voter
                 break;
 
             case self::DELETE:
-                if($user === $assignment->getAssignedTo()){
+            case self::EDIT:
+                if ($user === $assignment->getAssignedTo()) {
                     return true;
                 }
         }

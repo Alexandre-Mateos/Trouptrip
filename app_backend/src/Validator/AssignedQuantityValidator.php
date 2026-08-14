@@ -35,6 +35,14 @@ final class AssignedQuantityValidator extends ConstraintValidator
 
 
         if ($value instanceof AssignmentInputDTO) {
+            if (
+                $value->groupItem === null ||
+                $value->groupItem === '' ||
+                $value->assignedQuantity === null
+            ) {
+                return;
+            }
+
             /** @var GroupItem $groupItem */
             $groupItem = $this->iriConverter->getResourceFromIri($value->groupItem);
 

@@ -102,14 +102,24 @@ final class AssignmentTestStory extends Story
             ]);
         }
 
-//        Création d'un GroupItem avec une partie déjà assignée
-        $groupItem = GroupItemFactory::createOne([
+//        Création d'un GroupItem avec une partie déjà assignée au owner
+        $groupItemAssignedToOwner = GroupItemFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-08-01 13:00:00'),
             'name' => 'Bouteilles d\'eau',
             'totalQuantity' => 10,
             'trip' => $trip,
             'unit' => GroupItemUnitEnum::PIECE,
         ]);
+
+//        Création d'un GroupItem avec une partie déjà assignée a un participant
+        $groupItemAssignedToParticipant = GroupItemFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-08-01 13:00:00'),
+            'name' => 'Chaises',
+            'totalQuantity' => 10,
+            'trip' => $trip,
+            'unit' => GroupItemUnitEnum::PIECE,
+        ]);
+
 
 //        Création d'un GroupItem sans aucune assignations
         GroupItemFactory::createOne([
@@ -120,11 +130,29 @@ final class AssignmentTestStory extends Story
             'unit' => GroupItemUnitEnum::PIECE,
         ]);
 
+//        Assignation des bouteilles d'eau au propriétaire du trip uniquement
         AssignmentFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-08-01 14:00:00'),
             'assignedQuantity' => 4,
             'isPacked' => false,
-            'groupItem' => $groupItem,
+            'groupItem' => $groupItemAssignedToOwner,
+            'assignedTo' => $owner,
+        ]);
+
+//        Création de deux assignations sur le groupItem Chaises
+        AssignmentFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-08-01 14:00:00'),
+            'assignedQuantity' => 4,
+            'isPacked' => false,
+            'groupItem' => $groupItemAssignedToParticipant,
+            'assignedTo' => $usersByStatus[ParticipationStatusEnum::ACCEPTED->value ],
+        ]);
+
+        AssignmentFactory::createOne([
+            'createdAt' => new \DateTimeImmutable('2026-08-01 14:00:00'),
+            'assignedQuantity' => 2,
+            'isPacked' => false,
+            'groupItem' => $groupItemAssignedToParticipant,
             'assignedTo' => $owner,
         ]);
 

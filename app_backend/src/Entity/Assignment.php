@@ -40,7 +40,7 @@ use App\Validator as AssignmentAssert;
         ),
         new Patch(
             normalizationContext: ['groups' => 'assignment:collection'],
-            security: "is_granted('ASSIGNMENT_CREATE', object)",
+            security: "is_granted('ASSIGNMENT_EDIT', object)",
             input: AssignmentUpdateDTO::class,
             processor: PatchAssignmentProcessor::class
         ),

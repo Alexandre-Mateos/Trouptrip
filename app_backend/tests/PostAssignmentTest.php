@@ -123,4 +123,20 @@ class PostAssignmentTest extends AbstractApiTestCase
         $this->post($body);
         $this->assertResponseStatusCodeSame(409);
     }
+
+    #[TestWith([''], 'Test with blank string')]
+    #[TestWith([null], 'Test with null')]
+    public function testWithForbiddenGroupItemValue(
+        ?string $groupItem
+    ):void
+    {
+        $this->loginUser('poireau@test.fr', 'password');
+
+        $body = [
+            "assignedQuantity" => 3,
+            "groupItem" => $groupItem,
+        ];
+        $this->post($body);
+        $this->assertResponseStatusCodeSame(403);
+    }
 }

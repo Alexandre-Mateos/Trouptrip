@@ -45,4 +45,16 @@ abstract class AbstractApiTestCase extends ApiTestCase
             'json' => $body,
         ]);
     }
+
+    protected function patch(array $body, int $id): void
+    {
+        $url = $this->defaultUrl . '/' . $id;
+        $this->client->request('PATCH', $url, [
+            'headers' => [
+                'Accept' => 'application/ld+json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => $body,
+        ]);
+    }
 }
