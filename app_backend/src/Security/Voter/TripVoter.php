@@ -12,7 +12,6 @@ final class TripVoter extends Voter
 {
     public const EDIT = 'TRIP_EDIT';
     public const READ = 'TRIP_READ';
-
     public const  DELETE = 'TRIP_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool

@@ -15,12 +15,15 @@ jobs:
       - name: Start Docker services with .env.test
         run: docker compose --env-file app_backend/.env.test up -d php db
 
-      - name: Debug Docker Compose Configuration
-        run: docker compose config
-
 #      Installation des dépendances Composer dans le conteneur PHP
       - name: Install Composer dependencies
         run: docker compose exec -T -e APP_ENV=test php composer install --prefer-dist --no-progress
+
+      - name: Generate JWT keys
+        run: |
+              docker compose exec -T \
+              -e APP_ENV=test \
+              php php bin/console lexik:jwt:generate-keypair --overwrite --env=test
 
 #      Préparation de la base de données de test
       - name: Prepare test_database
@@ -34,4 +37,7 @@ jobs:
 
 #      Exécution des tests PHPUnit
       - name: Run tests
-        run: docker compose exec -T php bin/phpunit
+        run: |
+              docker compose exec -T \
+              -e APP_ENV=test \
+              php bin/phpunit

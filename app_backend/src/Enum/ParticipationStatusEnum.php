@@ -8,7 +8,6 @@ enum ParticipationStatusEnum: string
     case ACCEPTED = 'ACCEPTED';
     case DECLINED = 'DECLINED';
     case LEFT = 'LEFT';
-    case CANCELLED = 'CANCELLED';
     case EXCLUDED = 'EXCLUDED';
 
     public static function values(): array

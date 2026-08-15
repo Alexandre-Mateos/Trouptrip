@@ -30,27 +30,24 @@ class AssignmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAssignedQuantityByGroupItemId(int $groupId): int
+    public function getAssignedQuantityByGroupItem(GroupItem $groupItem): int
     {
         return $this->createQueryBuilder('a')
             ->select('COALESCE(SUM(a.assignedQuantity), 0)')
-            ->leftJoin('a.groupItem', 'g')
-            ->where('g.id = :id')
-            ->setParameter('id', $groupId)
+            ->where('a.groupItem = :groupItem')
+            ->setParameter('groupItem', $groupItem)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    public function getAssignedQuantityByUserIdAndGroupItemId(int $userId, int $groupItemId): int
+    public function getAssignedQuantityByUserAndGroupItem(User $user, GroupItem $groupItem): int
     {
-        return $this->createQueryBuilder('a')
+        return (int) $this->createQueryBuilder('a')
             ->select('COALESCE(SUM(a.assignedQuantity), 0)')
-            ->leftJoin('a.groupItem', 'g')
-            ->leftJoin('a.assignedTo', 'u')
-            ->where('g.id = :groupItemId')
-            ->andWhere('u.id = :userId')
-            ->setParameter('groupItemId', $groupItemId)
-            ->setParameter('userId', $userId)
+            ->where('a.groupItem = :groupItem')
+            ->andWhere('a.assignedTo = :user')
+            ->setParameter('groupItem', $groupItem)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
     }
