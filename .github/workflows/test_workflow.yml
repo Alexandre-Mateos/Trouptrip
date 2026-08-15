@@ -22,6 +22,13 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T -e APP_ENV=test php composer install --prefer-dist --no-progress
 
+      - name: Generate JWT keys
+        run: |
+              docker compose exec -T \
+              -e APP_ENV=test \
+              -e JWT_PASSPHRASE="${{ secrets.JWT_PASSPHRASE_TEST }}" \
+              php php bin/console lexik:jwt:generate-keypair --skip-if-exists --env=test
+
 #      Préparation de la base de données de test
       - name: Prepare test_database
         run: |
@@ -34,4 +41,8 @@ jobs:
 
 #      Exécution des tests PHPUnit
       - name: Run tests
-        run: docker compose exec -T php bin/phpunit
+        run: |
+              docker compose exec -T \
+              -e APP_ENV=test \
+              -e JWT_PASSPHRASE="${{ secrets.JWT_PASSPHRASE_TEST }}" \
+              php bin/phpunit
