@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-abstract class AbstractKernelTestCaseTest extends KernelTestCase
+abstract class AbstractKernelTestCase extends KernelTestCase
 {
     protected function setUp(): void
     {

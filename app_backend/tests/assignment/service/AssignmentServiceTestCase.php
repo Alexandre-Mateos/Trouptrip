@@ -5,10 +5,10 @@ namespace App\Tests\assignment\service;
 use App\Repository\GroupItemRepository;
 use App\Repository\UserRepository;
 use App\Service\AssignmentService;
-use App\Tests\AbstractKernelTestCaseTest;
+use App\Tests\AbstractKernelTestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 
-class AssignmentServiceTest extends AbstractKernelTestCaseTest
+class AssignmentServiceTestCase extends AbstractKernelTestCase
 {
     private AssignmentService $assignmentService;
     private GroupItemRepository $groupItemRepository;
