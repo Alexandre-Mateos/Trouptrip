@@ -15,9 +15,6 @@ jobs:
       - name: Start Docker services with .env.test
         run: docker compose --env-file app_backend/.env.test up -d php db
 
-      - name: Debug Docker Compose Configuration
-        run: docker compose config
-
 #      Installation des dépendances Composer dans le conteneur PHP
       - name: Install Composer dependencies
         run: docker compose exec -T -e APP_ENV=test php composer install --prefer-dist --no-progress
@@ -26,28 +23,7 @@ jobs:
         run: |
               docker compose exec -T \
               -e APP_ENV=test \
-              -e JWT_PASSPHRASE="${{ secrets.JWT_PASSPHRASE_TEST }}" \
               php php bin/console lexik:jwt:generate-keypair --overwrite --env=test
-
-      - name: Check JWT configuration
-        env:
-          JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE_TEST }}
-        run: |
-              if [ -z "$JWT_PASSPHRASE" ]; then
-              echo "JWT_PASSPHRASE is empty"
-              exit 1
-              fi
-      
-              docker compose exec -T \
-              -e APP_ENV=test \
-              -e JWT_PASSPHRASE="$JWT_PASSPHRASE" \
-              php sh -c '
-              test -s config/jwt/private.pem || { echo "private.pem missing"; exit 1; }
-              test -s config/jwt/public.pem || { echo "public.pem missing"; exit 1; }
-      
-              echo "JWT files exist"
-              php bin/console lexik:jwt:check-config --env=test
-              '
 
 #      Préparation de la base de données de test
       - name: Prepare test_database
