@@ -10,44 +10,52 @@ export const useTripsStore = defineStore('trips', {
     state: () => ({
         trips: new Map<number, IMapTrip | IMapTripDetails>(),
         fetching: false,
+        tripListIds: [] as number[],
+        calendarTripIds: [] as number[],
+        paginationData: {
+            page: 1,
+            pageItemNumber: 5,
+            totalItems: null as number | null,
+        }
     }),
     getters: {
         calendarDatas(state) {
-            const calendarDatas = Array.from(state.trips.values());
-
-            return calendarDatas.map((trip) => {
-
-                const startDateTime = getFormatedDate(trip.startDate);
-                const endDateTime = getFormatedDate(trip.endDate);
-
-                return {
+            return state.calendarTripIds
+                .map(id => state.trips.get(id))
+                .filter(
+                    (trip): trip is IMapTrip | IMapTripDetails =>
+                        trip !== undefined
+                )
+                .map((trip) => ({
                     id: trip.id,
                     title: trip.title,
-                    start: startDateTime,
-                    end: endDateTime
-                }
-            });
+                    start: getFormatedDate(trip.startDate),
+                    end: getFormatedDate(trip.endDate)
+                }));
         },
-        tripList: (state) => Array.from(state.trips.values()),
+        tripList(state) {
+            return state.tripListIds
+                .map(id => state.trips.get(id))
+                .filter(
+                    (trip): trip is IMapTrip | IMapTripDetails =>
+                        trip !== undefined
+                );
+        },
         getTripById: (state) => {
             return (id: number) => state.trips.get(id);
         },
         getFirstTripId: (state) => {
-            const keys = Array.from(state.trips.keys());
-            return keys[0];
+            return state.tripListIds[0];
         },
         getUpcomingTrip: (state) => {
-            let nextTrip = null as IMapTrip|IMapTripDetails|null;
+            let nextTrip = null as IMapTrip | IMapTripDetails | null;
 
             state.trips.forEach((trip) => {
-                if(nextTrip){
-                    if(trip.startDate < nextTrip?.startDate){
-                        nextTrip = trip;
-                    }
-                }else{
+                if (!nextTrip || trip.startDate < nextTrip.startDate) {
                     nextTrip = trip;
                 }
-            })
+            });
+
             return nextTrip;
         }
     },
@@ -56,30 +64,95 @@ export const useTripsStore = defineStore('trips', {
             if (this.fetching) {
                 return;
             }
-            const {$api} = useNuxtApp();
+
+            const { $api } = useNuxtApp();
             this.fetching = true;
+            const today = new Date().toISOString().split('T')[0];
 
             try {
-                const tripCollection = await $api<ITripList>(apiEndpoints.trips);
+                const tripCollection = await $api<ITripList>(
+                    apiEndpoints.trips,
+                    {
+                        query: {
+                            'endDate[gte]': today,
+                            page: this.paginationData.page,
+                        },
+                    }
+                );
+
+                const currentPageIds: number[] = [];
 
                 tripCollection.member.forEach((trip) => {
+                    currentPageIds.push(trip.id);
+
                     const existingTrip = this.trips.get(trip.id);
-                    if (existingTrip && existingTrip.isDetail) {
-                        this.trips.set(trip.id, { ...trip, ...existingTrip });
+
+                    if (existingTrip?.isDetail) {
+                        this.trips.set(trip.id, {
+                            ...existingTrip,
+                            ...trip,
+                            isDetail: true,
+                        });
                     } else {
-                        this.trips.set(trip.id, { ...trip, isDetail: false });
+                        this.trips.set(trip.id, {
+                            ...trip,
+                            isDetail: false,
+                        });
                     }
                 });
-            } catch (error: any) {
-                throw error;
+
+                this.tripListIds = currentPageIds;
+
+                if(tripCollection.totalItems){
+                    this.paginationData.totalItems = tripCollection.totalItems;
+                }
+
             } finally {
                 this.fetching = false;
             }
         },
+        async fetchCalendarTrips(
+            startDate: string,
+            endDate: string
+        ) {
+            const { $api } = useNuxtApp();
+
+            const tripCollection = await $api<ITripList>(
+                apiEndpoints.tripCalendar,
+                {
+                    query: {
+                        'startDate[lte]': endDate,
+                        'endDate[gte]': startDate,
+                    },
+                }
+            );
+            const calendarIds: number[] = [];
+
+            tripCollection.member.forEach((trip) => {
+                calendarIds.push(trip.id);
+
+                const existingTrip = this.trips.get(trip.id);
+
+                if (existingTrip?.isDetail) {
+                    this.trips.set(trip.id, {
+                        ...existingTrip,
+                        ...trip,
+                        isDetail: true,
+                    });
+                } else {
+                    this.trips.set(trip.id, {
+                        ...trip,
+                        isDetail: false,
+                    });
+                }
+            });
+
+            this.calendarTripIds = calendarIds;
+
+            return this.calendarDatas;
+        },
         async fetchTrip(tripId: number) {
-
             const tripListView = this.trips.get(tripId);
-
             if (tripListView && tripListView.isDetail) {
                 return;
             }
@@ -144,6 +217,10 @@ export const useTripsStore = defineStore('trips', {
                     personalItemIds: [],
                     participationIds: participationIds,
                 });
+
+                // on refait un fetch de la page courante pour mettre à jour la pagination géré par api platform
+                await this.fetchTrips();
+
                 return response;
 
             } catch (error: any) {
@@ -178,6 +255,11 @@ export const useTripsStore = defineStore('trips', {
                     personalItemIds: [],
                     participationIds: participationIds,
                 });
+
+
+                // on refait un fetch de la page courante pour mettre à jour la pagination géré par api platform
+                await this.fetchTrips();
+
                 return response;
 
             } catch (error: any) {
@@ -194,6 +276,9 @@ export const useTripsStore = defineStore('trips', {
                 });
                 this.trips.delete(tripId)
 
+                // on refait un fetch de la page courante pour mettre à jour la pagination géré par api platform
+                await this.fetchTrips();
+
             } catch (error: any) {
                 throw error;
             }
@@ -201,9 +286,16 @@ export const useTripsStore = defineStore('trips', {
         removeTripFromState(tripId: number) {
             this.trips.delete(tripId);
         },
-        clearStore(){
+        clearStore() {
             this.trips.clear();
+            this.tripListIds = [];
+            this.calendarTripIds = [];
             this.fetching = false;
+            this.paginationData = {
+                page: 1,
+                pageItemNumber: 5,
+                totalItems: null,
+            };
         }
     }
 })

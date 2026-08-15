@@ -21,7 +21,14 @@ export default defineComponent({
     }
   },
   async mounted() {
-    const id = Number(this.$route.params.id);
+    const rawId = this.$route.params.id;
+    if (!rawId) {
+      return;
+    }
+    const id = Number(rawId);
+    if (!Number.isFinite(id)) {
+      return;
+    }
 
     try {
       await useTripsStore().fetchTrip(id);
@@ -42,7 +49,12 @@ export default defineComponent({
   },
   computed: {
     trip() {
-      const id = Number(this.$route.params.id);
+      const rawId = this.$route.params.id;
+      if (!rawId) {
+        return undefined;
+      }
+      const id = Number(rawId);
+
       return useTripsStore().getTripById(id) as IMapTripDetails | undefined;
     }
   }

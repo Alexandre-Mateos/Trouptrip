@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ComparisonFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Enum\ParticipationStatusEnum;
 use App\Interface\CreatedAtInterface;
 use App\Repository\TripRepository;
@@ -24,8 +27,34 @@ use App\Validator as TripAssert;
 #[ApiResource(
     operations: [
         new GetCollection(
+            paginationItemsPerPage: 5,
+            order: ['startDate' => 'ASC'],
             normalizationContext: ['groups' => 'trip:collection'],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'endDate' => new QueryParameter(
+                    filter: new ComparisonFilter(new ExactFilter()),
+                    property: 'endDate',
+                ),
+            ]
+        ),
+        new GetCollection(
+            uriTemplate: '/trips/calendar',
+            paginationEnabled: false,
+            normalizationContext: ['groups' => 'trip:collection'],
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'startDate' => new QueryParameter(
+                    filter: new ComparisonFilter(new ExactFilter()),
+                    property: 'startDate',
+                    required: true,
+                ),
+                'endDate' => new QueryParameter(
+                    filter: new ComparisonFilter(new ExactFilter()),
+                    property: 'endDate',
+                    required: true,
+                ),
+            ]
         ),
         new Get(
             normalizationContext: ['groups' => 'trip:item'],

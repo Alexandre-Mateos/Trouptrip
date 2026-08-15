@@ -47,29 +47,37 @@ const daysLeft = computed(() => {
 })
 
 onMounted(async () => {
-
   try {
-    await participationStore.fetchInvitations()
+    await participationStore.fetchInvitations();
   } catch (e) {
-    error.value = 'Impossible d\'afficher la liste des invitations pour le moment.'
+    error.value =
+        'Impossible d\'afficher la liste des invitations pour le moment.';
   }
-
-  await tripsStore.fetchTrips();
 
   const monthGrid = createViewMonthGrid();
 
   calendarApp.value = createCalendar({
     selectedDate: Temporal.Now.plainDateISO(),
+
     views: [
-      createViewMonthGrid(),
+      monthGrid,
       createViewMonthAgenda(),
       createViewWeek(),
       createViewWeekAgenda()
     ],
+
     defaultView: monthGrid.name,
-    events: tripsStore.calendarDatas
-  })
-})
+
+    callbacks: {
+      async fetchEvents(range) {
+        return await tripsStore.fetchCalendarTrips(
+            range.start.toInstant().toString(),
+            range.end.toInstant().toString()
+        );
+      }
+    }
+  });
+});
 </script>
 
 <template>
