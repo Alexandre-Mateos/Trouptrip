@@ -40,5 +40,4 @@ jobs:
         run: |
               docker compose exec -T \
               -e APP_ENV=test \
-              -e JWT_PASSPHRASE="${{ secrets.JWT_PASSPHRASE_TEST }}" \
               php bin/phpunit
