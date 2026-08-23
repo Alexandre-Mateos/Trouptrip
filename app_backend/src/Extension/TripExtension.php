@@ -29,10 +29,9 @@ final readonly class TripExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        $this->addParticipantWhere($queryBuilder, $resourceClass);
-        $this->addIsDeletedWhere($queryBuilder, $resourceClass);
+        $this->addParticipantWhere($queryBuilder);
+        $this->addIsDeletedWhere($queryBuilder);
     }
-
 
     private function addParticipantWhere(QueryBuilder $queryBuilder): void
     {

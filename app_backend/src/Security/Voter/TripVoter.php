@@ -16,8 +16,6 @@ final class TripVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::EDIT, self::READ, self::DELETE])
             && $subject instanceof Trip;
     }
@@ -26,27 +24,18 @@ final class TripVoter extends Voter
     {
         $user = $token->getUser();
 
-        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
-            $vote?->addReason('The user must be logged in to access this resource.');
-
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::DELETE:
             case self::EDIT:
-                if($user === $subject->getOwner()){
-                    return true;
-                }
-                break;
+                return $user === $subject->getOwner();
 
             case self::READ:
-                if($user === $subject->getOwner() || $subject->hasAcceptedParticipant($user)){
-                    return true;
-                }
-                break;
+                return $user === $subject->getOwner()
+                    || $subject->hasAcceptedParticipant($user);
         }
 
         return false;
