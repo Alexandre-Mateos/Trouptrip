@@ -10,7 +10,7 @@ enum UserTokenTypeEnum: string
     public function getExpirationTime():string
     {
         return match($this){
-            self::CHECK_EMAIL => '+1 day',
+            self::CHECK_EMAIL => '+1 hour',
             self::RESET_PASSWORD => '+ 15 minutes'
         };
     }

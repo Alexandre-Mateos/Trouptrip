@@ -16,14 +16,20 @@ readonly class ResetPasswordProcessor implements ProcessorInterface
         private UserTokenRepository $userTokenRepository,
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $passwordHasher,
-    )
-    {
+    ) {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
-    {
-        $hashedToken = hash('sha256', $data->token);
-        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail($hashedToken, UserTokenTypeEnum::RESET_PASSWORD, $data->email);
+    public function process(
+        mixed $data,
+        Operation $operation,
+        array $uriVariables = [],
+        array $context = []
+    ): void {
+        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail(
+            hash('sha256', $data->token),
+            UserTokenTypeEnum::RESET_PASSWORD,
+            $data->email
+        );
 
         if (!$userToken) {
             throw new TokenExpiredException();
@@ -31,20 +37,12 @@ readonly class ResetPasswordProcessor implements ProcessorInterface
 
         $user = $userToken->getRequester();
 
-        $this->em->beginTransaction();
+        $user->setPassword(
+            $this->passwordHasher->hashPassword($user, $data->plainPassword)
+        );
 
-        try {
-            $hashedPassword = $this->passwordHasher->hashPassword($user, $data->plainPassword);
-            $user->setPassword($hashedPassword);
+        $userToken->setExpiresAt(new \DateTimeImmutable());
 
-            $userToken->setExpiresAt(new \DateTimeImmutable());
-
-            $this->em->flush();
-            $this->em->commit();
-
-        } catch (\Exception $e) {
-            $this->em->rollback();
-            throw $e;
-        }
+        $this->em->flush();
     }
 }
