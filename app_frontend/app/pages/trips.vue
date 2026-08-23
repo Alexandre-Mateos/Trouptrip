@@ -1,11 +1,12 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useTripsStore } from "~/stores/trips";
+import {defineComponent} from 'vue'
+import {useTripsStore} from "~/stores/trips";
 import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "trip",
   components: {ActionButton},
+
   setup() {
     useHead({
       title: "Mes séjours",
@@ -37,39 +38,51 @@ export default defineComponent({
     },
     focusCurrentCard() {
       const currentTripId = this.$route.params.id;
-      if (!currentTripId) return;
+      if (!currentTripId) {
+        return;
+      }
 
       const tripCard = document.getElementById(`trip-card-${currentTripId}`);
+
       if (tripCard) {
         tripCard.focus();
       }
+    },
+    async changePage() {
+      await this.tripsStore.fetchTrips();
+      const firstTripId = this.tripsStore.getFirstTripId;
+      if (this.displayStore.isDesktop && firstTripId) {
+        navigateTo({name: 'trips-id', params: {id: firstTripId}});
+      }
     }
   },
+
   computed: {
+    tripsStore() {
+      return useTripsStore();
+    },
     isTripViewVisible(): boolean {
-      if (this.$route.params.id) {
-        return true;
-      } else {
-        return false;
-      }
+      return !!this.$route.params.id;
     },
     trips() {
-      return useTripsStore().tripList;
-    },
-    getFirstTripId() {
-      return useTripsStore().getFirstTripId;
+      return this.tripsStore.tripList;
     },
     displayStore() {
       return useDisplayStore();
+    },
+    totalItems() {
+      return this.tripsStore.paginationData?.totalItems ?? undefined;
+    },
+    itemsPerPage() {
+      return this.tripsStore.paginationData.pageItemNumber;
     }
   },
   async mounted() {
-    const tripIdParam = Number(this.$route.params.id);
-
     try {
-      await useTripsStore().fetchTrips();
-      if (this.displayStore.isDesktop && this.getFirstTripId && !tripIdParam) {
-        navigateTo({ name: 'trips-id', params: { id: this.getFirstTripId } });
+      await this.tripsStore.fetchTrips();
+      const firstTripId = this.tripsStore.getFirstTripId;
+      if (this.displayStore.isDesktop && firstTripId) {
+        navigateTo({name: 'trips-id', params: {id: firstTripId}});
       }
     } catch (error) {
       this.hasError = true;
@@ -86,7 +99,9 @@ export default defineComponent({
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h1 class="text-3xl font-bold">Mes séjours</h1>
-        <p class="text-gray-600 text-sm mt-1">Retrouvez tous vos voyages programmés et en cours.</p>
+        <p class="text-gray-600 text-sm mt-1">
+          Retrouvez tous vos voyages programmés et en cours.
+        </p>
       </div>
 
       <ActionButton @click="toggleModal" icon="fa6-solid:circle-plus">
@@ -96,6 +111,7 @@ export default defineComponent({
 
     <section>
       <h2 class="sr-only">Liste de vos séjours</h2>
+
       <p
           v-if="isLoading"
           class="flex justify-center items-center min-h-[50vh] text-gray-600"
@@ -108,56 +124,81 @@ export default defineComponent({
           role="alert"
           class="error-container p-6 bg-red-50 border border-red-200 rounded-md text-center space-y-2"
       >
-        <p class="font-medium text-red-800">Impossible de charger vos séjours pour le moment.</p>
-        <p class="text-sm text-red-600">Veuillez vérifier votre connexion ou réessayer plus tard.</p>
+        <p class="font-medium text-red-800">
+          Impossible de charger vos séjours pour le moment.
+        </p>
+        <p class="text-sm text-red-600">
+          Veuillez vérifier votre connexion ou réessayer plus tard.
+        </p>
       </div>
 
       <div
-          v-else-if="useTripsStore().trips.size > 0"
+          v-else-if="trips.length > 0"
           class="layout mt-4"
           :class="{ 'layout-mobile': !displayStore.isDesktop }"
       >
-        <nav
-            aria-label="Sélection d'un séjour"
-            class="cards-block"
+        <div
             :class="{ 'hidden-mobile': isTripViewVisible }"
+            class=" flex flex-col gap-2"
         >
-          <ul
-              class="flex flex-col gap-2 p-0 m-0 list-none"
-              aria-live="polite"
-              aria-atomic="false"
+          <div class="p-2 bg-white shadow-md rounded-lg w-full flex justify-center">
+            <UPagination
+                v-model:page="tripsStore.paginationData.page"
+                :items-per-page="itemsPerPage"
+                :total="totalItems"
+                @click="changePage"
+                color="secondary"
+            />
+          </div>
+
+
+          <nav
+              aria-label="Sélection d'un séjour"
+              class="cards-block"
           >
-            <li
-                v-for="trip in trips"
-                :key="trip.id"
+            <ul
+                class="flex flex-col gap-2 p-0 m-0 list-none"
+                aria-live="polite"
+                aria-atomic="false"
             >
-              <NuxtLink
-                  :id="`trip-card-${trip.id}`"
-                  :to="{
+              <li
+                  v-for="trip in trips"
+                  :key="trip.id"
+              >
+                <NuxtLink
+                    :id="`trip-card-${trip.id}`"
+                    :to="{
                   name: 'trips-id',
                   params: { id: trip.id },
                   query: { focus: 'true' }
                 }"
-                  :aria-current="Number($route.params.id) === trip.id ? 'page' : undefined"
-              >
-                <TripCard :trip="trip"/>
-              </NuxtLink>
-            </li>
-          </ul>
-        </nav>
-
+                    :aria-current="Number($route.params.id) === trip.id ? 'page' : undefined"
+                >
+                  <TripCard :trip="trip"/>
+                </NuxtLink>
+              </li>
+            </ul>
+          </nav>
+        </div>
         <section
             aria-label="Détail du séjour"
             class="page-block"
             :class="{ 'hidden-mobile': !isTripViewVisible }"
         >
-          <NuxtPage @close="focusCurrentCard" />
+          <NuxtPage @close="focusCurrentCard"/>
         </section>
       </div>
 
-      <div v-else class="text-center py-12 bg-gray-50 border border-dashed rounded-md space-y-2">
-        <p class="text-gray-600 text-lg font-medium">Vous n'avez pas encore de voyages à afficher.</p>
-        <p class="text-sm text-gray-500">Commencez par en créer un grâce au bouton ci-dessus !</p>
+      <div
+          v-else
+          class="text-center py-12 bg-gray-50 border border-dashed rounded-md space-y-2"
+      >
+        <p class="text-gray-600 text-lg font-medium">
+          Vous n'avez pas encore de voyages à afficher.
+        </p>
+        <p class="text-sm text-gray-500">
+          Commencez par en créer un grâce au bouton ci-dessus !
+        </p>
       </div>
     </section>
 
