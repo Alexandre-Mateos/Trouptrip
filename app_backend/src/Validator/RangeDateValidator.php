@@ -14,7 +14,7 @@ final class RangeDateValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, RangeDate::class);
         }
 
-        if (null === $value || '' === $value) {
+        if (null === $value->getStartDate() || null === $value->getEndDate()) {
             return;
         }
 

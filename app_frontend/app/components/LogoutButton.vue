@@ -3,16 +3,20 @@ import {defineComponent} from 'vue'
 
 export default defineComponent({
   name: "LogoutButton",
-  computed: {
-    userStore() {
-      return useUserStore();
+  methods:{
+    logout(){
+      try{
+        useUserStore().logout();
+      }catch(e){
+        console.log(e);
+      }
     }
   },
 })
 </script>
 
 <template>
-  <button type="button" @click="userStore.logout" v-bind="$attrs" class="cursor-pointer">
+  <button type="button" @click="logout" v-bind="$attrs" class="cursor-pointer">
     Déconnexion
   </button>
 </template>

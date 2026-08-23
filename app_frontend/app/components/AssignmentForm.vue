@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "AssignmentForm",
+  components: {ActionButton},
   props: {
     groupItem: {
       type: Object as PropType<IMapGroupItem>,
@@ -23,12 +25,6 @@ export default defineComponent({
       this.errors = {};
       this.isSubmitting = true;
 
-      const body = {
-        assignedQuantity: this.assignedQty,
-        groupItem: this.groupItem['@id'],
-        isRemoval: this.isRemoval
-      };
-
       const userStore = useUserStore();
       if (!userStore.user) {
         return;
@@ -40,17 +36,28 @@ export default defineComponent({
           const assignment = useAssignmentsStore().assignments.get(assignmentId);
 
           if (assignment && assignment.assignedTo.id === currentUserId) {
-            await useAssignmentsStore().updateAssignment(this.groupItem, assignment.id, body);
+
+            const bodyForUpdate = {
+              assignedQuantity: this.assignedQty,
+              isRemoval:this.isRemoval
+            };
+
+            await useAssignmentsStore().updateAssignment(this.groupItem, assignment.id, bodyForUpdate);
             this.assignedQty = 0;
             return;
           }
         }
 
-        await useAssignmentsStore().submitAssignment(this.groupItem, body);
+        const bodyForPost = {
+          assignedQuantity: this.assignedQty,
+          groupItem: this.groupItem['@id']
+        };
+        await useAssignmentsStore().submitAssignment(this.groupItem, bodyForPost);
         this.assignedQty = 0;
 
       } catch (errors) {
         this.errors = useApiErrors().formatErrors(errors);
+        this.assignedQty = 0;
       } finally {
         this.isSubmitting = false;
       }
@@ -60,23 +67,40 @@ export default defineComponent({
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-surface-primary-trouptrip  p-1 rounded-md inset-shadow-sm">
-      <NumberInput
-          label="Tu ramènes quoi ?"
-          min="0"
-          :max="groupItem.totalQuantity"
-          v-model="assignedQty"
-          class="flex-1"
-          :errors="errors?.assignedQuantity"
-      />
+  <form
+      @submit.prevent="handleSubmit"
+      class="flex flex-col lg:flex-row gap-1 items-center lg:items-end bg-trouptrip-accent-100 p-2 rounded-md inset-shadow-sm"
+      :aria-label="`Formulaire de contribution pour ${groupItem.name}`"
+  >
+    <NumberInput
+        label="Tu ramènes quoi ?"
+        min="0"
+        :max="groupItem.totalQuantity"
+        v-model="assignedQty"
+        class="flex-1"
+        :errors="errors?.assignedQuantity"
+        :id="`${groupItem.id}-${groupItem.name}`"
+    />
 
-      <div class="flex gap-1">
-        <ActionButton type="submit" :disabled="isSubmitting" label="Ajouter" icon="raphael:arrowup" @click="isRemoval = false"></ActionButton>
-        <ActionButton type="submit" :disabled="isSubmitting" label="Retirer" icon="raphael:arrowdown" color="var(--color-trouptrip-accent-500)" @click="isRemoval = true"></ActionButton>
-      </div>
-    </form>
+    <div class="flex gap-1" role="group" aria-label="Actions de gestion des quantités">
+      <ActionButton
+          type="submit"
+          :disabled="isSubmitting"
+          icon="raphael:arrowup"
+          @click="isRemoval = false"
+          :aria-label="`Ajouter ${assignedQty} ${groupItem.unit || ''} à ${groupItem.name}`"
+      >Ajouter</ActionButton>
+      <ActionButton
+          type="submit"
+          :disabled="isSubmitting"
+          icon="raphael:arrowdown"
+          color="var(--color-trouptrip-accent-500)"
+          @click="isRemoval = true"
+          :aria-label="`Retirer ${assignedQty} ${groupItem.unit || ''} de ${groupItem.name}`"
+      >Retirer</ActionButton>
+    </div>
+  </form>
 </template>
 
 <style scoped>
-
 </style>

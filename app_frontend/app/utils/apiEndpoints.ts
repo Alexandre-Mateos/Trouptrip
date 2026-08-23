@@ -7,6 +7,7 @@ export const apiEndpoints = {
     resetPassword: '/reset_password',
     userMe: '/me',
     trips: '/trips',
+    tripCalendar: '/trips/calendar',
     groupItemCollection: (tripId: number) => `/trips/${tripId}/group_items`,
     groupItems: '/group_items',
     assignmentCollection: (tripId: number) => `/trips/${tripId}/assignments`,

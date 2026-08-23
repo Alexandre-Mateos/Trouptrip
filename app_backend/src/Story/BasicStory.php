@@ -4,6 +4,7 @@ namespace App\Story;
 
 use App\Enum\GroupItemUnitEnum;
 use App\Enum\ParticipationStatusEnum;
+use App\Factory\AssignmentFactory;
 use App\Factory\GroupItemFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\PersonalItemFactory;
@@ -27,7 +28,7 @@ final class BasicStory extends Story
             'roles' => ['ROLE_USER'],
         ]);
 
-        $userJulia = UserFactory::createOne([
+        UserFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
             'email' => 'julia.lorenzo@mail.com',
             'firstname' => 'Julia',
@@ -37,7 +38,7 @@ final class BasicStory extends Story
             'roles' => ['ROLE_USER'],
         ]);
 
-        $userMarie = UserFactory::createOne([
+        UserFactory::createOne([
             'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
             'email' => 'marie.bergamotte@mail.com',
             'firstname' => 'Marie',
@@ -266,13 +267,23 @@ final class BasicStory extends Story
             }
 
             foreach ($groupItemData as $groupItem) {
-                GroupItemFactory::createOne([
-                    'createdAt' => new $groupItem['createdAt'],
+                $createdGroupItem = GroupItemFactory::createOne([
+                    'createdAt' => $groupItem['createdAt'],
                     'name' => $groupItem['name'],
                     'totalQuantity' => $groupItem['totalQuantity'],
                     'trip' => $associatedTrip,
                     'unit' => $groupItem['unit'],
                 ]);
+
+                if ($groupItem['name'] === 'Eau minérale') {
+                    AssignmentFactory::createOne([
+                        'assignedQuantity' => 2,
+                        'isPacked' => false,
+                        'groupItem' => $createdGroupItem,
+                        'assignedTo' => $userAlexandre,
+                        'createdAt' => new \DateTimeImmutable('2026-06-12 12:00:00'),
+                    ]);
+                }
             }
 
             foreach ($personalItemData as $personalItem) {

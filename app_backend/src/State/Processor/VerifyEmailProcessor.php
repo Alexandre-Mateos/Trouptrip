@@ -16,38 +16,26 @@ readonly class VerifyEmailProcessor implements ProcessorInterface
     public function __construct(
         private UserTokenRepository $userTokenRepository,
         private EntityManagerInterface $em
-    )
-    {
-
+    ) {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail(hash('sha256', $data->token), UserTokenTypeEnum::CHECK_EMAIL, $data->email);
-        if(!$userToken){
+        $userToken = $this->userTokenRepository->findValidTokenByTypeAndEmail(
+            hash('sha256', $data->token),
+            UserTokenTypeEnum::CHECK_EMAIL,
+            $data->email
+        );
+
+        if (!$userToken) {
             throw new TokenExpiredException();
         }
 
-        $user = $userToken->getRequester();
-        $this->em->beginTransaction();
+        $user= $userToken->getRequester();
+        $user->setIsVerified(true);
 
-        try{
+        $userToken->setExpiresAt(new \DateTimeImmutable());
 
-            $user->setIsVerified(true);
-            $this->em->persist($user);
-
-            $userToken->setExpiresAt(new \DateTimeImmutable());
-            $this->em->persist($userToken);
-
-            $this->em->flush();
-            $this->em->commit();
-
-        } catch (UniqueConstraintViolationException $e) {
-            $this->em->rollback();
-            throw new ConflictHttpException("Cette ressource existe déjà.");
-        } catch (\Exception $e) {
-            $this->em->rollback();
-            throw new \RuntimeException("Erreur technique imprévue.");
-        }
+        $this->em->flush();
     }
 }

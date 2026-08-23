@@ -1,9 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IInvitation} from "~/interfaces/participation/i-invitation";
+import ActionButton from "~/components/button/ActionButton.vue";
+import DeleteButton from "~/components/button/DeleteButton.vue";
 
 export default defineComponent({
   name: "InvitationCard",
+  components: {DeleteButton, ActionButton},
   props: {
     invitation: {
       type: Object as PropType<IInvitation>,

@@ -2,9 +2,12 @@
 import {defineComponent} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import type {IPersonalItem} from "~/interfaces/personalItem/I-presonalItem";
+import ActionButton from "~/components/button/ActionButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: "PersonalItemForm",
+  components: {CancelButton, ActionButton},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
@@ -80,8 +83,8 @@ export default defineComponent({
     <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="personalItemType" :errors="errors?.unit"/>
 
     <div class="flex gap-2">
-      <ActionButton type="submit" :disabled="isSubmitting" label="Valider"></ActionButton>
-      <CancelButton type="button" @click="$emit('done')"></CancelButton>
+      <ActionButton type="submit" :disabled="isSubmitting">Valider</ActionButton>
+      <CancelButton type="button" @click="$emit('done')">Annuler</CancelButton>
     </div>
   </BaseForm>
 </template>

@@ -7,8 +7,6 @@ use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Assignment;
 use App\Repository\AssignmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 readonly class PatchAssignmentProcessor implements ProcessorInterface
 {

@@ -1,8 +1,21 @@
 <script lang="ts">
-import {defineComponent} from 'vue';
+import { defineComponent } from 'vue';
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "VerifyEmail",
+  components: {ActionButton},
+  setup() {
+    useHead({
+      title: "Vérification de l'email",
+      meta: [
+        {
+          name: 'description',
+          content: 'Saisissez votre code de vérification pour valider votre adresse email et finaliser votre inscription sur TroupTrip.'
+        }
+      ]
+    })
+  },
   data() {
     return {
       success: false,
@@ -29,8 +42,7 @@ export default defineComponent({
         this.redirectToLogin();
 
       } catch (err: any) {
-
-        this.errorMessage = 'Une erreur inattendue est survenue, veuillez réessayer';
+        this.errorMessage = 'Une erreur inattendue est survenue, veuillez réessayer.';
       }
     },
     redirectToLogin(): void {
@@ -38,33 +50,60 @@ export default defineComponent({
         navigateTo('/login');
       }, 4000);
     },
-    handleEmailFromUrl(): void{
+    handleEmailFromUrl(): void {
       const email = this.$route.query.email as string;
-      if(email){
+      if (email) {
         this.email = email;
       }
     }
   },
-  mounted(): any {
+  mounted() {
     this.handleEmailFromUrl();
   }
 })
 </script>
 
 <template>
-  <div v-if="errorMessage">
-    {{ errorMessage }}
-  </div>
+  <div class="flex flex-col gap-6 w-full py-2">
 
-  <div v-if="success">
-    <p>Votre email a pu être vérifié avec succès, vous allez être redirigé vers la page de connexion...</p>
-  </div>
-  <div v-else>
-    <BaseForm @submit="verifyEmail">
-      <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email" required></BaseInput>
-      <OtpInputFields v-model="token" :length="6"/>
-      <BaseButton type="submit">Vérifier mon email</BaseButton>
-    </BaseForm>
+    <header class="text-center space-y-1">
+      <h1 class="text-3xl font-bold">Vérification de votre adresse email</h1>
+    </header>
+
+    <div
+        v-if="success"
+        aria-live="polite"
+        class="p-6 bg-surface-primary-trouptrip border border-trouptrip-accent-200 rounded-md text-center space-y-2 max-w-md mx-auto w-full"
+    >
+      <p class="font-medium text-lg text-green-800">
+        Votre email a été vérifié avec succès !
+      </p>
+      <p class="text-sm text-gray-600">
+        Vous allez être redirigé vers la page de connexion...
+      </p>
+    </div>
+
+    <div v-else class="max-w-md mx-auto w-full">
+      <p v-if="errorMessage" role="alert" class="error-message text-red-800 font-medium text-center mb-4">
+        {{ errorMessage }}
+      </p>
+
+      <BaseForm @submit="verifyEmail">
+        <BaseInput
+            id="email"
+            type="email"
+            name="email"
+            v-model="email"
+            label="Adresse email :"
+            required
+        />
+
+        <OtpInputFields v-model="token" :length="6" />
+
+        <ActionButton type="submit" class="mt-2">Vérifier mon email</ActionButton>
+      </BaseForm>
+    </div>
+
   </div>
 </template>
 

@@ -21,7 +21,7 @@ export default defineComponent({
 <template>
   <UCard
       :ui="{
-        root: 'bg-white shadow-md transform border border-solid border-trouptrip-accent-500 ring-0'
+        root: 'bg-white transform border border-solid border-trouptrip-neutral-300 ring-0'
       }"
   >
     <div class="flex justify-between">
@@ -45,7 +45,7 @@ export default defineComponent({
         <p class="text-xs">{{ item.unit }}</p>
       </div>
     </div>
-    <p class="text-xs text-trouptrip-neutral-500" v-if="isFromGroupItem">Pour le groupe</p>
+    <p class="text-xs" v-if="isFromGroupItem">Pour le groupe</p>
     <slot>
 
     </slot>

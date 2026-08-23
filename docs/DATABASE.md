@@ -17,7 +17,7 @@ Cette section détaille la conception de la base de données du projet **TroupTr
 
 ## 1 - Schéma de la base de données
 
-![Schéma de la base de données](../docs/images/trouptrip_db.png)
+![Schéma de la base de données](../docs/images/trouptrip_db_schema.png)
 *Généré via dbdiagram.io*
 
 ---
@@ -32,24 +32,35 @@ Pour modifier ce schéma, copiez le code ci-dessous et collez-le dans [dbdiagram
 ```dbml
 Table User {
   id integer [primary key]
-  email varchar [unique]
+  email varchar(180) [unique]
   password varchar
-  firstname varchar
-  lastname varchar
-  profileimage varchar [null]
-  roles varchar [note: 'JSON array (ex: ["ROLE_USER"])']
+  firstname varchar(50)
+  lastname varchar(50)
+  roles json [note: 'Array de rôles, ex: ["ROLE_USER"]']
   createdAt datetime_immutable
+  updatedAt datetime_immutable [null]
+  isVerified boolean
+}
+
+Table UserToken {
+  id integer [primary key]
+  requester_id integer [ref: > User.id, not null]
+  token varchar
+  type varchar
+  createdAt datetime_immutable
+  expiresAt datetime_immutable
 }
 
 Table Trip {
   id integer [primary key]
-  owner_id integer [ref: > User.id, not null] // Le créateur/responsable
+  owner_id integer [ref: > User.id, not null]
   title varchar
-  description text
+  description text [null]
   startDate datetime_immutable
   endDate datetime_immutable
   createdAt datetime_immutable
   updatedAt datetime_immutable [null]
+  isDeleted boolean
 }
 
 Table Participation {
@@ -90,7 +101,7 @@ Table GroupItem {
   trip_id integer [ref: > Trip.id, not null]
   name varchar
   totalQuantity integer
-  unit varchar [not null, note: 'ex: kg, pack, pièces']
+  unit varchar [not null, note: 'Valeurs définies par GroupItemUnitEnum']
   createdAt datetime_immutable
   updatedAt datetime_immutable [null]
 }
@@ -98,11 +109,15 @@ Table GroupItem {
 Table Assignment {
   id integer [primary key]
   group_item_id integer [ref: > GroupItem.id, not null]
-  user_id integer [ref: > User.id, not null]
-  assignedQty integer
-  isPacked boolean [default: false]
+  assigned_to_id integer [ref: > User.id, not null]
+  assignedQuantity integer
+  isPacked boolean
   createdAt datetime_immutable
   updatedAt datetime_immutable [null]
+
+  indexes {
+    (group_item_id, assigned_to_id) [unique, name: 'uniq_assignment_group_item_user']
+  }
 }
 
 Table PersonalItem {
@@ -110,9 +125,9 @@ Table PersonalItem {
   trip_id integer [ref: > Trip.id, not null]
   owner_id integer [ref: > User.id, not null]
   name varchar
-  isPacked boolean [default: false]
   quantity integer
-  unit varchar [not null, note: 'ex: kg, pack, pièces']
+  isPacked boolean
+  unit varchar [not null, note: 'Valeurs définies par GroupItemUnitEnum']
   createdAt datetime_immutable
   updatedAt datetime_immutable [null]
 }

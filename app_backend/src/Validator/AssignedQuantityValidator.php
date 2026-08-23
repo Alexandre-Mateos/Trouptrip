@@ -3,8 +3,12 @@
 namespace App\Validator;
 
 use ApiPlatform\Metadata\IriConverterInterface;
+use App\ApiResource\AssignmentResource\AssignmentInputDTO;
+use App\ApiResource\AssignmentResource\AssignmentUpdateDTO;
 use App\Entity\GroupItem;
+use App\Entity\User;
 use App\Repository\AssignmentRepository;
+use App\Service\AssignmentService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
@@ -17,9 +21,9 @@ final class AssignedQuantityValidator extends ConstraintValidator
         private readonly AssignmentRepository $assignmentRepository,
         private readonly IriConverterInterface $iriConverter,
         private readonly Security $security,
-        private readonly RequestStack $requestStack // 2. Injection ici
-    )
-    {
+        private readonly RequestStack $requestStack,
+        private readonly AssignmentService $assignmentService,
+    ) {
     }
 
     public function validate(mixed $value, Constraint $constraint): void
@@ -28,53 +32,117 @@ final class AssignedQuantityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, AssignedQuantity::class);
         }
 
-        if (null === $value || '' === $value) {
+        if ($value === null) {
             return;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-        $assignmentId = $request?->attributes->get('id');
+        if ($value instanceof AssignmentInputDTO) {
+            if (
+                $value->groupItem === null ||
+                $value->groupItem === '' ||
+                $value->assignedQuantity === null
+            ) {
+                return;
+            }
 
-        if ($assignmentId) {
-            $assignment = $this->assignmentRepository->find($assignmentId);
-            $groupItem = $assignment?->getGroupItem();
-        } else {
             /** @var GroupItem $groupItem */
             $groupItem = $this->iriConverter->getResourceFromIri($value->groupItem);
-        }
 
-        if (!$groupItem) {
+            if(!$this->assignmentService->canAddQty($groupItem, $value->assignedQuantity)) {
+                $this->buildViolation($constraint->wrongAddQuantity, 'assignedQuantity');
+            }
             return;
         }
 
-        if($value->isRemoval){
-            $user = $this->security->getUser();
-            $alreadyAssignedQuantityByUser = $this->assignmentRepository->getAssignedQuantityByUserIdAndGroupItemId($user->getId(), $groupItem->getId());
+        if ($value instanceof AssignmentUpdateDTO) {
 
-            if(0 > $alreadyAssignedQuantityByUser - $value->assignedQuantity){
-                $this->context->buildViolation($constraint->wrongRemovalQuantity)
-                    ->atPath('assignedQuantity')
-                    ->setParameter('{{ alreadyAssignedQuantity }}', $alreadyAssignedQuantityByUser)
-                    ->addViolation()
-                ;
-            }
-        }
-
-        if(!$value->isRemoval){
-            $maxQuantity = $groupItem->getTotalQuantity();
-            $alreadyAssignedQuantity = $this->assignmentRepository->getAssignedQuantityByGroupItemId($groupItem->getId());
-
-            $remainingQuantity = $maxQuantity - $alreadyAssignedQuantity;
-            $currentAssignedQuantity = $value->assignedQuantity;
-
-            if($remainingQuantity < $currentAssignedQuantity){
-                $this->context->buildViolation($constraint->wrongAddQuantity)
-                    ->atPath('assignedQuantity')
-                    ->setParameter('{{ available }}', $remainingQuantity)
-                    ->addViolation()
-                ;
+            // DTO vide
+            if (
+                $value->assignedQuantity === null
+                && $value->isRemoval === null
+                && $value->isPacked === null
+            ) {
+                $this->buildViolation($constraint->emptyUpdate);
+                return;
             }
 
+            // DTO avec Quantité mais sans ajout ou retrait
+            if (
+                $value->assignedQuantity !== null
+                && $value->isRemoval === null
+            ) {
+
+                $this->buildViolation($constraint->missingOperationType, 'isRemoval');
+                return;
+            }
+
+            // DTO avec ajout/retrait mais sans quantité
+            if (
+                $value->assignedQuantity === null
+                && $value->isRemoval !== null
+            ) {
+                $this->buildViolation($constraint->missingQuantity, 'assignedQuantity');
+                return;
+            }
+
+            // Uniquement isPacked, on laise passer
+            if ($value->assignedQuantity === null) {
+                return;
+            }
+
+            $request = $this->requestStack->getCurrentRequest();
+            $assignmentId = $request?->attributes->get('id');
+
+            if (!$assignmentId) {
+                return;
+            }
+
+            $assignment = $this->assignmentRepository->findOneBy(['id' => $assignmentId]);
+
+            if (!$assignment) {
+                return;
+            }
+
+            $groupItem = $assignment->getGroupItem();
+
+            if ($value->isRemoval === true) {
+                $user = $this->security->getUser();
+
+                if (!$user instanceof User) {
+                    return;
+                }
+
+                if (!$this->assignmentService->canSubtractQty(
+                    $user,
+                    $groupItem,
+                    $value->assignedQuantity
+                )) {
+                    $this->buildViolation(
+                        'assignedQuantity',
+                        $constraint->wrongRemovalQuantity
+                    );
+                }
+                return;
+            }
+
+            if (!$this->assignmentService->canAddQty(
+                $groupItem,
+                $value->assignedQuantity
+            )) {
+                $this->buildViolation(
+                    'assignedQuantity',
+                    $constraint->wrongAddQuantity
+                );
+            }
         }
+    }
+
+    private function buildViolation(string $message, ?string $path = null, ): void
+    {
+        $violation = $this->context->buildViolation($message);
+        if ($path !== null) {
+            $violation->atPath($path);
+        }
+        $violation->addViolation();
     }
 }

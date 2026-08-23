@@ -2,9 +2,22 @@
 import {defineComponent} from 'vue'
 import type {IRegisterUser} from "~/interfaces/i-registerUser";
 import {apiEndpoints} from "~/utils/apiEndpoints";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "register",
+  components: {ActionButton},
+  setup() {
+    useHead({
+      title: 'Créer un compte',
+      meta: [
+        {
+          name: 'description',
+          content: 'Rejoignez TroupTrip pour organiser vos voyages en groupe, planifier vos activités et partager vos escapades facilement.'
+        }
+      ]
+    })
+  },
   data() {
     return {
       email: "",
@@ -36,7 +49,7 @@ export default defineComponent({
       this.errors = {};
       this.success = false;
       try {
-        const response = await this.$api<IRegisterUser>(
+        await this.$api<IRegisterUser>(
             apiEndpoints.users,
             {
               method: 'POST',
@@ -98,7 +111,7 @@ export default defineComponent({
                  label="Confirmer le mot de passe"></BaseInput>
       <ActionButton type="submit">Valider</ActionButton>
 
-      <div v-if="errors?.unexpected">
+      <div v-if="errors?.unexpected" role="alert" class="text-center text-red-800">
         <ul>
           <li v-for="(message, index) in errors.unexpected" :key="index">
             {{ message }}

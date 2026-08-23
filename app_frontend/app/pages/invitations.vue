@@ -1,9 +1,23 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { IInvitation } from "~/interfaces/participation/i-invitation";
+import DeleteButton from "~/components/button/DeleteButton.vue";
+import CancelButton from "~/components/button/CancelButton.vue";
 
 export default defineComponent({
   name: "invitations",
+  components: {CancelButton, DeleteButton},
+  setup() {
+    useHead({
+      title: 'Mes invitations',
+      meta: [
+        {
+          name: 'description',
+          content: 'Consultez et gérez vos invitations reçues pour rejoindre des voyages en groupe sur TroupTrip.'
+        }
+      ]
+    })
+  },
   data() {
     return {
       error: '',
@@ -50,32 +64,44 @@ export default defineComponent({
 </script>
 
 <template>
-  <template v-if="hasInvitations">
-    <InvitationCard
-        v-for="invitation in participationStore.invitationList"
-        :key="invitation.id"
-        :invitation="invitation"
-        @decline="toggleDeclineInvitationModal(invitation)"
-    />
-  </template>
+  <div class="flex flex-col gap-6 w-full py-2">
+    <header class="text-center space-y-1">
+      <h1 class="text-3xl font-bold">Mes invitations</h1>
+    </header>
 
-  <div v-else>
-    <p>Rien à l'horizon pour l'instant !</p>
-    <p>Et si c'était vous qui preniez les devants en organisant la prochaine escapade ?</p>
-  </div>
+    <p v-if="error" role="alert" class="error-message text-red-800 font-medium text-center">
+      {{ error }}
+    </p>
 
-  <BaseModal :open="isDeclineTripModalOpen">
-    <div>
-      <p>Vous êtes sur le point de décliner l'invitation de {{ activeInvitation?.invitedBy.firstname }} pour le voyage suivant :</p>
-      <p class="font-bold">{{ activeInvitation?.trip.title }}</p>
-      <p>Êtes-vous sûr de vouloir continuer ?</p>
+    <section v-if="hasInvitations" class="flex flex-col gap-4" aria-label="Liste des invitations reçues">
+      <InvitationCard
+          v-for="invitation in participationStore.invitationList"
+          :key="invitation.id"
+          :invitation="invitation"
+          @decline="toggleDeclineInvitationModal(invitation)"
+      />
+    </section>
 
-      <div class="flex flex-row justify-center gap-2 mt-4">
-        <DeleteButton icon="mdi:ban" label="Décliner" @click="declineInvitation" />
-        <CancelButton @click="toggleDeclineInvitationModal" />
+    <section v-else class="p-6 bg-trouptrip-accent-100 border border-trouptrip-accent-200 rounded-md text-center space-y-2">
+      <p class="font-medium text-lg">Rien à l'horizon pour l'instant !</p>
+      <p class="text-sm text-gray-600">
+        Et si c'était vous qui preniez les devants en organisant la prochaine escapade ?
+      </p>
+    </section>
+
+    <BaseModal :open="isDeclineTripModalOpen">
+      <div>
+        <p>Vous êtes sur le point de décliner l'invitation de {{ activeInvitation?.invitedBy.firstname }} pour le voyage suivant :</p>
+        <p class="font-bold my-2 text-center text-lg">{{ activeInvitation?.trip.title }}</p>
+        <p>Êtes-vous sûr de vouloir continuer ?</p>
+
+        <div class="flex flex-row justify-center gap-2 mt-4">
+          <DeleteButton icon="mdi:ban" @click="declineInvitation" >Décliner</DeleteButton>
+          <CancelButton @click="toggleDeclineInvitationModal">Annuler</CancelButton>
+        </div>
       </div>
-    </div>
-  </BaseModal>
+    </BaseModal>
+  </div>
 </template>
 
 <style scoped>

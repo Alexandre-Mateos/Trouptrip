@@ -1,10 +1,22 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {apiEndpoints} from "~/utils/apiEndpoints";
-import type {IRegisterUser} from "~/interfaces/i-registerUser";
+import ActionButton from "~/components/button/ActionButton.vue";
 
 export default defineComponent({
   name: "login",
+  components: {ActionButton},
+  setup() {
+    useHead({
+      title: 'Se connecter',
+      meta: [
+        {
+          name: 'description',
+          content: 'Accédez à votre compte TroupTrip pour retrouver vos séjours et invitations.'
+        }
+      ]
+    })
+  },
   data(){
     return{
       email: "",
@@ -17,7 +29,7 @@ export default defineComponent({
       try {
         this.errorMessage = "";
 
-        const response = await this.$api(
+        await this.$api(
             apiEndpoints.login,
             {
               method: 'POST',
@@ -48,11 +60,11 @@ export default defineComponent({
     <BaseInput id="email" type="email" name="email" v-model="email" label="Adresse email"></BaseInput>
     <BaseInput id="password" type="password" name="password" v-model="password" label="Mot de passe"></BaseInput>
     <ActionButton type="submit">Valider</ActionButton>
-    <div v-if="errorMessage" class="text-center text-red-800">
+    <div v-if="errorMessage" role="alert" class="text-center text-red-800">
       {{ errorMessage }}
     </div>
     <nav>
-      <NuxtLink :to="{path: '/forgot-password', query: {email: email}}">Mot de passe oublié</NuxtLink>
+      <NuxtLink :to="{path: '/forgot-password', query: {email: email}}" class="text-trouptrip-accent-700">Mot de passe oublié</NuxtLink>
     </nav>
   </BaseForm>
 </template>

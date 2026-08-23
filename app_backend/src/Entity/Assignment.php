@@ -40,7 +40,7 @@ use App\Validator as AssignmentAssert;
         ),
         new Patch(
             normalizationContext: ['groups' => 'assignment:collection'],
-            security: "is_granted('ASSIGNMENT_CREATE', object)",
+            security: "is_granted('ASSIGNMENT_EDIT', object)",
             input: AssignmentUpdateDTO::class,
             processor: PatchAssignmentProcessor::class
         ),
@@ -50,6 +50,10 @@ use App\Validator as AssignmentAssert;
     ]
 )]
 #[ORM\Entity(repositoryClass: AssignmentRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'uniq_assignment_group_item_user',
+    fields: ['groupItem', 'assignedTo']
+)]
 #[AssignmentAssert\AssignedQuantity]
 class Assignment implements CreatedAtInterface
 {
