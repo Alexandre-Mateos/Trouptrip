@@ -1,24 +1,54 @@
 services:
   php:
+    build:
+      target: php-prod
     restart: always
+    env_file:
+      - .env
     environment:
       APP_ENV: prod
+      APP_DEBUG: 0
+      SKIP_DOTENV: 1
+    networks:
+      - default
+      - db_network
 
-  nginx:
+  messenger-worker:
+    build:
+      target: php-prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      SKIP_DOTENV: 1
+    command: php bin/console messenger:consume async
+    depends_on:
+      - php
+    networks:
+      - default
+      - db_network
+
+  nginx-service:
     restart: always
     networks:
       - default
       - web
 
-  db:
-    restart: always
 
   node-front:
+    build:
+      target: node-front
     restart: always
     networks:
       - default
       - web
+    environment:
+      NUXT_PUBLIC_API_BASE_URL : ${NUXT_PUBLIC_API_BASE_URL}
 
 networks:
   web:
+    external: true
+  db_network:
     external: true

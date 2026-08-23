@@ -1,0 +1,20 @@
+export const apiEndpoints = {
+    login: '/login_check',
+    logout: '/logout',
+    users: '/users',
+    verifyEmail: '/verify_email',
+    forgotPassword: '/forgot_password',
+    resetPassword: '/reset_password',
+    userMe: '/me',
+    trips: '/trips',
+    tripCalendar: '/trips/calendar',
+    groupItemCollection: (tripId: number) => `/trips/${tripId}/group_items`,
+    groupItems: '/group_items',
+    assignmentCollection: (tripId: number) => `/trips/${tripId}/assignments`,
+    assignments: '/assignments',
+    personalItemCollection: (tripId: number) => `/trips/${tripId}/personal_items`,
+    personalItems: '/personal_items',
+    participationCollection: (tripId: number) => `/trips/${tripId}/participation`,
+    participations: '/participations',
+    invitations: '/me/invitations'
+} as const

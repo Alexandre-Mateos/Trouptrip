@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          BRANCH: ${{ github.ref_name }}
+
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: BRANCH
+
+          script: |
+            if [ "$BRANCH" = "main" ]; then
+              TARGET_DIR="/opt/apps/trouptrip/prod"
+            else
+              TARGET_DIR="/opt/apps/trouptrip/preprod"
+            fi
+
+            echo "Deploy de la branche $BRANCH"
+            echo "Dossier cible : $TARGET_DIR"
+
+            cd "$TARGET_DIR"
+
+            git fetch origin "$BRANCH"
+            git checkout "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            git clean -fd
+            
+            docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
+            
+            docker compose exec -T php php bin/console cache:clear --env=prod
+            docker compose exec -T php php bin/console doctrine:database:create --if-not-exists
+            docker compose exec -T php php bin/console d:m:m --no-interaction
+            docker compose exec -T php php bin/console lexik:jwt:generate-keypair --skip-if-exists
+
+            docker image prune -f

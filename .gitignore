@@ -1,8 +1,10 @@
 # Secrets Docker
-.env
-.env.local
-.env.*.local
+/.env
+/.env.local
+/.env.*.local
 
 # IDE
 .idea/
 .vscode/
+
+*.Identifier

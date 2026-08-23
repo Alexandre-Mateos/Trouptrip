@@ -1,0 +1,31 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block header_title %}
+    Vérification de votre adresse email
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <p>
+            Bonjour {{ firstname }},
+        </p>
+        <p>
+            Pas si vite !
+        </p>
+        <p>
+            Avant de te laisser continuer, nous devons nous assurer qu'il s'agit bien de ton adresse email !
+        </p>
+        {% include 'email/component/email_security_cta.html.twig' with {
+            'url': url,
+            'rawToken': rawToken,
+            'buttonLabel': buttonLabel
+        } %}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+@import url('fonts.css');
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-trouptrip-title);
+}
+
+@theme static {
+    --color-trouptrip-accent-50: #effafb;
+    --color-trouptrip-accent-100: #d7f1f4;
+    --color-trouptrip-accent-200: #b3e3e9;
+    --color-trouptrip-accent-300: #7dcdb8;
+    --color-trouptrip-accent-400: #43b0c0;
+    --color-trouptrip-accent-500: #0e9aa7;
+    --color-trouptrip-accent-600: #0b7c8a;
+    --color-trouptrip-accent-700: #0d6470;
+    --color-trouptrip-accent-800: #11535d;
+    --color-trouptrip-accent-900: #12454e;
+    --color-trouptrip-accent-950: #062d35;
+
+    --color-trouptrip-error-50: #fff5f5;
+    --color-trouptrip-error-100: #ffe5e6;
+    --color-trouptrip-error-200: #fecdcf;
+    --color-trouptrip-error-300: #fba5a8;
+    --color-trouptrip-error-400: #f77276;
+    --color-trouptrip-error-500: #e9585b;
+    --color-trouptrip-error-600: #d63337;
+    --color-trouptrip-error-700: #b42124;
+    --color-trouptrip-error-800: #951e21;
+    --color-trouptrip-error-900: #7c1e20;
+    --color-trouptrip-error-950: #440b0c;
+
+    --color-trouptrip-success-50: #f1fcf2;
+    --color-trouptrip-success-100: #def9e0;
+    --color-trouptrip-success-200: #bef2c3;
+    --color-trouptrip-success-300: #8ee596;
+    --color-trouptrip-success-400: #55cf60;
+    --color-trouptrip-success-500: #26B32D;
+    --color-trouptrip-success-600: #1b9322;
+    --color-trouptrip-success-700: #18741e;
+    --color-trouptrip-success-800: #185c1d;
+    --color-trouptrip-success-900: #164c1b;
+    --color-trouptrip-success-950: #072a0b;
+
+    --color-trouptrip-neutral-50: #f9fafb;
+    --color-trouptrip-neutral-100: #f3f4f6;
+    --color-trouptrip-neutral-200: #e5e7eb;
+    --color-trouptrip-neutral-300: #d1d5db;
+    --color-trouptrip-neutral-400: #9ca3af;
+    --color-trouptrip-neutral-500: #6b7280;
+    --color-trouptrip-neutral-600: #4b5563;
+    --color-trouptrip-neutral-700: #374151;
+    --color-trouptrip-neutral-800: #1f2937;
+    --color-trouptrip-neutral-950: #030712;
+
+    --color-surface-primary-trouptrip: #edf7f6;
+    --color-surface-secondary-trouptrip: #F7FAF9;
+    --color-trouptrip-title: #292843;
+}

@@ -1,0 +1,35 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+    Nouvelle invitation à un séjour
+{% endblock %}
+
+{% block header_title %}
+    Nouvelle invitation à un séjour
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <p>
+            Bonjour {{ invitedUser.firstname }},
+        </p>
+        <p>
+            {{ invitedBy.firstname }} {{ invitedBy.lastname }} souhaite t'inviter au séjour suivant :
+        </p>
+        <p>
+            {{ trip.title }}
+        </p>
+        <p>
+            {{ trip.description }}
+        </p>
+        <p>
+            Du {{ trip.startDate|date('d/m/Y') }} au {{ trip.endDate|date('d/m/Y') }}
+        </p>
+        <p>
+            Rend toi vite sur <a href="{{ url }}">TroupTrip</a>, pour répondre à son invitation !
+        </p>
+
+    </div>
+
+{% endblock %}

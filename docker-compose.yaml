@@ -3,30 +3,17 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: php
 
-  nginx:
-    image: nginx:alpine
+  nginx-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: nginx-service
     depends_on:
       - php
 
-  db:
-    image: postgres:17-alpine
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - db_data:/var/lib/postgresql
 
   node-front:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: node-front
-    environment:
-      - HOST=0.0.0.0
-      - PORT=3000
-
-volumes:
-  db_data:
