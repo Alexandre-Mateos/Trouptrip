@@ -1,15 +1,22 @@
 api_platform:
     title: Hello API Platform
     version: 1.0.0
+
     defaults:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
 
     exception_to_status:
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400
+        ApiPlatform\Exception\InvalidArgumentException: 400
+        ApiPlatform\ParameterValidator\Exception\ValidationExceptionInterface: 400
+        Doctrine\ORM\OptimisticLockException: 409
+        ApiPlatform\Validator\Exception\ValidationException: 422
+
         App\Exception\TokenExpiredException: 400
         App\Exception\VerifiedUserException: 400
 
     formats:
-        jsonld: [ 'application/ld+json' ]
-        json: [ 'application/json' ]
+        jsonld: ['application/ld+json']
+        json: ['application/json']
