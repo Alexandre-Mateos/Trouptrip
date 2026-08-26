@@ -213,22 +213,17 @@ export const useAssignmentsStore = defineStore('assignments', {
             const {$api} = useNuxtApp();
             const url = `${apiEndpoints.assignments}/${assignmentId}`;
 
-            try {
-                await $api(url, {
-                    method: 'DELETE'
-                });
+            await $api(url, {
+                method: 'DELETE'
+            });
 
-                this.assignments.delete(assignmentId);
+            this.assignments.delete(assignmentId);
 
-                if (groupItem.assignments.includes(assignmentId)) {
-                    const index = groupItem.assignments.indexOf(assignmentId);
-                    if (index !== -1) {
-                        groupItem.assignments.splice(index, 1);
-                    }
+            if (groupItem.assignments.includes(assignmentId)) {
+                const index = groupItem.assignments.indexOf(assignmentId);
+                if (index !== -1) {
+                    groupItem.assignments.splice(index, 1);
                 }
-
-            } catch (error: any) {
-                throw error;
             }
         },
         clearStore() {
