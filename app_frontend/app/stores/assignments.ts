@@ -90,19 +90,19 @@ export const useAssignmentsStore = defineStore('assignments', {
                 return undefined;
             }
         },
-        getAssignedGroupItemsTotalCountByUserAndTrip(){
+        getAssignedGroupItemsTotalCountByUserAndTrip() {
             return (tripId: number, userId: number) => {
                 const assignedGroupItems = this.getAssignedGroupItemsByUserAndTrip(tripId, userId);
                 return assignedGroupItems.length;
             }
         },
-        getIsPackedAssignedItemsCountByTripId(){
+        getIsPackedAssignedItemsCountByTripId() {
             return (tripId: number, userId: number) => {
                 const assignedGroupItems = this.getAssignedGroupItemsByUserAndTrip(tripId, userId);
                 let count = 0;
                 assignedGroupItems.forEach((assignedItem) => {
-                    if(assignedItem.isPacked){
-                        count ++;
+                    if (assignedItem.isPacked) {
+                        count++;
                     }
                 });
                 return count;
@@ -194,9 +194,6 @@ export const useAssignmentsStore = defineStore('assignments', {
             try {
                 const response = await $api<IAssignment>(url, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/merge-patch+json'
-                    },
                     body: body
                 });
 
@@ -204,15 +201,8 @@ export const useAssignmentsStore = defineStore('assignments', {
 
                 const index = groupItem.assignments.indexOf(assignmentId);
 
-                if (response.assignedQuantity === 0) {
-                    this.assignments.delete(assignmentId);
-                    if (index !== -1) {
-                        groupItem.assignments.splice(index, 1);
-                    }
-                } else {
-                    if (index === -1) {
-                        groupItem.assignments.push(assignmentId);
-                    }
+                if (index === -1) {
+                    groupItem.assignments.push(assignmentId);
                 }
 
             } catch (error: any) {
@@ -241,7 +231,7 @@ export const useAssignmentsStore = defineStore('assignments', {
                 throw error;
             }
         },
-        clearStore(){
+        clearStore() {
             this.assignments.clear();
             this.assignmentsByUsers.clear();
             this.fetching = false;

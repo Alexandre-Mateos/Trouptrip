@@ -234,9 +234,6 @@ export const useTripsStore = defineStore('trips', {
             try {
                 const response = await $api<ITripDetails>(url, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/merge-patch+json'
-                    },
                     body: {
                         title: body.tripTitle,
                         description: body.tripDescription,

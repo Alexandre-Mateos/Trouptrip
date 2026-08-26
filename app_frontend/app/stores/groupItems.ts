@@ -77,9 +77,6 @@ export const useGroupItemsStore = defineStore('groupItems', {
             try {
                 const response = await $api<IMapGroupItem>(url, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/merge-patch+json'
-                    },
                     body: body
                 });
 
