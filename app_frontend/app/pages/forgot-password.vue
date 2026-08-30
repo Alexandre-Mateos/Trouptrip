@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ActionButton from "~/components/button/ActionButton.vue";
+import BaseForm from "~/components/form/BaseForm.vue";
 
 export default defineComponent({
   name: "forgot-password",
-  components: {ActionButton},
+  components: {BaseForm, ActionButton},
   setup() {
     useHead({
       title: "Mot de passe oublié",

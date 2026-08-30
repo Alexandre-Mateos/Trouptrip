@@ -4,9 +4,10 @@ import {useTripsStore} from "~/stores/trips";
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
 import ActionButton from "~/components/button/ActionButton.vue";
 import CancelButton from "~/components/button/CancelButton.vue";
+import BaseForm from "~/components/form/BaseForm.vue";
 
 export default defineComponent({
-  components: {CancelButton, ActionButton},
+  components: {BaseForm, CancelButton, ActionButton},
   props: {
     tripToEdit: {
       type: Object as PropType<IMapTripDetails | null>,
