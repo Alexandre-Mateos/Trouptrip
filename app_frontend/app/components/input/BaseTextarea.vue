@@ -1,6 +1,5 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import Input from "~/components/BaseInput.vue";
 
 export default defineComponent({
   name: "BaseTextarea",

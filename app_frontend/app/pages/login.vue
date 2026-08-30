@@ -2,10 +2,12 @@
 import {defineComponent} from 'vue'
 import {apiEndpoints} from "~/utils/apiEndpoints";
 import ActionButton from "~/components/button/ActionButton.vue";
+import BaseForm from "~/components/form/BaseForm.vue";
+import BaseInput from "~/components/input/BaseInput.vue";
 
 export default defineComponent({
   name: "login",
-  components: {ActionButton},
+  components: {BaseForm, ActionButton, BaseInput},
   setup() {
     useHead({
       title: 'Se connecter',

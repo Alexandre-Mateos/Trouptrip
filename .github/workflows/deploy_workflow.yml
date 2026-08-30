@@ -23,6 +23,9 @@ jobs:
           envs: BRANCH
 
           script: |
+            
+            set -e
+            
             if [ "$BRANCH" = "main" ]; then
               TARGET_DIR="/opt/apps/trouptrip/prod"
             else

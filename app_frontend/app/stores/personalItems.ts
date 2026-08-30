@@ -126,9 +126,6 @@ export const usePersonalItemsStore = defineStore('personalItem', {
             try {
                 const response = await $api<IPersonalItem>(url, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/merge-patch+json'
-                    },
                     body: body
                 });
                 this.personalItems.set(response.id, response);

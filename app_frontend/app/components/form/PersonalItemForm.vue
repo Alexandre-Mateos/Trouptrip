@@ -1,28 +1,29 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import type {IMapTripDetails} from "~/interfaces/trip/store/i-mapTripDetails";
-import type {IMapGroupItem} from "~/interfaces/groupItem/i-mapGroupItem";
+import type {IPersonalItem} from "~/interfaces/personalItem/I-presonalItem";
 import ActionButton from "~/components/button/ActionButton.vue";
 import CancelButton from "~/components/button/CancelButton.vue";
+import BaseForm from "~/components/form/BaseForm.vue";
 
 export default defineComponent({
-  name: "GroupItemForm",
-  components: {CancelButton, ActionButton},
+  name: "PersonalItemForm",
+  components: {BaseForm, CancelButton, ActionButton},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
       required: true
     },
-    groupItemToEdit: {
-      type: Object as PropType<IMapGroupItem | null>,
+    personalItemToEdit: {
+      type: Object as PropType<IPersonalItem | null>,
       default: null
     }
   },
   data() {
     return {
-      groupItemName: '',
-      groupItemTotalQty: 0,
-      groupItemType: '',
+      personalItemName: '',
+      personalItemQty: 0,
+      personalItemType: '',
       errors: {} as Record<string, string[]>,
       isSubmitting: false,
       selectOptions: [
@@ -40,21 +41,20 @@ export default defineComponent({
       this.errors = {};
       this.isSubmitting = true;
 
-      const body = {
-        name: this.groupItemName,
-        totalQuantity: this.groupItemTotalQty,
-        unit: this.groupItemType,
-        trip: this.trip["@id"]
+      const payload = {
+        name: this.personalItemName,
+        quantity: this.personalItemQty,
+        unit: this.personalItemType
       };
 
       let response;
 
       try {
 
-        if(this.groupItemToEdit){
-          response = await useGroupItemsStore().updateGroupItem(this.trip, body, this.groupItemToEdit.id);
+        if(this.personalItemToEdit){
+          response = await usePersonalItemsStore().updatePersonalItem(this.trip, this.personalItemToEdit.id, payload);
         }else{
-          response = await useGroupItemsStore().submitGroupItem(this.trip, body);
+          response = await usePersonalItemsStore().postPersonalItem(this.trip, payload);
         }
 
         this.$emit('done');
@@ -67,21 +67,21 @@ export default defineComponent({
     }
   },
   mounted(): any {
-    if(this.groupItemToEdit){
-      this.groupItemName = this.groupItemToEdit.name;
-      this.groupItemTotalQty = this.groupItemToEdit.totalQuantity;
-      this.groupItemType = this.groupItemToEdit.unit;
+    if(this.personalItemToEdit){
+      this.personalItemName = this.personalItemToEdit.name;
+      this.personalItemQty = this.personalItemToEdit.quantity;
+      this.personalItemType = this.personalItemToEdit.unit;
     }
   }
-});
+})
 </script>
 
 <template>
   <BaseForm class="w-full" @submit="handleSubmit">
-    <BaseInput id="groupItem_name" label="Nom" v-model="groupItemName" :errors="errors?.name"/>
-    <NumberInput id="groupItem_totalQty" type="number" label="Quantité"
-                 v-model="groupItemTotalQty" :errors="errors?.totalQuantity"></NumberInput>
-    <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="groupItemType" :errors="errors?.unit"/>
+    <BaseInput id="personalItem_name" label="Nom" v-model="personalItemName" :errors="errors?.name"/>
+    <NumberInput id="personalItem_qty" type="number" label="Quantité" min="1"
+                 v-model="personalItemQty" :errors="errors?.quantity"></NumberInput>
+    <BaseSelect :select-options="selectOptions" select-name="type-options" label="Type" v-model="personalItemType" :errors="errors?.unit"/>
 
     <div class="flex gap-2">
       <ActionButton type="submit" :disabled="isSubmitting">Valider</ActionButton>

@@ -2,10 +2,11 @@
 import {defineComponent} from 'vue'
 import {useTripsStore} from "~/stores/trips";
 import ActionButton from "~/components/button/ActionButton.vue";
+import TripForm from "~/components/form/TripForm.vue";
 
 export default defineComponent({
   name: "trip",
-  components: {ActionButton},
+  components: {TripForm, ActionButton},
 
   setup() {
     useHead({
