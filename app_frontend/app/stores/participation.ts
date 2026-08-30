@@ -171,7 +171,6 @@ export const useParticipationStore = defineStore('participation', {
             try {
                 const response = await $api<IParticipation>(url, {
                     method: 'PATCH',
-                    headers: {'Content-Type': 'application/merge-patch+json'},
                     body
                 });
 

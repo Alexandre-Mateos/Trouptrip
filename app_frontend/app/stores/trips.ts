@@ -48,10 +48,13 @@ export const useTripsStore = defineStore('trips', {
             return state.tripListIds[0];
         },
         getUpcomingTrip: (state) => {
+            const today = new Date();
             let nextTrip = null as IMapTrip | IMapTripDetails | null;
 
             state.trips.forEach((trip) => {
-                if (!nextTrip || trip.startDate < nextTrip.startDate) {
+                const startDate = new Date(trip.startDate);
+
+                if (startDate >= today && (!nextTrip || startDate < new Date(nextTrip.startDate))) {
                     nextTrip = trip;
                 }
             });
@@ -234,9 +237,6 @@ export const useTripsStore = defineStore('trips', {
             try {
                 const response = await $api<ITripDetails>(url, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/merge-patch+json'
-                    },
                     body: {
                         title: body.tripTitle,
                         description: body.tripDescription,

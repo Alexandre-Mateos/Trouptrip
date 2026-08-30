@@ -7,6 +7,13 @@ export default defineNuxtConfig({
         typeCheck: true,
     },
 
+    components: [
+        {
+            path: '~/components',
+            pathPrefix: false,
+        },
+    ],
+
     runtimeConfig: {
         // Nuxt utilisera la variable d'environnement injectée par Docker
         public: {

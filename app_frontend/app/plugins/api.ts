@@ -7,12 +7,15 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         onRequest({ options }) {
             const headers = new Headers(options.headers);
+            const method = (options.method ?? 'GET').toUpperCase();
 
-            if (!headers.has('Content-Type')) {
+            if (method === 'PATCH') {
+                headers.set('Content-Type', 'application/merge-patch+json');
+            } else if (!headers.has('Content-Type')) {
                 headers.set('Content-Type', 'application/ld+json');
             }
-            headers.set('Accept', 'application/ld+json');
 
+            headers.set('Accept', 'application/ld+json');
             options.headers = headers;
         },
 

@@ -118,8 +118,8 @@ final class AssignedQuantityValidator extends ConstraintValidator
                     $value->assignedQuantity
                 )) {
                     $this->buildViolation(
-                        'assignedQuantity',
-                        $constraint->wrongRemovalQuantity
+                        $constraint->wrongRemovalQuantity,
+                        'assignedQuantity'
                     );
                 }
                 return;
@@ -130,8 +130,8 @@ final class AssignedQuantityValidator extends ConstraintValidator
                 $value->assignedQuantity
             )) {
                 $this->buildViolation(
-                    'assignedQuantity',
-                    $constraint->wrongAddQuantity
+                    $constraint->wrongAddQuantity,
+                    'assignedQuantity'
                 );
             }
         }

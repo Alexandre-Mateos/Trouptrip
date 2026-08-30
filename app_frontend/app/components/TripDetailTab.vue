@@ -9,10 +9,12 @@ import DeleteButton from "~/components/button/DeleteButton.vue";
 import SecondaryButton from "~/components/button/SecondaryButton.vue";
 import EditButton from "~/components/button/EditButton.vue";
 import CancelButton from "~/components/button/CancelButton.vue";
+import TripForm from "~/components/form/TripForm.vue";
+import InviteUserForm from "~/components/form/InviteUserForm.vue";
 
 export default defineComponent({
   name: "TripDetailTab",
-  components: {CancelButton, EditButton, SecondaryButton, DeleteButton, ActionButton},
+  components: {InviteUserForm, TripForm, CancelButton, EditButton, SecondaryButton, DeleteButton, ActionButton},
   props: {
     trip: {
       type: Object as PropType<IMapTripDetails>,
