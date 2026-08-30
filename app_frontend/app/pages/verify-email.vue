@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ActionButton from "~/components/button/ActionButton.vue";
+import BaseForm from "~/components/form/BaseForm.vue";
 
 export default defineComponent({
   name: "VerifyEmail",
-  components: {ActionButton},
+  components: {BaseForm, ActionButton},
   setup() {
     useHead({
       title: "Vérification de l'email",

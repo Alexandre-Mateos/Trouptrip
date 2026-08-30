@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "Input",
+  name: "BaseInput",
   inheritAttrs: false,
   props: {
     label: {

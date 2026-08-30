@@ -48,10 +48,13 @@ export const useTripsStore = defineStore('trips', {
             return state.tripListIds[0];
         },
         getUpcomingTrip: (state) => {
+            const today = new Date();
             let nextTrip = null as IMapTrip | IMapTripDetails | null;
 
             state.trips.forEach((trip) => {
-                if (!nextTrip || trip.startDate < nextTrip.startDate) {
+                const startDate = new Date(trip.startDate);
+
+                if (startDate >= today && (!nextTrip || startDate < new Date(nextTrip.startDate))) {
                     nextTrip = trip;
                 }
             });
