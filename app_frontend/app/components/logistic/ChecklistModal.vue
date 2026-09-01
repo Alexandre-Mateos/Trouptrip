@@ -118,7 +118,6 @@ export default defineComponent({
             v-for="personalItem in personalItems"
             :key="personalItem.id"
             :item="personalItem"
-            :trip="trip"
         />
       </div>
 

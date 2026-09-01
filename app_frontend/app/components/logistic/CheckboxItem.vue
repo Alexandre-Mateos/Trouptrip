@@ -21,22 +21,23 @@ export default defineComponent({
     }
   },
   methods: {
-    updateIsPacked() {
+    async updateIsPacked() {
       const body = { isPacked: this.isPacked };
 
-      if (this.isFromAssignedGroupItem) {
-        const currentUser = useUserStore().user;
-        if (currentUser) {
-          const groupItem = useGroupItemsStore().groupItems.get(this.item.id);
-          if (groupItem) {
-            const assignment = useAssignmentsStore().getAssignmentByGroupItemAndUser(groupItem, currentUser.id);
-            if (assignment) {
-              useAssignmentsStore().updateAssignment(groupItem, assignment.id, body);
-            }
-          }
-        }
-      } else {
-        usePersonalItemsStore().updatePersonalItem(this.item.id, body);
+      if (!this.isFromAssignedGroupItem) {
+        return usePersonalItemsStore().updatePersonalItem(this.item.id, body);
+      }
+
+      const currentUser = useUserStore().user;
+      const assignmentsStore = useAssignmentsStore();
+      const groupItem = useGroupItemsStore().groupItems.get(this.item.id);
+
+      if (!currentUser || !groupItem) return;
+
+      const assignment = assignmentsStore.getAssignmentByGroupItemAndUser(groupItem, currentUser.id);
+
+      if (assignment) {
+        await assignmentsStore.updateAssignment(groupItem, assignment.id, body);
       }
     }
   }
