@@ -52,7 +52,7 @@ export default defineComponent({
       try {
 
         if(this.personalItemToEdit){
-          response = await usePersonalItemsStore().updatePersonalItem(this.trip, this.personalItemToEdit.id, payload);
+          response = await usePersonalItemsStore().updatePersonalItem(this.personalItemToEdit.id, payload);
         }else{
           response = await usePersonalItemsStore().postPersonalItem(this.trip, payload);
         }

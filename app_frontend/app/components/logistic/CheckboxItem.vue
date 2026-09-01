@@ -2,15 +2,10 @@
 import { defineComponent, type PropType } from 'vue'
 import type { IAssignedItem } from "~/interfaces/i-assignedItem";
 import type { IPersonalItem } from "~/interfaces/personalItem/I-presonalItem";
-import type { IMapTripDetails } from "~/interfaces/trip/store/i-mapTripDetails";
 
 export default defineComponent({
   name: "CheckboxItem",
   props: {
-    trip: {
-      type: Object as PropType<IMapTripDetails>,
-      required: true
-    },
     item: {
       type: Object as PropType<IAssignedItem | IPersonalItem>,
       required: true
@@ -41,7 +36,7 @@ export default defineComponent({
           }
         }
       } else {
-        usePersonalItemsStore().updatePersonalItem(this.trip, this.item.id, body);
+        usePersonalItemsStore().updatePersonalItem(this.item.id, body);
       }
     }
   }

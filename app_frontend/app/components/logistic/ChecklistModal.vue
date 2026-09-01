@@ -101,7 +101,6 @@ export default defineComponent({
             :key="assignedItem.id"
             :item="assignedItem"
             :is-from-assigned-group-item="true"
-            :trip="trip"
         />
       </div>
 

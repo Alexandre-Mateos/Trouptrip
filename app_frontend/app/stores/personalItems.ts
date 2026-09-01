@@ -72,8 +72,6 @@ export const usePersonalItemsStore = defineStore('personalItem', {
                     }
                 })
 
-            } catch (error: any) {
-                throw error;
             } finally {
                 this.fetching = false;
             }
@@ -104,14 +102,11 @@ export const usePersonalItemsStore = defineStore('personalItem', {
                     trip.personalItemIds.push(response.id);
                 }
 
-            } catch (error: any) {
-                throw error;
             } finally {
                 this.fetching = false;
             }
         },
         async updatePersonalItem(
-            trip: IMapTripDetails,
             personalItemId: number,
             body: {
                 name?: string,
@@ -122,15 +117,16 @@ export const usePersonalItemsStore = defineStore('personalItem', {
 
             const {$api} = useNuxtApp();
             const url = `${apiEndpoints.personalItems}/${personalItemId}`;
+            this.fetching = true;
 
-            try {
+            try{
                 const response = await $api<IPersonalItem>(url, {
                     method: 'PATCH',
                     body: body
                 });
                 this.personalItems.set(response.id, response);
-            } catch (error: any) {
-                throw error;
+            }finally{
+                this.fetching = false;
             }
         },
         async deletePersonalItem(
@@ -139,7 +135,7 @@ export const usePersonalItemsStore = defineStore('personalItem', {
         ) {
             const {$api} = useNuxtApp();
             const url = `${apiEndpoints.personalItems}/${personalItemId}`;
-
+            this.fetching = true;
             try {
                 await $api(url, {
                     method: 'DELETE'
@@ -154,8 +150,8 @@ export const usePersonalItemsStore = defineStore('personalItem', {
                     }
                 }
 
-            } catch (error: any) {
-                throw error;
+            }finally{
+                this.fetching = false;
             }
         },
         clearStore(){
