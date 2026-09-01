@@ -53,30 +53,31 @@ export const useAssignmentsStore = defineStore('assignments', {
             }
         },
         getAssignedGroupItemsByUserAndTrip: (state) => {
-            return (tripId: number, userId: number) => {
-                const assignedItems: IAssignedItem[] = [];
-
+            return (tripId: number, userId: number): IAssignedItem[] => {
                 const assignmentRefs = state.assignmentsByUsers.get(tripId)?.get(userId);
+                if (!assignmentRefs) return [];
 
-                if (assignmentRefs) {
-                    assignmentRefs.forEach((assignmentId) => {
-                        const assignment = state.assignments.get(assignmentId);
-                        if (assignment) {
-                            const groupItem = useGroupItemsStore().groupItems.get(assignment.groupItem.id);
-                            if (groupItem) {
-                                assignedItems.push({
-                                    id: groupItem.id,
-                                    name: groupItem.name,
-                                    unit: groupItem.unit,
-                                    isPacked: assignment.isPacked,
-                                    quantity: assignment.assignedQuantity,
-                                });
-                            }
-                        }
+                const assignedItems: IAssignedItem[] = [];
+                const groupItemsStore = useGroupItemsStore();
+
+                for (const assignmentId of assignmentRefs) {
+                    const assignment = state.assignments.get(assignmentId);
+                    if (!assignment) continue;
+
+                    const groupItem = groupItemsStore.groupItems.get(assignment.groupItem.id);
+                    if (!groupItem) continue;
+
+                    assignedItems.push({
+                        id: groupItem.id,
+                        name: groupItem.name,
+                        unit: groupItem.unit,
+                        isPacked: assignment.isPacked,
+                        quantity: assignment.assignedQuantity,
                     });
                 }
+
                 return assignedItems;
-            }
+            };
         },
         getAssignmentByGroupItemAndUser: (state) => {
             return (groupItem: IMapGroupItem, userId: number): IAssignment | undefined => {
