@@ -2,7 +2,18 @@
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "index.vue"
+  name: "index.vue",
+  setup() {
+    useHead({
+      title: 'TroupTrip',
+      meta: [
+        {
+          name: 'description',
+          content: 'Simplifiez l\'organisation de vos séjours en groupe avec TroupTrip'
+        }
+      ]
+    })
+  },
 })
 </script>
 
