@@ -71,10 +71,6 @@ class PersonalItem implements CreatedAtInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['personal_item:collection'])]
     private ?Trip $trip = null;
 
@@ -87,6 +83,10 @@ class PersonalItem implements CreatedAtInterface
     #[ORM\Column(length: 255, enumType: GroupItemUnitEnum::class)]
     #[Groups(['personal_item:collection'])]
     private ?GroupItemUnitEnum $unit = null;
+
+    #[ORM\ManyToOne(inversedBy: 'personalItems')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TripMember $owner = null;
 
     public function getId(): ?int
     {
@@ -125,18 +125,6 @@ class PersonalItem implements CreatedAtInterface
     public function setIsPacked(bool $isPacked): static
     {
         $this->isPacked = $isPacked;
-
-        return $this;
-    }
-
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
 
         return $this;
     }
@@ -185,6 +173,18 @@ class PersonalItem implements CreatedAtInterface
     public function setUnit(GroupItemUnitEnum $unit): static
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getOwner(): ?TripMember
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?TripMember $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }

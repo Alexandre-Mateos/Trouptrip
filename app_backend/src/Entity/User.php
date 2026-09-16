@@ -83,34 +83,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $trips;
 
     /**
-     * @var Collection<int, Participation>
-     */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'participant')]
-    private Collection $participations;
-
-    /**
-     * @var Collection<int, Participation>
-     */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'invitedBy')]
-    private Collection $sentParticipations;
-
-    /**
-     * @var Collection<int, Task>
-     */
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'assignedTo')]
-    private Collection $tasks;
-
-    /**
      * @var Collection<int, Assignment>
      */
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'assignedTo')]
     private Collection $assignments;
 
-    /**
-     * @var Collection<int, Expense>
-     */
-    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'spender')]
-    private Collection $expenses;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -118,18 +95,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isVerified = null;
 
+    /**
+     * @var Collection<int, Invitation>
+     */
+    #[ORM\OneToMany(targetEntity: Invitation::class, mappedBy: 'invitedUser')]
+    private Collection $receivedInvitations;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->roles = ['ROLE_USER'] ;
         $this->isVerified = false;
-
         $this->trips = new ArrayCollection();
-        $this->participations = new ArrayCollection();
-        $this->sentParticipations = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
         $this->assignments = new ArrayCollection();
-        $this->expenses = new ArrayCollection();
+        $this->receivedInvitations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -449,6 +428,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getReceivedInvitations(): Collection
+    {
+        return $this->receivedInvitations;
+    }
+
+    public function addReceivedInvitation(Invitation $receivedInvitation): static
+    {
+        if (!$this->receivedInvitations->contains($receivedInvitation)) {
+            $this->receivedInvitations->add($receivedInvitation);
+            $receivedInvitation->setInvitedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedInvitation(Invitation $receivedInvitation): static
+    {
+        if ($this->receivedInvitations->removeElement($receivedInvitation)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedInvitation->getInvitedUser() === $this) {
+                $receivedInvitation->setInvitedUser(null);
+            }
+        }
 
         return $this;
     }

@@ -87,6 +87,10 @@ class Assignment implements CreatedAtInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TripMember $tripMember = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -168,5 +172,17 @@ class Assignment implements CreatedAtInterface
     public function getTripId(): ?int
     {
         return $this->groupItem?->getTrip()?->getId();
+    }
+
+    public function getTripMember(): ?TripMember
+    {
+        return $this->tripMember;
+    }
+
+    public function setTripMember(?TripMember $tripMember): static
+    {
+        $this->tripMember = $tripMember;
+
+        return $this;
     }
 }

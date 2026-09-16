@@ -117,42 +117,11 @@ class Trip implements CreatedAtInterface
     private ?User $owner = null;
 
     /**
-     * @var Collection<int, Participation>
-     */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'trip')]
-    #[Groups(['trip:item'])]
-    private Collection $participations;
-
-    /**
-     * @var Collection<int, Activity>
-     */
-    #[ORM\OneToMany(targetEntity: Activity::class, mappedBy: 'trip')]
-    private Collection $activities;
-
-    /**
-     * @var Collection<int, Task>
-     */
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'trip')]
-    private Collection $tasks;
-
-    /**
      * @var Collection<int, GroupItem>
      */
     #[ORM\OneToMany(targetEntity: GroupItem::class, mappedBy: 'trip')]
     #[Groups(['trip:item'])]
     private Collection $groupItems;
-
-    /**
-     * @var Collection<int, Refund>
-     */
-    #[ORM\OneToMany(targetEntity: Refund::class, mappedBy: 'trip')]
-    private Collection $refunds;
-
-    /**
-     * @var Collection<int, Expense>
-     */
-    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'trip')]
-    private Collection $expenses;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -160,14 +129,23 @@ class Trip implements CreatedAtInterface
     #[ORM\Column]
     private ?bool $isDeleted = false;
 
+    /**
+     * @var Collection<int, TripMember>
+     */
+    #[ORM\OneToMany(targetEntity: TripMember::class, mappedBy: 'trip')]
+    private Collection $tripMembers;
+
+    /**
+     * @var Collection<int, Invitation>
+     */
+    #[ORM\OneToMany(targetEntity: Invitation::class, mappedBy: 'trip')]
+    private Collection $invitations;
+
     public function __construct()
     {
-        $this->participations = new ArrayCollection();
-        $this->activities = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
         $this->groupItems = new ArrayCollection();
-        $this->refunds = new ArrayCollection();
-        $this->expenses = new ArrayCollection();
+        $this->tripMembers = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -248,96 +226,6 @@ class Trip implements CreatedAtInterface
     }
 
     /**
-     * @return Collection<int, Participation>
-     */
-    public function getParticipations(): Collection
-    {
-        return $this->participations;
-    }
-
-    public function addParticipation(Participation $participation): static
-    {
-        if (!$this->participations->contains($participation)) {
-            $this->participations->add($participation);
-            $participation->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipation(Participation $participation): static
-    {
-        if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
-            if ($participation->getTrip() === $this) {
-                $participation->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Activity>
-     */
-    public function getActivities(): Collection
-    {
-        return $this->activities;
-    }
-
-    public function addActivity(Activity $activity): static
-    {
-        if (!$this->activities->contains($activity)) {
-            $this->activities->add($activity);
-            $activity->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeActivity(Activity $activity): static
-    {
-        if ($this->activities->removeElement($activity)) {
-            // set the owning side to null (unless already changed)
-            if ($activity->getTrip() === $this) {
-                $activity->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Task>
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): static
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks->add($task);
-            $task->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): static
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getTrip() === $this) {
-                $task->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, GroupItem>
      */
     public function getGroupItems(): Collection
@@ -367,66 +255,6 @@ class Trip implements CreatedAtInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Refund>
-     */
-    public function getRefunds(): Collection
-    {
-        return $this->refunds;
-    }
-
-    public function addRefund(Refund $refund): static
-    {
-        if (!$this->refunds->contains($refund)) {
-            $this->refunds->add($refund);
-            $refund->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRefund(Refund $refund): static
-    {
-        if ($this->refunds->removeElement($refund)) {
-            // set the owning side to null (unless already changed)
-            if ($refund->getTrip() === $this) {
-                $refund->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Expense>
-     */
-    public function getExpenses(): Collection
-    {
-        return $this->expenses;
-    }
-
-    public function addExpense(Expense $expense): static
-    {
-        if (!$this->expenses->contains($expense)) {
-            $this->expenses->add($expense);
-            $expense->setTrip($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExpense(Expense $expense): static
-    {
-        if ($this->expenses->removeElement($expense)) {
-            // set the owning side to null (unless already changed)
-            if ($expense->getTrip() === $this) {
-                $expense->setTrip(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -439,15 +267,6 @@ class Trip implements CreatedAtInterface
         return $this;
     }
 
-    public function hasAcceptedParticipant(User $user): bool
-    {
-        foreach ($this->participations as $participation) {
-            if ($user === $participation->getParticipant() && ParticipationStatusEnum::ACCEPTED === $participation->getStatus()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public function isDeleted(): ?bool
     {
@@ -457,6 +276,66 @@ class Trip implements CreatedAtInterface
     public function setIsDeleted(bool $isDeleted): static
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TripMember>
+     */
+    public function getTripMembers(): Collection
+    {
+        return $this->tripMembers;
+    }
+
+    public function addTripMember(TripMember $tripMember): static
+    {
+        if (!$this->tripMembers->contains($tripMember)) {
+            $this->tripMembers->add($tripMember);
+            $tripMember->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTripMember(TripMember $tripMember): static
+    {
+        if ($this->tripMembers->removeElement($tripMember)) {
+            // set the owning side to null (unless already changed)
+            if ($tripMember->getTrip() === $this) {
+                $tripMember->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): static
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): static
+    {
+        if ($this->invitations->removeElement($invitation)) {
+            // set the owning side to null (unless already changed)
+            if ($invitation->getTrip() === $this) {
+                $invitation->setTrip(null);
+            }
+        }
 
         return $this;
     }
