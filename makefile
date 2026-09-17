@@ -24,3 +24,15 @@ fixtures-test:
 	docker compose exec -T php php bin/console doctrine:database:create --env=test
 	docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction --env=test
 	docker compose exec -T php php bin/console doctrine:fixtures:load --no-interaction --env=test
+
+migration:
+	docker compose exec php php bin/console make:migration
+
+migration-migrate:
+	docker compose exec php php bin/console doctrine:migration:migrate
+
+database-drop:
+	docker compose exec php php bin/console doctrine:database:drop --force --if-exists
+
+database-create:
+	docker compose exec php php bin/console doctrine:database:create
