@@ -34,8 +34,8 @@ final class UserFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'createdAt' => new \DateTimeImmutable(),
-            'email' => self::faker()->unique()->safeEmail(),
+            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'email' => self::faker()->safeEmail(),
             'firstname' => self::faker()->firstName(),
             'isVerified' => self::faker()->boolean(80),
             'lastname' => self::faker()->lastName(),

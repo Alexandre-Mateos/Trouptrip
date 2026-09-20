@@ -77,12 +77,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
-     * @var Collection<int, Trip>
-     */
-    #[ORM\OneToMany(targetEntity: Trip::class, mappedBy: 'owner')]
-    private Collection $trips;
-
-    /**
      * @var Collection<int, Assignment>
      */
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'assignedTo')]

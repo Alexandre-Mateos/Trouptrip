@@ -2,13 +2,15 @@
 
 namespace App\Factory;
 
-use App\Entity\Assignment;
+use App\Entity\TripMember;
+use App\Enum\TripMemberRoleEnum;
+use App\Enum\TripMemberStatusEnum;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Assignment>
+ * @extends PersistentObjectFactory<TripMember>
  */
-final class AssignmentFactory extends PersistentObjectFactory
+final class TripMemberFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -22,7 +24,7 @@ final class AssignmentFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return Assignment::class;
+        return TripMember::class;
     }
 
     /**
@@ -34,11 +36,11 @@ final class AssignmentFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'assignedQuantity' => self::faker()->randomNumber(),
-            'assignedTo' => UserFactory::new(),
-            'createdAt' => new \DateTimeImmutable(),
-            'groupItem' => GroupItemFactory::new(),
-            'isPacked' => self::faker()->boolean(),
+            'joinedAt' => new \DateTimeImmutable(),
+            'member' => UserFactory::new(),
+            'role' => TripMemberRoleEnum::PARTICIPANT,
+            'status' => TripMemberStatusEnum::ACTIVE,
+            'trip' => TripFactory::new(),
         ];
     }
 
@@ -49,7 +51,7 @@ final class AssignmentFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Assignment $assignment): void {})
+            // ->afterInstantiate(function(TripMember $tripMember): void {})
         ;
     }
 }

@@ -4,11 +4,14 @@ namespace App\Story;
 
 use App\Enum\GroupItemUnitEnum;
 use App\Enum\ParticipationStatusEnum;
+use App\Enum\TripMemberRoleEnum;
+use App\Enum\TripMemberStatusEnum;
 use App\Factory\AssignmentFactory;
 use App\Factory\GroupItemFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\PersonalItemFactory;
 use App\Factory\TripFactory;
+use App\Factory\TripMemberFactory;
 use App\Factory\UserFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
 use Zenstruck\Foundry\Story;
@@ -18,35 +21,53 @@ final class BasicStory extends Story
 {
     public function build(): void
     {
-        $userAlexandre = UserFactory::createOne([
-            'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-            'email' => 'alexandre.mateos@mail.com',
-            'firstname' => 'Alexandre',
-            'isVerified' => true,
-            'lastname' => 'Mateos',
-            'password' => password_hash('alexandre', PASSWORD_DEFAULT),
-            'roles' => ['ROLE_USER'],
-        ]);
-
-        UserFactory::createOne([
-            'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-            'email' => 'julia.lorenzo@mail.com',
-            'firstname' => 'Julia',
-            'isVerified' => true,
-            'lastname' => 'Lorenzo',
-            'password' => password_hash('julia', PASSWORD_DEFAULT),
-            'roles' => ['ROLE_USER'],
-        ]);
-
-        UserFactory::createOne([
-            'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-            'email' => 'marie.bergamotte@mail.com',
-            'firstname' => 'Marie',
-            'isVerified' => true,
-            'lastname' => 'Bergamotte',
-            'password' => password_hash('marie', PASSWORD_DEFAULT),
-            'roles' => ['ROLE_USER'],
-        ]);
+        $userData = [
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'alexandre.mateos@example.com',
+                'firstname' => 'Alexandre',
+                'isVerified' => true,
+                'lastname' => 'Mateos',
+                'password' => password_hash('alexandre', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'julia.lorenzo@example.com',
+                'firstname' => 'Julia',
+                'isVerified' => true,
+                'lastname' => 'Lorenzo',
+                'password' => password_hash('julia', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'marie.bergamotte@example.com',
+                'firstname' => 'Marie',
+                'isVerified' => true,
+                'lastname' => 'Bergamotte',
+                'password' => password_hash('marie', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'sybille.rostang@example.com',
+                'firstname' => 'Sybille',
+                'isVerified' => true,
+                'lastname' => 'Rostang',
+                'password' => password_hash('sybille', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ],
+            [
+                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
+                'email' => 'erwan.dugalle@example.com',
+                'firstname' => 'Erwan',
+                'isVerified' => true,
+                'lastname' => 'Dugalle',
+                'password' => password_hash('erwan', PASSWORD_DEFAULT),
+                'roles' => ['ROLE_USER'],
+            ]
+        ];
 
         $trips = [
             [
@@ -111,143 +132,14 @@ final class BasicStory extends Story
             ],
         ];
 
-
-        $paticipantsData = [
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-                'email' => 'jean.papon@mail.com',
-                'firstname' => 'Jean',
-                'isVerified' => true,
-                'lastname' => 'Papon',
-                'password' => password_hash('jean', PASSWORD_DEFAULT),
-                'roles' => ['ROLE_USER'],
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-                'email' => 'camille.dupont@mail.com',
-                'firstname' => 'Camille',
-                'isVerified' => true,
-                'lastname' => 'Dupont',
-                'password' => password_hash('camille', PASSWORD_DEFAULT),
-                'roles' => ['ROLE_USER'],
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 00:00:00'),
-                'email' => 'paul.tiredon@mail.com',
-                'firstname' => 'Paul',
-                'isVerified' => true,
-                'lastname' => 'Tiredon',
-                'password' => password_hash('paul', PASSWORD_DEFAULT),
-                'roles' => ['ROLE_USER'],
-            ]
-        ];
-
-        $groupItemData = [
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 10:00:00'),
-                'name' => 'Tente 4 places',
-                'totalQuantity' => 1,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 10:15:00'),
-                'name' => 'Pâtes',
-                'totalQuantity' => 3,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::KILOGRAM,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-12 11:00:00'),
-                'name' => 'Eau minérale',
-                'totalQuantity' => 6,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::LITER,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-13 09:30:00'),
-                'name' => 'Sac de couchage',
-                'totalQuantity' => 3,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-13 14:00:00'),
-                'name' => 'Café moulu',
-                'totalQuantity' => 500,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::GRAM,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-14 08:00:00'),
-                'name' => 'Réchaud à gaz',
-                'totalQuantity' => 2,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-14 16:45:00'),
-                'name' => 'Huile d\'olive',
-                'totalQuantity' => 750,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::MILILITER,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 10:20:00'),
-                'name' => 'Trousse de secours',
-                'totalQuantity' => 1,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
-                'name' => 'Riz',
-                'totalQuantity' => 2,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::GRAM,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 18:30:00'),
-                'name' => 'Lampe torche',
-                'totalQuantity' => 3,
-                'trip' => TripFactory::new(),
-                'unit' => GroupItemUnitEnum::PIECE,
-            ],
-        ];
-
-        $personalItemData = [
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
-                'isPacked'  => false,
-                'name' => 'brosse à dents',
-                'quantity' => 1,
-                'unit'  => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
-                'isPacked'  => false,
-                'name' => 'Harry Potter',
-                'quantity' => 1,
-                'unit'  => GroupItemUnitEnum::PIECE,
-            ],
-            [
-                'createdAt' => new \DateTimeImmutable('2026-06-15 11:00:00'),
-                'isPacked'  => false,
-                'name' => 'Lunettes de soleil',
-                'quantity' => 1,
-                'unit'  => GroupItemUnitEnum::PIECE,
-            ]
-        ];
-
-        $participants = array_map( function($user){
+        $users = array_map((function ($user) {
             return UserFactory::createOne($user);
-        } ,$paticipantsData);
+        }), $userData);
 
         foreach ($trips as $trip) {
 
             $associatedTrip = TripFactory::createOne([
                 'createdAt' => new \DateTimeImmutable(),
-                'owner' => $userAlexandre,
                 'title' => $trip['title'],
                 'description' => $trip['description'],
                 'startDate' => new \DateTimeImmutable($trip['start']),
@@ -255,46 +147,13 @@ final class BasicStory extends Story
                 'isDeleted' => false
             ]);
 
-            foreach ($participants as $participant) {
-
-                ParticipationFactory::createOne([
-                    'createdAt' => new \DateTimeImmutable('2026-06-14 00:00:00'),
-                    'invitedBy' => $userAlexandre,
-                    'participant' => $participant,
-                    'status' => ParticipationStatusEnum::ACCEPTED,
-                    'trip' => $associatedTrip
-                ]);
-            }
-
-            foreach ($groupItemData as $groupItem) {
-                $createdGroupItem = GroupItemFactory::createOne([
-                    'createdAt' => $groupItem['createdAt'],
-                    'name' => $groupItem['name'],
-                    'totalQuantity' => $groupItem['totalQuantity'],
+            foreach ($users as $user) {
+                TripMemberFactory::createOne([
+                    'joinedAt' => new \DateTimeImmutable(),
+                    'member' => $user,
+                    'role' => TripMemberRoleEnum::PARTICIPANT,
+                    'status' => TripMemberStatusEnum::ACTIVE,
                     'trip' => $associatedTrip,
-                    'unit' => $groupItem['unit'],
-                ]);
-
-                if ($groupItem['name'] === 'Eau minérale') {
-                    AssignmentFactory::createOne([
-                        'assignedQuantity' => 2,
-                        'isPacked' => false,
-                        'groupItem' => $createdGroupItem,
-                        'assignedTo' => $userAlexandre,
-                        'createdAt' => new \DateTimeImmutable('2026-06-12 12:00:00'),
-                    ]);
-                }
-            }
-
-            foreach ($personalItemData as $personalItem) {
-                PersonalItemFactory::createOne([
-                    'createdAt' => new $personalItem['createdAt'],
-                    'isPacked'  => $personalItem['isPacked'],
-                    'name' => $personalItem['name'],
-                    'owner' => $userAlexandre,
-                    'quantity' => $personalItem['quantity'],
-                    'trip' => $associatedTrip,
-                    'unit' => $personalItem['unit'],
                 ]);
             }
         }

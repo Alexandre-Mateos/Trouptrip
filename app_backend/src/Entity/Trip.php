@@ -111,11 +111,6 @@ class Trip implements CreatedAtInterface
     #[Groups(['trip:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'trips')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['trip:item'])]
-    private ?User $owner = null;
-
     /**
      * @var Collection<int, GroupItem>
      */

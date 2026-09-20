@@ -13,8 +13,8 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         BasicStory::load();
-        AssignmentTestStory::load();
-        TripTestStory::load();
+//        AssignmentTestStory::load();
+//        TripTestStory::load();
 
         $manager->flush();
     }

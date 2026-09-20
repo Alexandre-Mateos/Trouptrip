@@ -36,10 +36,9 @@ final class TripFactory extends PersistentObjectFactory
         return [
             'createdAt' => new \DateTimeImmutable(),
             'endDate' => new \DateTimeImmutable('+1 week'),
-            'owner' => UserFactory::new(),
-            'startDate' => new \DateTimeImmutable('+1 month'),
-            'title' => self::faker()->text(20),
-            'description' =>self::faker()->text(100)
+            'isDeleted' => self::faker()->boolean(10),
+            'startDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'title' => self::faker()->text(255),
         ];
     }
 
